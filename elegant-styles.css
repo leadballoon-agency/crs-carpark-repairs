@@ -1,0 +1,597 @@
+/* CRS - Elegant, Sophisticated Design System */
+
+/* ==========================================
+   REFINED DESIGN TOKENS
+   ========================================== */
+
+:root {
+    /* Sophisticated Monochrome Palette */
+    --ink: #0A0A0A;
+    --charcoal: #1A1A1A;
+    --graphite: #2D2D2D;
+    --slate: #6B7280;
+    --silver: #9CA3AF;
+    --pearl: #F9FAFB;
+    --pure-white: #FFFFFF;
+    
+    /* Accent - Refined Blue */
+    --royal: #1E3A8A;
+    --sapphire: #2563EB;
+    --sky: #DBEAFE;
+    
+    /* Typography - Premium Fonts */
+    --font-display: 'Playfair Display', 'Georgia', serif;
+    --font-sans: 'Helvetica Neue', -apple-system, sans-serif;
+    --font-mono: 'SF Mono', 'Monaco', monospace;
+    
+    /* Refined Spacing Scale */
+    --space-2xs: 0.25rem;   /* 4px */
+    --space-xs: 0.5rem;     /* 8px */
+    --space-sm: 0.75rem;    /* 12px */
+    --space-md: 1.5rem;     /* 24px */
+    --space-lg: 2.5rem;     /* 40px */
+    --space-xl: 4rem;       /* 64px */
+    --space-2xl: 6rem;      /* 96px */
+    --space-3xl: 8rem;      /* 128px */
+    
+    /* Elegant Transitions */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration: 400ms;
+    
+    /* Subtle Shadows */
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-elegant: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================
+   RESET & FOUNDATION
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::selection {
+    background: var(--royal);
+    color: var(--pure-white);
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    color: var(--charcoal);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    background: var(--pure-white);
+}
+
+/* ==========================================
+   ELEGANT TYPOGRAPHY
+   ========================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    font-weight: 300;
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.3;
+}
+
+p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--graphite);
+    margin-bottom: var(--space-md);
+    font-weight: 300;
+}
+
+.lead {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: var(--slate);
+    font-weight: 300;
+}
+
+/* ==========================================
+   ELEGANT HEADER
+   ========================================== */
+
+.elegant-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all var(--duration) var(--ease-out);
+}
+
+.header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.elegant-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+}
+
+.elegant-nav {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--graphite);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color var(--duration) var(--ease-out);
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--royal);
+    transition: width var(--duration) var(--ease-out);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* ==========================================
+   HERO - REFINED ELEGANCE
+   ========================================== */
+
+.elegant-hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: var(--space-3xl) var(--space-lg);
+    background: linear-gradient(to bottom, var(--pure-white) 0%, var(--pearl) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+}
+
+.hero-content h1 {
+    margin-bottom: var(--space-lg);
+    opacity: 0;
+    animation: elegantFadeIn 1s var(--ease-out) forwards;
+}
+
+.hero-content p {
+    margin-bottom: var(--space-lg);
+    opacity: 0;
+    animation: elegantFadeIn 1s var(--ease-out) 0.2s forwards;
+}
+
+@keyframes elegantFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* ==========================================
+   SOPHISTICATED BUTTONS
+   ========================================== */
+
+.elegant-button {
+    display: inline-block;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--ink);
+    color: var(--pure-white);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    transition: all var(--duration) var(--ease-out);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.elegant-button:hover {
+    background: transparent;
+    color: var(--ink);
+}
+
+.elegant-button.secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--slate);
+}
+
+.elegant-button.secondary:hover {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--pure-white);
+}
+
+/* ==========================================
+   QUOTE TOOL - MINIMALIST
+   ========================================== */
+
+.elegant-quote-tool {
+    background: var(--pure-white);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-elegant);
+    opacity: 0;
+    animation: elegantFadeIn 1s var(--ease-out) 0.4s forwards;
+}
+
+.quote-tool-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.quote-tool-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-xs);
+}
+
+.quote-tool-header p {
+    color: var(--slate);
+    font-size: 1rem;
+}
+
+.elegant-upload {
+    border: 2px dashed var(--silver);
+    padding: var(--space-2xl) var(--space-lg);
+    text-align: center;
+    transition: all var(--duration) var(--ease-out);
+    cursor: pointer;
+    background: var(--pearl);
+}
+
+.elegant-upload:hover {
+    border-color: var(--royal);
+    background: var(--sky);
+}
+
+.upload-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--space-md);
+    opacity: 0.5;
+}
+
+/* ==========================================
+   CONTENT SECTIONS - REFINED
+   ========================================== */
+
+.elegant-section {
+    padding: var(--space-3xl) var(--space-lg);
+}
+
+.section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.section-header h2 {
+    margin-bottom: var(--space-md);
+}
+
+.section-header p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--slate);
+}
+
+/* ==========================================
+   ELEGANT CARDS
+   ========================================== */
+
+.elegant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+}
+
+.elegant-card {
+    background: var(--pure-white);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: var(--space-lg);
+    transition: all var(--duration) var(--ease-out);
+    position: relative;
+}
+
+.elegant-card:hover {
+    box-shadow: var(--shadow-elegant);
+    transform: translateY(-2px);
+}
+
+.card-number {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--silver);
+    margin-bottom: var(--space-sm);
+}
+
+.card-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
+    color: var(--ink);
+}
+
+.card-description {
+    color: var(--graphite);
+    line-height: 1.7;
+}
+
+/* ==========================================
+   PRICING - LUXURY STYLE
+   ========================================== */
+
+.elegant-pricing {
+    background: var(--pearl);
+}
+
+.price-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0;
+    box-shadow: var(--shadow-elegant);
+    background: var(--pure-white);
+}
+
+.price-tier {
+    padding: var(--space-xl) var(--space-lg);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: all var(--duration) var(--ease-out);
+}
+
+.price-tier:last-child {
+    border-right: none;
+}
+
+.price-tier:hover {
+    background: var(--pearl);
+    transform: scale(1.02);
+    box-shadow: var(--shadow-elegant);
+    z-index: 1;
+}
+
+.tier-name {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--slate);
+    margin-bottom: var(--space-sm);
+}
+
+.tier-price {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: var(--space-md);
+}
+
+.tier-price span {
+    font-size: 1.5rem;
+    color: var(--silver);
+}
+
+/* ==========================================
+   TESTIMONIALS - EDITORIAL STYLE
+   ========================================== */
+
+.elegant-testimonial {
+    background: var(--pure-white);
+    padding: var(--space-xl);
+    border-left: 2px solid var(--royal);
+    position: relative;
+}
+
+.testimonial-quote {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--graphite);
+    margin-bottom: var(--space-lg);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--pearl);
+}
+
+.author-info h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: var(--space-2xs);
+}
+
+.author-info p {
+    font-size: 0.875rem;
+    color: var(--slate);
+    margin: 0;
+}
+
+/* ==========================================
+   FOOTER - MINIMAL
+   ========================================== */
+
+.elegant-footer {
+    background: var(--ink);
+    color: var(--silver);
+    padding: var(--space-2xl) var(--space-lg);
+}
+
+.footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-brand {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--pure-white);
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.footer-links a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color var(--duration) var(--ease-out);
+}
+
+.footer-links a:hover {
+    color: var(--pure-white);
+}
+
+/* ==========================================
+   SUBTLE INTERACTIONS
+   ========================================== */
+
+.elegant-hover {
+    transition: all var(--duration) var(--ease-out);
+}
+
+.elegant-hover:hover {
+    transform: translateY(-2px);
+}
+
+/* Subtle underline animation */
+.elegant-link {
+    position: relative;
+    color: var(--royal);
+    text-decoration: none;
+    transition: color var(--duration) var(--ease-out);
+}
+
+.elegant-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--royal);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--duration) var(--ease-out);
+}
+
+.elegant-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* ==========================================
+   RESPONSIVE ELEGANCE
+   ========================================== */
+
+@media (max-width: 768px) {
+    .hero-inner {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+    }
+    
+    .elegant-nav {
+        display: none;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .price-table {
+        grid-template-columns: 1fr;
+    }
+    
+    .price-tier {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+}
