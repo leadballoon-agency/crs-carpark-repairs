@@ -32,7 +32,19 @@ class PotholeAI {
         });
     }
 
-    async analyzeImage(imageElement) {
+    async analyzeImage(imageElement, file) {
+        // VALIDATE FIRST - Check if this is actually a car park
+        if (window.validateBeforeUpload && file) {
+            const isValid = await window.validateBeforeUpload(file);
+            if (!isValid) {
+                return {
+                    error: true,
+                    message: 'Invalid image - not a car park',
+                    potholes: []
+                };
+            }
+        }
+        
         // Advanced detection with multiple factors
         const analysis = {
             potholes: [],
@@ -953,8 +965,16 @@ function enhancePhotoUpload() {
             img.src = e.target.result;
             
             img.onload = async function() {
-                // Real AI analysis
-                const analysis = await window.crsAdvanced.ai.analyzeImage(img);
+                // Real AI analysis WITH validation
+                const analysis = await window.crsAdvanced.ai.analyzeImage(img, file);
+                
+                // Check if validation failed
+                if (analysis.error) {
+                    // Show error and reset
+                    document.getElementById('uploadArea').style.display = 'block';
+                    document.getElementById('analysisDisplay').style.display = 'none';
+                    return;
+                }
                 
                 // Display advanced results
                 displayAdvancedAnalysis(analysis);

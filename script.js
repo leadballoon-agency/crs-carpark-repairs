@@ -50,10 +50,18 @@ function initPhotoUpload() {
 }
 
 // Handle photo upload and simulate AI analysis
-function handlePhotoUpload(file) {
+async function handlePhotoUpload(file) {
     if (!file.type.startsWith('image/')) {
         alert('Please upload an image file');
         return;
+    }
+    
+    // VALIDATE FIRST - Check if it's actually a car park
+    if (window.validateBeforeUpload) {
+        const isValid = await window.validateBeforeUpload(file);
+        if (!isValid) {
+            return; // Validation failed, error message already shown
+        }
     }
     
     const reader = new FileReader();
