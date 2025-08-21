@@ -932,7 +932,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize weather warnings
     initWeatherWarnings();
     
-    console.log('CRS Advanced Features Loaded - Years ahead of competition!');
+    console.log('CRS Advanced Features Ready');
 });
 
 // ============================================
@@ -981,44 +981,36 @@ function displayAdvancedAnalysis(analysis) {
     resultsPanel.className = 'advanced-analysis';
     resultsPanel.innerHTML = `
         <div class="analysis-header">
-            <h3>AI Deep Analysis Complete</h3>
-            <span class="confidence">Confidence: 94%</span>
+            <h3>Found ${analysis.potholes.length} Problems to Fix</h3>
+            <span class="zone-badge">All in one zone</span>
         </div>
         
-        <div class="risk-meter">
-            <label>Risk Level:</label>
-            <div class="meter">
-                <div class="fill" style="width: ${analysis.riskScore}%; background: ${getRiskColor(analysis.riskScore)}"></div>
-            </div>
-            <span class="score">${analysis.riskScore}/100</span>
+        <div class="simple-message">
+            <p><strong>Simple:</strong> We'll fix all ${analysis.potholes.length} potholes + ${analysis.cracks.length} cracks in one visit.</p>
+            <p><strong>Zone needed:</strong> ${analysis.totalArea}m²</p>
+            <p><strong>One price covers everything.</strong></p>
         </div>
         
-        <div class="findings-grid">
-            <div class="finding">
-                <span class="number">${analysis.potholes.length}</span>
-                <label>Potholes Detected</label>
-            </div>
-            <div class="finding">
-                <span class="number">${analysis.cracks.length}</span>
-                <label>Cracks Found</label>
-            </div>
-            <div class="finding">
-                <span class="number">${analysis.totalArea}m²</span>
-                <label>Zone Coverage</label>
-            </div>
-            <div class="finding">
-                <span class="number">${analysis.surfaceQuality}%</span>
-                <label>Surface Quality</label>
-            </div>
+        <div class="what-we-found">
+            <h4>What we found:</h4>
+            <ul>
+                <li>✓ ${analysis.potholes.length} potholes (all sizes)</li>
+                <li>✓ ${analysis.cracks.length} cracks needing sealing</li>
+                ${analysis.drainageIssues.length > 0 ? '<li>✓ Drainage problems that need sorting</li>' : ''}
+                <li>✓ ${analysis.totalArea}m² total area to fix</li>
+            </ul>
         </div>
         
-        ${analysis.drainageIssues.length > 0 ? `
-            <div class="warning-box">
-                ⚠️ Drainage issues detected - increased deterioration risk
+        ${analysis.riskScore > 70 ? `
+            <div class="fix-now-box">
+                <strong>Our advice:</strong> Fix this week before it gets worse.
             </div>
         ` : ''}
         
-        <button class="generate-report-btn">Generate Professional Report</button>
+        <div class="action-buttons">
+            <button class="cta-button primary book-now">Get This Fixed</button>
+            <button class="generate-report-btn">Download Report (PDF)</button>
+        </div>
     `;
     
     // Add to page
@@ -1044,21 +1036,22 @@ function displayWeatherImpact(impact) {
     const weatherPanel = document.createElement('div');
     weatherPanel.className = 'weather-impact';
     weatherPanel.innerHTML = `
-        <h4>Weather Impact Forecast</h4>
-        <div class="timeline">
-            <div class="time-point now">
-                <label>Fix Today</label>
-                <span class="cost">£${impact.currentCost.toLocaleString()}</span>
+        <h4>Don't Wait - It Gets Expensive</h4>
+        <div class="cost-comparison">
+            <div class="cost-now">
+                <strong>Fix this week:</strong>
+                <span class="price">£${impact.currentCost.toLocaleString()}</span>
             </div>
-            <div class="time-point future">
-                <label>After Winter</label>
-                <span class="cost">£${impact.futureCost.toLocaleString()}</span>
-                <span class="increase">+${impact.percentage}%</span>
+            <div class="cost-arrow">→</div>
+            <div class="cost-later">
+                <strong>After winter:</strong>
+                <span class="price">£${impact.futureCost.toLocaleString()}</span>
+                <span class="warning">Costs £${impact.increase.toLocaleString()} more</span>
             </div>
         </div>
-        <div class="factors">
-            ${impact.factors.map(f => `<span class="factor">• ${f}</span>`).join('')}
-        </div>
+        ${impact.factors.length > 0 ? `
+            <p class="weather-reason">Why? ${impact.factors[0]}</p>
+        ` : ''}
     `;
     
     document.querySelector('.analysis-results')?.appendChild(weatherPanel);
@@ -1070,7 +1063,8 @@ function addVideoUpload() {
     
     const videoBtn = document.createElement('button');
     videoBtn.className = 'video-upload-btn';
-    videoBtn.innerHTML = '🎥 Upload Video Instead';
+    videoBtn.type = 'button';
+    videoBtn.innerHTML = '📹 Or walk and film your car park';
     videoBtn.onclick = () => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -1096,7 +1090,7 @@ function initWeatherWarnings() {
             const warning = document.createElement('div');
             warning.className = 'weather-warning-banner';
             warning.innerHTML = `
-                ❄️ Frost expected this week - pothole damage accelerates 3x faster. Book repairs before temperatures drop!
+                ❄️ <strong>Weather Warning:</strong> Frost expected. Potholes get worse fast in cold weather. Book now.
             `;
             document.body.insertBefore(warning, document.body.firstChild);
         }
@@ -1109,14 +1103,14 @@ function getRiskColor(score) {
     return '#10B981';
 }
 
-// Add advanced styles
+// Add advanced styles - following CRS branding
 const advancedStyles = document.createElement('style');
 advancedStyles.textContent = `
     .advanced-analysis {
         background: white;
-        border-radius: 12px;
+        border: 3px solid #003366;
+        border-radius: 8px;
         padding: 1.5rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         margin-top: 1rem;
     }
     
@@ -1125,14 +1119,74 @@ advancedStyles.textContent = `
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #E5E7EB;
     }
     
-    .confidence {
-        background: #10B981;
+    .analysis-header h3 {
+        color: #003366;
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    .zone-badge {
+        background: #FF6B35;
         color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: bold;
+        text-transform: uppercase;
         font-size: 0.9rem;
+    }
+    
+    .simple-message {
+        background: #F9FAFB;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+    
+    .simple-message p {
+        margin: 0.5rem 0;
+        color: #1A1A1A;
+    }
+    
+    .what-we-found {
+        margin: 1.5rem 0;
+    }
+    
+    .what-we-found h4 {
+        color: #003366;
+        margin-bottom: 0.5rem;
+    }
+    
+    .what-we-found ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .what-we-found li {
+        padding: 0.5rem 0;
+        color: #1A1A1A;
+    }
+    
+    .fix-now-box {
+        background: #FEF3C7;
+        border: 2px solid #F59E0B;
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .action-buttons button {
+        flex: 1;
     }
     
     .risk-meter {
@@ -1206,49 +1260,64 @@ advancedStyles.textContent = `
     }
     
     .weather-impact {
-        background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+        background: white;
+        border: 2px solid #EF4444;
         padding: 1.5rem;
-        border-radius: 12px;
+        border-radius: 8px;
         margin-top: 1rem;
     }
     
-    .timeline {
-        display: flex;
-        justify-content: space-between;
-        position: relative;
-        margin: 1.5rem 0;
-    }
-    
-    .timeline::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 25%;
-        right: 25%;
-        height: 2px;
-        background: #94A3B8;
-        z-index: 0;
-    }
-    
-    .time-point {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        text-align: center;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .time-point .cost {
-        display: block;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #003366;
-    }
-    
-    .time-point .increase {
+    .weather-impact h4 {
         color: #EF4444;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .cost-comparison {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+    
+    .cost-now, .cost-later {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .cost-arrow {
+        font-size: 2rem;
+        color: #EF4444;
+    }
+    
+    .cost-now .price {
+        display: block;
+        font-size: 1.8rem;
         font-weight: bold;
+        color: #10B981;
+        margin-top: 0.5rem;
+    }
+    
+    .cost-later .price {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #EF4444;
+        margin-top: 0.5rem;
+    }
+    
+    .cost-later .warning {
+        display: block;
+        font-size: 0.9rem;
+        color: #EF4444;
+        margin-top: 0.5rem;
+    }
+    
+    .weather-reason {
+        text-align: center;
+        margin-top: 1rem;
+        color: #6B7280;
+        font-style: italic;
     }
     
     .video-upload-btn {
