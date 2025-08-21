@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Park Repairs - No Job Too Small | CRS - The Original</title>
+    <meta name="description" content="We fix the potholes others won't touch. No minimums, no attitude, just sorted. The ORIGINAL Car Park Repair Services.">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <!-- Emergency Banner -->
+    <div class="emergency-banner">
+        <div class="container">
+            <span>🚨 Emergency repair needed?</span>
+            <a href="tel:07833588488" class="emergency-call">Call 07833 588488</a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <strong>CRS</strong>
+                    <span>The ORIGINAL Car Park Repair Services</span>
+                </div>
+                <nav class="desktop-nav">
+                    <button class="sector-btn" data-sector="all">All Sectors</button>
+                    <button class="sector-btn" data-sector="fastfood">Fast Food</button>
+                    <button class="sector-btn" data-sector="retail">Retail</button>
+                    <button class="sector-btn" data-sector="nhs">NHS</button>
+                    <button class="sector-btn" data-sector="schools">Schools</button>
+                    <button class="sector-btn" data-sector="logistics">Logistics</button>
+                </nav>
+                <button class="mobile-menu-toggle" aria-label="Menu">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-headline">
+                    We Fix ALL Your Potholes<br>
+                    <span class="highlight">In One Visit</span>
+                </h1>
+                <p class="hero-subhead">
+                    One price. Every pothole in the area. Properly sorted.
+                </p>
+                
+                <!-- The Interactive Upload Tool -->
+                <div class="instant-quote-tool">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <svg class="camera-icon" width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2v11z" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="13" r="4" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <h2>Show us your car park problems</h2>
+                            <p>We'll quote to fix ALL potholes in the area - one visit, one price</p>
+                            <button class="upload-btn">Choose Photo</button>
+                            <input type="file" id="photoInput" accept="image/*" hidden>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Analysis Display (Hidden by default) -->
+                    <div class="analysis-display" id="analysisDisplay" style="display: none;">
+                        <div class="analysis-grid">
+                            <div class="your-photo">
+                                <h3>Your Problem</h3>
+                                <img id="uploadedImage" alt="Uploaded damage">
+                                <div class="damage-overlay"></div>
+                            </div>
+                            <div class="analysis-results">
+                                <h3>Zone Assessment Complete</h3>
+                                <div class="assessment-item">
+                                    <span class="label">Problems Found:</span>
+                                    <span class="value" id="problemCount">Scanning...</span>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="label">Zone Coverage Needed:</span>
+                                    <span class="value" id="zoneSize">Calculating...</span>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="label">Includes:</span>
+                                    <span class="value" id="includesList">All visible + hidden issues</span>
+                                </div>
+                                <div class="price-comparison">
+                                    <div class="other-contractors">
+                                        <h4>Others Would Say:</h4>
+                                        <ul>
+                                            <li class="crossed">❌ Each pothole quoted separately</li>
+                                            <li class="crossed">❌ Multiple visits needed</li>
+                                            <li class="crossed">❌ Costs add up quickly</li>
+                                        </ul>
+                                    </div>
+                                    <div class="crs-price">
+                                        <h4>CRS Approach:</h4>
+                                        <div class="price-display">
+                                            <span class="price" id="crsPrice">£2,400</span>
+                                            <span class="timeline">ALL potholes in zone ✅</span>
+                                        </div>
+                                        <button class="cta-button book-now">Fix Everything - One Visit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Bar -->
+                <div class="trust-bar">
+                    <span class="trust-item">✓ Fix ALL potholes in one visit</span>
+                    <span class="trust-item">✓ Square meter pricing - no surprises</span>
+                    <span class="trust-item">✓ Minimum £2k - Maximum value</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Ticker -->
+    <section class="live-ticker">
+        <div class="ticker-content">
+            <div class="ticker-track">
+                <span class="ticker-item">✅ Just fixed: Single pothole - McDonald's Bath - £275</span>
+                <span class="ticker-item">✅ Completed: School car park crack - £425</span>
+                <span class="ticker-item">✅ Done: NHS clinic small repair - £150</span>
+                <span class="ticker-item">✅ Sorted: KFC Leeds edge repair - £380</span>
+                <span class="ticker-item">✅ Just fixed: Single pothole - McDonald's Bath - £275</span>
+                <span class="ticker-item">✅ Completed: School car park crack - £425</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Ronseal Promise -->
+    <section class="ronseal-promise">
+        <div class="container">
+            <h2>What You Get (And Nothing You Don't)</h2>
+            <div class="promise-grid">
+                <div class="you-get">
+                    <h3>✅ You Get:</h3>
+                    <ul>
+                        <li>ALL potholes fixed in one visit</li>
+                        <li>Square meter pricing (transparent)</li>
+                        <li>Proper materials (not quick-fix rubbish)</li>
+                        <li>5-year guarantee (in writing)</li>
+                        <li>Insurance paperwork (all sorted)</li>
+                        <li>Photos of every repair completed</li>
+                    </ul>
+                </div>
+                <div class="you-dont-get">
+                    <h3>❌ You Don't Get:</h3>
+                    <ul>
+                        <li>Charged per pothole</li>
+                        <li>Multiple visits and disruption</li>
+                        <li>Hidden costs and extras</li>
+                        <li>Half the problems left unfixed</li>
+                        <li>Passed to subcontractors</li>
+                        <li>Coming back next month for more</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Zone Pricing Works -->
+    <section class="small-jobs-matter">
+        <div class="container">
+            <h2>Why Zone Pricing Makes Sense</h2>
+            <div class="reasons-grid">
+                <div class="reason-card">
+                    <div class="icon">🎯</div>
+                    <h3>Complete Solution</h3>
+                    <p>Fix ALL problems in one go - no missed potholes</p>
+                </div>
+                <div class="reason-card">
+                    <div class="icon">💰</div>
+                    <h3>Cost Effective</h3>
+                    <p>One mobilization cost vs multiple visits saves money</p>
+                </div>
+                <div class="reason-card">
+                    <div class="icon">⚡</div>
+                    <h3>Less Disruption</h3>
+                    <p>One visit means minimal impact on your operations</p>
+                </div>
+                <div class="reason-card">
+                    <div class="icon">✅</div>
+                    <h3>Peace of Mind</h3>
+                    <p>Know that EVERY issue is sorted, not just the big ones</p>
+                </div>
+            </div>
+            
+            <!-- Success Story -->
+            <div class="success-story">
+                <blockquote>
+                    "They fixed 12 potholes for one price. Others wanted to charge per hole. No brainer."
+                    <footer>- McDonald's Regional Manager (Now 15 sites under management)</footer>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sector-Specific Content -->
+    <section class="sector-content" id="sectorContent">
+        <div class="container">
+            <h2>Solutions for Your Sector</h2>
+            
+            <!-- Fast Food Content -->
+            <div class="sector-panel" data-sector="fastfood">
+                <h3>Fast Food & Drive-Thrus</h3>
+                <div class="sector-grid">
+                    <div class="sector-problems">
+                        <h4>Your Challenges:</h4>
+                        <ul>
+                            <li>Head office won't approve big repairs</li>
+                            <li>Can't close drive-thru lane</li>
+                            <li>Franchise standards to maintain</li>
+                            <li>24/7 operations</li>
+                        </ul>
+                    </div>
+                    <div class="sector-solutions">
+                        <h4>How CRS Helps:</h4>
+                        <ul>
+                            <li>Fix urgent small stuff now</li>
+                            <li>Work during quiet hours</li>
+                            <li>Meet franchise appearance standards</li>
+                            <li>No disruption to service</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sector-proof">
+                    <strong>This Month:</strong> Fixed 47 fast food car parks - Average job £425
+                </div>
+            </div>
+            
+            <!-- Retail Content -->
+            <div class="sector-panel" data-sector="retail" style="display: none;">
+                <h3>Retail & Shopping Centres</h3>
+                <div class="sector-grid">
+                    <div class="sector-problems">
+                        <h4>Your Challenges:</h4>
+                        <ul>
+                            <li>Big contractors want £5k minimum</li>
+                            <li>Customer complaints about small issues</li>
+                            <li>Liability concerns</li>
+                            <li>Budget approval delays</li>
+                        </ul>
+                    </div>
+                    <div class="sector-solutions">
+                        <h4>How CRS Helps:</h4>
+                        <ul>
+                            <li>No job too small policy</li>
+                            <li>Quick fixes = happy customers</li>
+                            <li>Full insurance documentation</li>
+                            <li>Work within your budget</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sector-proof">
+                    <strong>Fact:</strong> We fix problems others won't even quote for
+                </div>
+            </div>
+            
+            <!-- NHS Content -->
+            <div class="sector-panel" data-sector="nhs" style="display: none;">
+                <h3>NHS & Healthcare</h3>
+                <div class="sector-grid">
+                    <div class="sector-problems">
+                        <h4>Your Challenges:</h4>
+                        <ul>
+                            <li>Waiting for budget approval</li>
+                            <li>Patient safety concerns</li>
+                            <li>Ambulance access critical</li>
+                            <li>Framework requirements</li>
+                        </ul>
+                    </div>
+                    <div class="sector-solutions">
+                        <h4>How CRS Helps:</h4>
+                        <ul>
+                            <li>Fix dangerous bits immediately</li>
+                            <li>Patient safety first approach</li>
+                            <li>Emergency bay priority</li>
+                            <li>Framework compliant</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sector-proof">
+                    <strong>Trusted by:</strong> 23 NHS facilities for rapid small repairs
+                </div>
+            </div>
+            
+            <!-- Schools Content -->
+            <div class="sector-panel" data-sector="schools" style="display: none;">
+                <h3>Schools & Education</h3>
+                <div class="sector-grid">
+                    <div class="sector-problems">
+                        <h4>Your Challenges:</h4>
+                        <ul>
+                            <li>Tiny maintenance budget</li>
+                            <li>Parent complaints</li>
+                            <li>Can only work in holidays</li>
+                            <li>Safeguarding requirements</li>
+                        </ul>
+                    </div>
+                    <div class="sector-solutions">
+                        <h4>How CRS Helps:</h4>
+                        <ul>
+                            <li>Work within your budget</li>
+                            <li>Fix that problem by the gate</li>
+                            <li>Holiday scheduling</li>
+                            <li>DBS-checked teams</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sector-proof">
+                    <strong>Protected:</strong> 45,000 pupils with small but vital repairs
+                </div>
+            </div>
+            
+            <!-- Logistics Content -->
+            <div class="sector-panel" data-sector="logistics" style="display: none;">
+                <h3>Logistics & Distribution</h3>
+                <div class="sector-grid">
+                    <div class="sector-problems">
+                        <h4>Your Challenges:</h4>
+                        <ul>
+                            <li>HGV damage to surface</li>
+                            <li>Can't stop operations</li>
+                            <li>Vehicle damage costs</li>
+                            <li>24/7 operations</li>
+                        </ul>
+                    </div>
+                    <div class="sector-solutions">
+                        <h4>How CRS Helps:</h4>
+                        <ul>
+                            <li>HGV-grade materials</li>
+                            <li>Work around your schedule</li>
+                            <li>Prevent vehicle damage</li>
+                            <li>Night work available</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sector-proof">
+                    <strong>Saved:</strong> £125,000 in vehicle damage claims this year
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Neglect Calculator -->
+    <section class="neglect-calculator">
+        <div class="container">
+            <h2>The True Cost of "It Can Wait"</h2>
+            <div class="calculator-grid">
+                <div class="calc-inputs">
+                    <h3>Your 'Small' Problem:</h3>
+                    <div class="problem-selector">
+                        <button class="problem-btn active" data-problem="small">Small Pothole (washing bowl)</button>
+                        <button class="problem-btn" data-problem="medium">Medium Pothole (bin lid)</button>
+                        <button class="problem-btn" data-problem="crack">Crack (2m length)</button>
+                    </div>
+                </div>
+                <div class="calc-results">
+                    <div class="cost-timeline">
+                        <div class="cost-item now">
+                            <span class="when">Fix Now:</span>
+                            <span class="amount" id="costNow">£350</span>
+                        </div>
+                        <div class="cost-item later">
+                            <span class="when">Fix in 6 Months:</span>
+                            <span class="amount" id="costLater">£1,200</span>
+                        </div>
+                        <div class="cost-item claim">
+                            <span class="when">If Someone Falls:</span>
+                            <span class="amount" id="costClaim">£3,500+</span>
+                        </div>
+                    </div>
+                    <div class="daily-risk">
+                        <p>Daily liability risk: <strong>£45</strong></p>
+                        <p>Weather deterioration: <strong>3x faster in winter</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="container">
+            <h2>From Small Jobs to Big Trust</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="quote">
+                        "Other contractors laughed at our £300 pothole. CRS fixed it same week. Now they manage all our sites."
+                    </div>
+                    <div class="attribution">
+                        <strong>McDonald's Regional Manager</strong>
+                        <span>Started: £300 → Now: £45k/year</span>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="quote">
+                        "Minimum quotes of £5k elsewhere. CRS did our small repair for £450. Professional and fast."
+                    </div>
+                    <div class="attribution">
+                        <strong>Sainsbury's Property Manager</strong>
+                        <span>Started: £450 → Now: £85k contract</span>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="quote">
+                        "They actually turned up for a small job. That never happens. Now they're our go-to contractor."
+                    </div>
+                    <div class="attribution">
+                        <strong>NHS Estates Manager</strong>
+                        <span>17 sites now under management</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Protection -->
+    <section class="brand-protection">
+        <div class="container">
+            <div class="protection-content">
+                <h2>⚠️ Beware Imitators</h2>
+                <p>We're the ORIGINAL Car Park Repair Services. Others use our name to get business.</p>
+                <div class="verification">
+                    <h3>Verify You're Getting Real CRS:</h3>
+                    <ul>
+                        <li>✓ Check for our verification code on quotes</li>
+                        <li>✓ Our vans have QR codes linking here</li>
+                        <li>✓ Text CRS to 07833 to verify</li>
+                        <li>✓ Established in Coventry since [YEAR]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clear Pricing -->
+    <section class="pricing">
+        <div class="container">
+            <h2>Zone Pricing That Makes Sense</h2>
+            <p class="pricing-intro">One price. All potholes. No surprises.</p>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Small Zone</h3>
+                    <span class="size">Up to 100m² coverage</span>
+                    <span class="price">£2,000-£2,500</span>
+                </div>
+                <div class="price-card">
+                    <h3>Medium Zone</h3>
+                    <span class="size">100-250m² coverage</span>
+                    <span class="price">£2,500-£4,000</span>
+                </div>
+                <div class="price-card">
+                    <h3>Large Zone</h3>
+                    <span class="size">250-500m² coverage</span>
+                    <span class="price">£4,000-£7,500</span>
+                </div>
+                <div class="price-card">
+                    <h3>Full Car Park</h3>
+                    <span class="size">Complete assessment</span>
+                    <span class="price">Custom Quote</span>
+                </div>
+            </div>
+            <p class="pricing-note">
+                <strong>ALL potholes in your zone fixed - guaranteed</strong>
+            </p>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="bottom-cta">
+        <div class="container">
+            <h2>Got a Problem Others Won't Fix?</h2>
+            <p>No job too small. No attitude. Just sorted.</p>
+            <div class="cta-buttons">
+                <button class="cta-button primary scroll-to-upload">
+                    📸 Get Instant Quote
+                </button>
+                <a href="tel:07833588488" class="cta-button secondary">
+                    📞 Call 07833 588488
+                </a>
+            </div>
+            <div class="urgency-message">
+                <p>This week: <strong>3 slots remaining</strong> for small repairs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CRS - The Original</h4>
+                    <p>Car Park Repair Services<br>
+                    Fixing what others won't since [YEAR]</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>📞 07833 588488<br>
+                    ✉️ info@carparkrepair.co.uk<br>
+                    📍 Coventry CV2 1PQ</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Our Promise</h4>
+                    <p>No job too small<br>
+                    Fixed this week<br>
+                    5-year guarantee</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Verify We're Real</h4>
+                    <p>Text CRS to 07833<br>
+                    Check our verification codes<br>
+                    Established Coventry business</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Car Park Repair Services. The ORIGINAL. Beware imitators.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="mobile-sticky-cta">
+        <button class="sticky-quote-btn scroll-to-upload">📸 Get Quote</button>
+        <a href="tel:07833588488" class="sticky-call-btn">📞 Call Now</a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>

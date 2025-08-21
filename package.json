@@ -1,0 +1,23 @@
+{
+  "name": "crs-carpark-repairs",
+  "version": "1.0.0",
+  "description": "Car Park Repair Services - Zone-based pothole repair landing page",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site - no build required'",
+    "preview": "npx serve ."
+  },
+  "keywords": [
+    "car park repairs",
+    "pothole repair",
+    "asphalt",
+    "tarmac",
+    "UK"
+  ],
+  "author": "CRS",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
