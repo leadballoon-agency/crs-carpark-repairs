@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>CRS Mobile - Test Your Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 18px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .test-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .error {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .device-info {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .feature-status {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .photo-preview {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+        
+        #cameraInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CRS Mobile Test</h1>
+        <p>Test your device's capabilities</p>
+        
+        <!-- Device Information -->
+        <div class="test-card">
+            <h2>📱 Your Device</h2>
+            <div class="device-info" id="deviceInfo">
+                Detecting...
+            </div>
+        </div>
+        
+        <!-- Feature Tests -->
+        <div class="test-card">
+            <h2>✨ Features</h2>
+            <div id="featureTests">
+                <div class="feature-status">
+                    <span>Camera Access</span>
+                    <span class="status-indicator" id="cameraStatus" style="background: gray;"></span>
+                </div>
+                <div class="feature-status">
+                    <span>GPS Location</span>
+                    <span class="status-indicator" id="gpsStatus" style="background: gray;"></span>
+                </div>
+                <div class="feature-status">
+                    <span>Touch Gestures</span>
+                    <span class="status-indicator" id="touchStatus" style="background: gray;"></span>
+                </div>
+                <div class="feature-status">
+                    <span>Network Speed</span>
+                    <span class="status-indicator" id="networkStatus" style="background: gray;"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Tests -->
+        <div class="test-card">
+            <h2>🎯 Try It Out</h2>
+            
+            <button class="test-btn" onclick="testCamera()">
+                📸 Test Camera (Rear)
+            </button>
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handlePhoto(event)">
+            <img id="photoPreview" class="photo-preview" style="display: none;">
+            
+            <button class="test-btn" onclick="testVibration()">
+                📳 Test Vibration
+            </button>
+            
+            <button class="test-btn" onclick="testGPS()">
+                📍 Test GPS Location
+            </button>
+            
+            <button class="test-btn" onclick="testNotification()">
+                🔔 Test Notification
+            </button>
+            
+            <button class="test-btn success" onclick="openMainApp()">
+                ✅ Open CRS App
+            </button>
+        </div>
+        
+        <!-- Results -->
+        <div class="test-card">
+            <h2>📊 Results</h2>
+            <div id="results">
+                <p>Run tests above to see results...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Device Detection
+        function detectDevice() {
+            const info = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                screenWidth: window.screen.width,
+                screenHeight: window.screen.height,
+                pixelRatio: window.devicePixelRatio,
+                touchPoints: navigator.maxTouchPoints,
+                online: navigator.onLine,
+                language: navigator.language
+            };
+            
+            let deviceType = 'Unknown';
+            if (/iPhone|iPad|iPod/.test(info.userAgent)) {
+                deviceType = 'iOS Device';
+            } else if (/Android/.test(info.userAgent)) {
+                deviceType = 'Android Device';
+            } else if (/Windows Phone/.test(info.userAgent)) {
+                deviceType = 'Windows Phone';
+            }
+            
+            document.getElementById('deviceInfo').innerHTML = `
+                <strong>${deviceType}</strong><br>
+                Screen: ${info.screenWidth}x${info.screenHeight}<br>
+                Pixel Ratio: ${info.pixelRatio}x<br>
+                Touch Points: ${info.touchPoints}<br>
+                Network: ${info.online ? 'Online' : 'Offline'}<br>
+                Language: ${info.language}
+            `;
+            
+            // Check features
+            checkFeatures();
+        }
+        
+        // Feature Detection
+        function checkFeatures() {
+            // Camera
+            if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+                setStatus('cameraStatus', 'success');
+            } else {
+                setStatus('cameraStatus', 'error');
+            }
+            
+            // GPS
+            if ('geolocation' in navigator) {
+                setStatus('gpsStatus', 'success');
+            } else {
+                setStatus('gpsStatus', 'error');
+            }
+            
+            // Touch
+            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                setStatus('touchStatus', 'success');
+            } else {
+                setStatus('touchStatus', 'warning');
+            }
+            
+            // Network
+            if (navigator.connection) {
+                const connection = navigator.connection;
+                if (connection.effectiveType === '4g') {
+                    setStatus('networkStatus', 'success');
+                } else if (connection.effectiveType === '3g') {
+                    setStatus('networkStatus', 'warning');
+                } else {
+                    setStatus('networkStatus', 'error');
+                }
+            } else {
+                setStatus('networkStatus', 'warning');
+            }
+        }
+        
+        function setStatus(elementId, status) {
+            const element = document.getElementById(elementId);
+            const colors = {
+                success: '#10b981',
+                warning: '#f59e0b',
+                error: '#ef4444'
+            };
+            element.style.background = colors[status] || 'gray';
+        }
+        
+        // Test Functions
+        function testCamera() {
+            document.getElementById('cameraInput').click();
+        }
+        
+        function handlePhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    
+                    addResult('✅ Camera works! Photo captured successfully');
+                    
+                    // Check file size
+                    const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+                    addResult(`📊 Photo size: ${sizeMB}MB`);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function testVibration() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate([200, 100, 200]);
+                addResult('✅ Vibration works!');
+            } else {
+                addResult('❌ Vibration not supported');
+            }
+        }
+        
+        function testGPS() {
+            if ('geolocation' in navigator) {
+                addResult('🔄 Getting location...');
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude, accuracy } = position.coords;
+                        addResult(`✅ GPS works! Location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (±${Math.round(accuracy)}m)`);
+                    },
+                    error => {
+                        addResult(`❌ GPS error: ${error.message}`);
+                    },
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                addResult('❌ GPS not supported');
+            }
+        }
+        
+        function testNotification() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('CRS Test', {
+                            body: 'Notifications work!',
+                            icon: '🚗'
+                        });
+                        addResult('✅ Notifications enabled!');
+                    } else {
+                        addResult('⚠️ Notification permission denied');
+                    }
+                });
+            } else {
+                addResult('❌ Notifications not supported');
+            }
+        }
+        
+        function openMainApp() {
+            window.location.href = 'index.html';
+        }
+        
+        function addResult(message) {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML = `<p><small>${timestamp}</small><br>${message}</p>` + results.innerHTML;
+        }
+        
+        // Touch gesture test
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            
+            if (Math.abs(deltaX) > 50 || Math.abs(deltaY) > 50) {
+                setStatus('touchStatus', 'success');
+            }
+        });
+        
+        // Initialize on load
+        window.addEventListener('load', detectDevice);
+        
+        // Network change detection
+        window.addEventListener('online', () => addResult('✅ Back online!'));
+        window.addEventListener('offline', () => addResult('❌ Lost connection!'));
+    </script>
+</body>
+</html>
