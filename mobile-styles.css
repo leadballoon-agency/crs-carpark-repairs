@@ -1,0 +1,614 @@
+/* Mobile-First Elegant Styles for CRS Landing Page */
+
+/* ========================================
+   MOBILE-FIRST BASE STYLES
+   ======================================== */
+
+/* Reset for better mobile experience */
+* {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+html {
+    /* Prevent iOS zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Smooth scrolling with momentum on iOS */
+body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+/* ========================================
+   MOBILE HERO OPTIMIZATION
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Streamlined header for mobile */
+    .site-header {
+        padding: 0.75rem 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.98);
+    }
+
+    .header-content {
+        padding: 0 1rem;
+    }
+
+    .logo strong {
+        font-size: 1.5rem;
+    }
+
+    .logo span {
+        display: none; /* Hide tagline on mobile */
+    }
+
+    /* Hide desktop nav completely */
+    .desktop-nav {
+        display: none !important;
+    }
+
+    /* Elegant mobile menu button */
+    .mobile-menu-toggle {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: 2px solid var(--primary-blue);
+        border-radius: 8px;
+        color: var(--primary-blue);
+        font-size: 1.25rem;
+    }
+
+    /* Account for fixed header */
+    .hero {
+        margin-top: 60px;
+        padding: 2rem 0;
+    }
+
+    /* Mobile-optimized hero text */
+    .hero-headline {
+        font-size: 1.75rem !important;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subhead {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Hide emergency banner on mobile - too cluttered */
+    .emergency-banner {
+        display: none;
+    }
+}
+
+/* ========================================
+   MOBILE PHOTO UPLOAD - FULL SCREEN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .instant-quote-tool {
+        margin: 0 -1rem;
+        padding: 1.5rem 1rem;
+        border-radius: 0;
+        box-shadow: none;
+        background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
+    }
+
+    .upload-area {
+        border: 3px dashed var(--action-orange);
+        background: white;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border-radius: 16px;
+    }
+
+    .upload-area::before {
+        content: 'TAP HERE';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3rem;
+        font-weight: 900;
+        color: rgba(255, 107, 53, 0.1);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .upload-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .camera-icon {
+        width: 64px;
+        height: 64px;
+        color: var(--action-orange);
+        margin-bottom: 1rem;
+    }
+
+    .upload-content h2 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-content p {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+    }
+
+    .upload-btn {
+        width: 100%;
+        padding: 1.25rem;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        background: var(--action-orange);
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    /* Native camera/gallery buttons */
+    .native-upload-options {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .native-upload-options button {
+        flex: 1;
+        padding: 1rem;
+        background: white;
+        border: 2px solid var(--border-gray);
+        border-radius: 8px;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .native-upload-options button:active {
+        background: var(--bg-light);
+        transform: scale(0.98);
+    }
+}
+
+/* ========================================
+   MOBILE ANALYSIS DISPLAY
+   ======================================== */
+
+@media (max-width: 768px) {
+    .analysis-display {
+        animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .analysis-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .your-photo {
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .advanced-analysis {
+        margin: 0 -1rem;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    /* Full-width weather warning */
+    .weather-impact {
+        margin: 1rem -1rem;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    .cost-comparison {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .cost-arrow {
+        transform: rotate(90deg);
+    }
+
+    /* Sticky action buttons on mobile */
+    .action-buttons {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .action-buttons button {
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ========================================
+   MOBILE TRUST & SOCIAL PROOF
+   ======================================== */
+
+@media (max-width: 768px) {
+    .trust-bar {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.5rem 1rem;
+        background: var(--bg-light);
+        margin: 1.5rem -1rem;
+    }
+
+    .trust-item {
+        font-size: 0.9rem;
+        display: block;
+        text-align: center;
+    }
+
+    /* Horizontal scrolling ticker */
+    .live-ticker {
+        padding: 0.75rem 0;
+    }
+
+    .ticker-item {
+        padding: 0 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* ========================================
+   MOBILE CONTENT SECTIONS
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Card-based sections */
+    .ronseal-promise,
+    .small-jobs-matter,
+    .sector-content,
+    .neglect-calculator,
+    .social-proof,
+    .pricing {
+        padding: 2rem 0;
+    }
+
+    .promise-grid,
+    .reasons-grid,
+    .calculator-grid,
+    .testimonials-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Swipeable cards for testimonials */
+    .testimonials-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 1rem;
+        gap: 1rem;
+    }
+
+    .testimonial {
+        min-width: 85%;
+        scroll-snap-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Simplified pricing cards */
+    .price-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .price-card h3 {
+        font-size: 1rem;
+    }
+
+    .price-card .price {
+        font-size: 1.25rem;
+    }
+
+    .price-card .size {
+        display: none;
+    }
+}
+
+/* ========================================
+   MOBILE SECTOR SELECTOR
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Horizontal scrolling sector buttons */
+    .sector-selector-mobile {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 0.75rem;
+        padding: 1rem;
+        margin: 0 -1rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sector-selector-mobile::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sector-btn {
+        min-width: fit-content;
+        scroll-snap-align: start;
+        padding: 0.75rem 1.25rem;
+        white-space: nowrap;
+        border-radius: 20px;
+        background: white;
+        border: 2px solid var(--border-gray);
+    }
+
+    .sector-btn.active {
+        background: var(--primary-blue);
+        color: white;
+        border-color: var(--primary-blue);
+    }
+
+    .sector-panel {
+        padding: 1.5rem 1rem;
+        margin: 0 -1rem;
+        border-radius: 0;
+    }
+}
+
+/* ========================================
+   MOBILE FOOTER OPTIMIZATION
+   ======================================== */
+
+@media (max-width: 768px) {
+    .site-footer {
+        padding: 2rem 0 6rem; /* Account for sticky CTA */
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .footer-section h4 {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Mobile sticky CTA is already in HTML */
+    .mobile-sticky-cta {
+        box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+        border-top: 1px solid var(--border-gray);
+        background: white;
+    }
+
+    .mobile-sticky-cta button,
+    .mobile-sticky-cta a {
+        font-size: 0.95rem;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+}
+
+/* ========================================
+   ELEGANT TOUCH INTERACTIONS
+   ======================================== */
+
+/* Ripple effect on buttons */
+.cta-button, .upload-btn, button {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button::after, .upload-btn::after, button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.cta-button:active::after, .upload-btn:active::after, button:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Smooth transitions */
+* {
+    transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* ========================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Reduce animations on mobile for better performance */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation: none !important;
+            transition: none !important;
+        }
+    }
+
+    /* Optimize images for mobile */
+    img {
+        max-width: 100%;
+        height: auto;
+        will-change: transform;
+    }
+
+    /* Hardware acceleration for smooth scrolling */
+    .ticker-track,
+    .testimonials-grid,
+    .sector-selector-mobile {
+        transform: translateZ(0);
+        will-change: transform;
+    }
+}
+
+/* ========================================
+   IPHONE-SPECIFIC FIXES
+   ======================================== */
+
+@supports (-webkit-touch-callout: none) {
+    /* iOS specific styles */
+    .upload-area {
+        cursor: pointer;
+        -webkit-user-select: none;
+    }
+
+    /* Fix for iOS Safari bottom bar */
+    .mobile-sticky-cta {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Better input handling on iOS */
+    input, textarea, select {
+        font-size: 16px; /* Prevents zoom on focus */
+        -webkit-appearance: none;
+        border-radius: 0;
+    }
+}
+
+/* ========================================
+   ELEGANT LOADING STATES
+   ======================================== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--border-gray);
+    border-top-color: var(--action-orange);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   MOBILE-FIRST VIDEO CAPTURE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .video-upload-btn {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    /* Full-screen camera view for video */
+    .video-capture-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .video-capture-modal video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-controls {
+        position: absolute;
+        bottom: 2rem;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .record-btn {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: var(--danger-red);
+        border: 4px solid white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .record-btn.recording {
+        animation: pulse 1s infinite;
+    }
+}
