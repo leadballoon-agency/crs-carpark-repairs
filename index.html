@@ -24,7 +24,7 @@
     <div class="emergency-banner">
         <div class="container">
             <span>🚨 Emergency repair needed?</span>
-            <a href="tel:07833588488" class="emergency-call">Call 07833 588488</a>
+            <a href="tel:07833588488" class="emergency-call">Call 07833&nbsp;588488</a>
         </div>
     </div>
 
@@ -37,14 +37,14 @@
                     <span>The ORIGINAL Car Park Repair Services</span>
                 </div>
                 <nav class="desktop-nav">
-                    <button class="sector-btn" data-sector="all">All Sectors</button>
-                    <button class="sector-btn" data-sector="fastfood">Fast Food</button>
-                    <button class="sector-btn" data-sector="retail">Retail</button>
-                    <button class="sector-btn" data-sector="nhs">NHS</button>
-                    <button class="sector-btn" data-sector="schools">Schools</button>
-                    <button class="sector-btn" data-sector="logistics">Logistics</button>
+                    <button type="button" class="sector-btn" data-sector="all">All Sectors</button>
+                    <button type="button" class="sector-btn" data-sector="fastfood">Fast Food</button>
+                    <button type="button" class="sector-btn" data-sector="retail">Retail</button>
+                    <button type="button" class="sector-btn" data-sector="nhs">NHS</button>
+                    <button type="button" class="sector-btn" data-sector="schools">Schools</button>
+                    <button type="button" class="sector-btn" data-sector="logistics">Logistics</button>
                 </nav>
-                <button class="mobile-menu-toggle" aria-label="Menu">☰</button>
+                <button type="button" class="mobile-menu-toggle" aria-label="Menu">☰</button>
             </div>
         </div>
     </header>
@@ -71,7 +71,7 @@
                             </svg>
                             <h2>Show us your car park problems</h2>
                             <p>We'll quote to fix ALL potholes in the area - one visit, one price</p>
-                            <button class="upload-btn">Choose Photo</button>
+                            <button type="button" class="upload-btn">Choose Photo</button>
                             <input type="file" id="photoInput" accept="image/*" hidden>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                         <div class="analysis-grid">
                             <div class="your-photo">
                                 <h3>Your Problem</h3>
-                                <img id="uploadedImage" alt="Uploaded damage">
+                                <img id="uploadedImage" src="data:," alt="Uploaded damage">
                                 <div class="damage-overlay"></div>
                             </div>
                             <div class="analysis-results">
@@ -113,7 +113,7 @@
                                             <span class="price" id="crsPrice">£2,400</span>
                                             <span class="timeline">ALL potholes in zone ✅</span>
                                         </div>
-                                        <button class="cta-button book-now">Fix Everything - One Visit</button>
+                                        <button type="button" class="cta-button book-now">Fix Everything - One Visit</button>
                                     </div>
                                 </div>
                             </div>
@@ -368,9 +368,9 @@
                 <div class="calc-inputs">
                     <h3>Your 'Small' Problem:</h3>
                     <div class="problem-selector">
-                        <button class="problem-btn active" data-problem="small">Small Pothole (washing bowl)</button>
-                        <button class="problem-btn" data-problem="medium">Medium Pothole (bin lid)</button>
-                        <button class="problem-btn" data-problem="crack">Crack (2m length)</button>
+                        <button type="button" class="problem-btn active" data-problem="small">Small Pothole (washing bowl)</button>
+                        <button type="button" class="problem-btn" data-problem="medium">Medium Pothole (bin lid)</button>
+                        <button type="button" class="problem-btn" data-problem="crack">Crack (2m length)</button>
                     </div>
                 </div>
                 <div class="calc-results">
@@ -491,11 +491,11 @@
             <h2>Got a Problem Others Won't Fix?</h2>
             <p>No job too small. No attitude. Just sorted.</p>
             <div class="cta-buttons">
-                <button class="cta-button primary scroll-to-upload">
+                <button type="button" class="cta-button primary scroll-to-upload">
                     📸 Get Instant Quote
                 </button>
                 <a href="tel:07833588488" class="cta-button secondary">
-                    📞 Call 07833 588488
+                    📞 Call 07833&nbsp;588488
                 </a>
             </div>
             <div class="urgency-message">
@@ -540,11 +540,12 @@
 
     <!-- Mobile Sticky CTA -->
     <div class="mobile-sticky-cta">
-        <button class="sticky-quote-btn scroll-to-upload">📸 Get Quote</button>
+        <button type="button" class="sticky-quote-btn scroll-to-upload">📸 Get Quote</button>
         <a href="tel:07833588488" class="sticky-call-btn">📞 Call Now</a>
     </div>
 
     <!-- Scripts -->
     <script src="script.js"></script>
+    <script src="advanced-script.js"></script>
 </body>
 </html>
