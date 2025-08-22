@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CRS Repairs">
+    
+    <!-- Android Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0A0E27">
+    
+    <title>CRS - Instant Car Park Quotes</title>
+    
+    <!-- Fonts optimized for mobile -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Mobile-First Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            /* Colors */
+            --primary: #0A0E27;
+            --accent: #4F46E5;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --surface: #1E293B;
+            --text: #FFFFFF;
+            --text-secondary: #94A3B8;
+            
+            /* Safe areas for notched phones */
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+            --safe-left: env(safe-area-inset-left);
+            --safe-right: env(safe-area-inset-right);
+        }
+        
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            overscroll-behavior: none;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* ========================================
+           MOBILE HEADER
+           ======================================== */
+        
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: calc(var(--safe-top) + 1rem) 1rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .header-cta {
+            background: var(--accent);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        /* ========================================
+           HERO SECTION - MOBILE OPTIMIZED
+           ======================================== */
+        
+        .hero {
+            padding-top: calc(var(--safe-top) + 5rem);
+            padding-bottom: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, #0A0E27 0%, #1E293B 100%);
+        }
+        
+        .hero-content {
+            padding: 0 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin-bottom: 1.5rem;
+            width: fit-content;
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--warning);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+        
+        .badge-text {
+            color: var(--warning);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #FFFFFF 0%, #4F46E5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+        
+        /* ========================================
+           NATIVE CAMERA CAPTURE - MOBILE FIRST
+           ======================================== */
+        
+        .capture-section {
+            background: var(--surface);
+            border-radius: 24px 24px 0 0;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .capture-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(79, 70, 229, 0.3);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .capture-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+        }
+        
+        .capture-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .capture-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Native-feeling buttons */
+        .capture-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-camera,
+        .btn-gallery {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-camera {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-camera:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-gallery {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-gallery:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-icon {
+            font-size: 1.5rem;
+        }
+        
+        /* Hidden file inputs for native camera */
+        .camera-input,
+        .video-input {
+            display: none;
+        }
+        
+        /* ========================================
+           INSTANT QUOTE DISPLAY
+           ======================================== */
+        
+        .quote-result {
+            display: none;
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .quote-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quote-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .quote-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .quote-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--success);
+            margin: 1rem 0;
+        }
+        
+        .quote-details {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+        }
+        
+        /* ========================================
+           BOTTOM NAVIGATION - iOS STYLE
+           ======================================== */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0.75rem 0 calc(var(--safe-bottom) + 0.75rem);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item.active {
+            color: var(--accent);
+        }
+        
+        .nav-item:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+        }
+        
+        /* ========================================
+           INFO CARDS - MOBILE OPTIMIZED
+           ======================================== */
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 2rem 0;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--warning);
+            display: block;
+        }
+        
+        .info-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+        
+        /* ========================================
+           ACTION BUTTONS - THUMB FRIENDLY
+           ======================================== */
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary,
+        .btn-secondary {
+            padding: 1.125rem;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* ========================================
+           LOADING STATE
+           ======================================== */
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* ========================================
+           SUCCESS SCREEN
+           ======================================== */
+        
+        .success-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary);
+            z-index: 3000;
+            padding: 2rem;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .success-screen.active {
+            display: flex;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        
+        /* ========================================
+           RESPONSIVE BREAKPOINTS
+           ======================================== */
+        
+        /* Small phones */
+        @media (max-width: 375px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Tablets and up */
+        @media (min-width: 768px) {
+            .hero-content,
+            .capture-section {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .capture-buttons {
+                max-width: 400px;
+                margin: 0 auto 1rem;
+            }
+        }
+        
+        /* Desktop (still mobile-first but centered) */
+        @media (min-width: 1024px) {
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .mobile-container {
+                width: 428px; /* iPhone 14 Pro Max width */
+                max-height: 926px;
+                border-radius: 40px;
+                overflow: hidden;
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="header-content">
+            <div class="logo">CRS</div>
+            <a href="tel:07833588488" class="header-cta">Call Now</a>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                <span class="badge-text">5-Year Warranty</span>
+            </div>
+            
+            <h1 class="hero-title">
+                Get Your<br>
+                <span class="gradient-text">Instant Quote</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                Take a photo of your car park damage. 
+                Get a fixed-price quote in seconds. 
+                No obligations, no hidden costs.
+            </p>
+            
+            <!-- Info Grid -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <span class="info-value">24hr</span>
+                    <span class="info-label">Response</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-value">£2k</span>
+                    <span class="info-label">Minimum</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-value">500+</span>
+                    <span class="info-label">Sites Done</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-value">100%</span>
+                    <span class="info-label">Satisfaction</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Camera Capture Section -->
+        <div class="capture-section">
+            <div class="capture-card">
+                <div class="capture-icon">📸</div>
+                <h2 class="capture-title">Snap Your Car Park</h2>
+                <p class="capture-subtitle">Get instant zone pricing from a photo</p>
+                
+                <div class="capture-buttons">
+                    <button class="btn-camera" onclick="openCamera()">
+                        <span class="btn-icon">📷</span>
+                        <span>Take Photo</span>
+                    </button>
+                    <button class="btn-gallery" onclick="openGallery()">
+                        <span class="btn-icon">🖼️</span>
+                        <span>Gallery</span>
+                    </button>
+                </div>
+                
+                <!-- Or record video option -->
+                <button class="btn-secondary" onclick="startVideo()">
+                    <span>🎥</span>
+                    <span>Record Video Walkthrough</span>
+                </button>
+                
+                <!-- Hidden inputs for native camera -->
+                <input type="file" 
+                       id="cameraInput" 
+                       class="camera-input"
+                       accept="image/*" 
+                       capture="environment"
+                       onchange="processImage(event)">
+                
+                <input type="file" 
+                       id="galleryInput" 
+                       class="camera-input"
+                       accept="image/*"
+                       onchange="processImage(event)">
+                
+                <input type="file" 
+                       id="videoInput" 
+                       class="video-input"
+                       accept="video/*" 
+                       capture="environment"
+                       onchange="processVideo(event)">
+            </div>
+            
+            <!-- Quote Result (Hidden initially) -->
+            <div class="quote-result" id="quoteResult">
+                <div class="quote-header">
+                    <div class="quote-icon">✓</div>
+                    <div>
+                        <div class="quote-title">Your Quote</div>
+                    </div>
+                </div>
+                
+                <div class="quote-price">£2,500</div>
+                
+                <div class="quote-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Zone Size</span>
+                        <span class="detail-value">Medium (150m²)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Potholes Detected</span>
+                        <span class="detail-value">8 areas</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Completion Time</span>
+                        <span class="detail-value">1 day</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Warranty</span>
+                        <span class="detail-value">5 years</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="acceptQuote()">
+                        <span>✓</span>
+                        <span>Accept Quote</span>
+                    </button>
+                    <button class="btn-secondary" onclick="callUs()">
+                        <span>📞</span>
+                        <span>Discuss Details</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="#home" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="#quote" class="nav-item">
+                <span class="nav-icon">📸</span>
+                <span>Quote</span>
+            </a>
+            <a href="#track" class="nav-item">
+                <span class="nav-icon">📍</span>
+                <span>Track</span>
+            </a>
+            <a href="#contact" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Contact</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Analyzing your car park...</div>
+    </div>
+    
+    <!-- Success Screen -->
+    <div class="success-screen" id="successScreen">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Quote Accepted!</h2>
+        <p class="success-message">
+            We'll call you within 24 hours to schedule your repair.<br>
+            Check your email for confirmation.
+        </p>
+        <button class="btn-primary" onclick="closeSuccess()">Done</button>
+    </div>
+    
+    <script>
+        // Native camera functions
+        function openCamera() {
+            document.getElementById('cameraInput').click();
+        }
+        
+        function openGallery() {
+            document.getElementById('galleryInput').click();
+        }
+        
+        function startVideo() {
+            document.getElementById('videoInput').click();
+        }
+        
+        // Process captured image
+        async function processImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            // Validate image (check if it's actually a car park)
+            if (window.validateBeforeUpload) {
+                const isValid = await window.validateBeforeUpload(file);
+                if (!isValid) {
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                    alert('Please upload a photo of your car park surface');
+                    return;
+                }
+            }
+            
+            // Simulate processing
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.remove('active');
+                
+                // Show quote result
+                document.getElementById('quoteResult').style.display = 'block';
+                
+                // Haptic feedback if available
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+                
+                // Scroll to quote
+                document.getElementById('quoteResult').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 2000);
+        }
+        
+        // Process video
+        function processVideo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            // Simulate processing
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.remove('active');
+                document.getElementById('quoteResult').style.display = 'block';
+            }, 3000);
+        }
+        
+        // Accept quote
+        function acceptQuote() {
+            document.getElementById('successScreen').classList.add('active');
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+        
+        // Close success screen
+        function closeSuccess() {
+            document.getElementById('successScreen').classList.remove('active');
+            // Reset form
+            document.getElementById('quoteResult').style.display = 'none';
+        }
+        
+        // Call function
+        function callUs() {
+            window.location.href = 'tel:07833588488';
+        }
+        
+        // Bottom nav handling
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
+                }
+            });
+        });
+        
+        // Prevent pull-to-refresh on iOS
+        let lastY = 0;
+        document.addEventListener('touchstart', function(e) {
+            lastY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchmove', function(e) {
+            const y = e.touches[0].clientY;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop === 0 && y > lastY) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
