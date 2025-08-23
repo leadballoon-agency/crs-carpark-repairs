@@ -1422,11 +1422,35 @@
             const severeCount = damageMarkers.filter(m => m.severity === 'severe').length;
             const moderateCount = damageMarkers.filter(m => m.severity === 'moderate').length;
             
-            // Calculate zone size
+            // Calculate zone size more realistically
             let zoneSize = 0;
             if (count > 0) {
-                const baseSize = 50;
-                zoneSize = baseSize + (count * 15) + (severeCount * 25) + (moderateCount * 10);
+                // Calculate the bounding box of all damage points
+                const minX = Math.min(...damageMarkers.map(m => m.x));
+                const maxX = Math.max(...damageMarkers.map(m => m.x));
+                const minY = Math.min(...damageMarkers.map(m => m.y));
+                const maxY = Math.max(...damageMarkers.map(m => m.y));
+                
+                // Calculate spread (how far apart the damage is)
+                const spreadX = maxX - minX;
+                const spreadY = maxY - minY;
+                const spreadArea = Math.max(spreadX * spreadY / 100, 10); // Minimum 10 for single point
+                
+                // Base calculation: assume each 1% of image = 2m²
+                // So full spread of 50% x 50% = 50m²
+                const baseZone = spreadArea * 2;
+                
+                // Add buffer zone around damage (minimum 5m radius around each point)
+                const bufferZone = count * 25; // Each point needs ~25m² repair area
+                
+                // Severity multiplier
+                const severityMultiplier = 1 + (severeCount * 0.3) + (moderateCount * 0.15);
+                
+                // Final calculation
+                zoneSize = Math.round((baseZone + bufferZone) * severityMultiplier);
+                
+                // Minimum zone size of 50m²
+                zoneSize = Math.max(zoneSize, 50);
             }
             
             // Calculate repair time
