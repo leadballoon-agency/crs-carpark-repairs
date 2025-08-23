@@ -975,9 +975,9 @@
             <div class="canvas-header">
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                     <img src="images/yellow-logo.png" alt="CRS" style="height: 40px; width: auto;">
-                    <h2 class="canvas-title">AI Damage Assessment</h2>
+                    <h2 class="canvas-title">AI Damage Assessment <span style="background: rgba(255,215,0,0.2); color: var(--yellow); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.6rem; margin-left: 0.5rem; vertical-align: middle;">BETA</span></h2>
                 </div>
-                <p class="canvas-subtitle">Upload a photo of your car park, then click to mark damage areas</p>
+                <p class="canvas-subtitle">Get a rough estimate - then book your FREE site survey for accurate pricing</p>
                 <div class="privacy-notice">
                     🔒 Your photo is processed locally • You control what's shared
                 </div>
@@ -1011,8 +1011,8 @@
         <!-- Right Panel - Info -->
         <div class="info-panel">
             <div class="info-header">
-                <div class="info-title">Live Assessment</div>
-                <div class="info-subtitle">Zone-based pricing from £2,000</div>
+                <div class="info-title">Live Assessment (Beta)</div>
+                <div class="info-subtitle">Rough estimate only - Book survey for accurate quote</div>
             </div>
             
             <div class="live-stats">
@@ -1050,11 +1050,12 @@
             <div class="instant-quote">
                 <div class="quote-amount" id="quoteAmount">£0</div>
                 <div class="quote-details">
-                    Instant estimate • Professional quality
+                    <span style="color: var(--yellow);">⚠️</span> Beta estimate • Book FREE survey for accurate quote
                 </div>
                 <div class="action-buttons">
-                    <button class="btn-primary" onclick="openSurveyModal()">
+                    <button class="btn-primary" onclick="openSurveyModal()" style="position: relative;">
                         📋 Book Free Site Survey
+                        <span style="display: block; font-size: 0.7rem; font-weight: normal; margin-top: 0.2rem; opacity: 0.9; text-transform: none; letter-spacing: 0;">Recommended for accurate quote</span>
                     </button>
                     <button class="btn-secondary" onclick="callNow()">
                         📞 Call 024 7699 2244
@@ -1090,14 +1091,15 @@
                     <img src="images/yellow-logo.png" alt="CRS" style="height: 35px; width: auto; filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);">
                     Book Your Free Site Survey
                 </h2>
-                <p>Get an accurate quote from our experts - no obligation</p>
+                <p><strong style="color: var(--yellow);">Recommended:</strong> While our beta AI tool provides estimates, a professional site survey ensures accurate pricing and identifies all necessary repairs.</p>
             </div>
             
             <div class="modal-body">
                 <form id="surveyForm" onsubmit="submitSurvey(event)">
                     <!-- Assessment Preview -->
                     <div class="assessment-preview" id="assessmentPreview">
-                        <h3>Your Assessment</h3>
+                        <h3>Your Assessment (Beta Estimate)</h3>
+                        <p style="color: #FFD700; font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 1rem;">⚠️ This is a rough estimate only. Our surveyor will provide the accurate quote.</p>
                         <img class="preview-image" id="previewImage" style="display: none;">
                         <div class="preview-stats">
                             <div class="preview-stat">
