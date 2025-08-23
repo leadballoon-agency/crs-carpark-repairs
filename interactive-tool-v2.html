@@ -121,6 +121,16 @@
             gap: 0.5rem;
         }
         
+        .btn-text {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .btn-text {
+                display: none;
+            }
+        }
+        
         .damage-canvas {
             flex: 1;
             position: relative;
@@ -768,15 +778,109 @@
         @media (max-width: 768px) {
             .tool-container {
                 flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .beta-badge {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .canvas-panel {
+                height: 50vh;
+                min-height: 400px;
+            }
+            
+            .canvas-header {
+                padding: 1rem;
+            }
+            
+            .canvas-title {
+                font-size: 1.2rem;
+            }
+            
+            .canvas-subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .privacy-notice {
+                font-size: 0.7rem;
+            }
+            
+            .damage-canvas {
+                margin: 1rem;
+                height: calc(100% - 200px);
+            }
+            
+            .canvas-controls {
+                padding: 0 1rem 1rem;
+                gap: 0.5rem;
+            }
+            
+            .control-btn {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .control-btn span {
+                font-size: 1.2rem;
             }
             
             .info-panel {
                 width: 100%;
-                height: 40vh;
+                height: auto;
+                min-height: 50vh;
+                border-left: none;
+                border-top: 1px solid rgba(255, 215, 0, 0.2);
             }
             
-            .canvas-panel {
-                height: 60vh;
+            .info-header {
+                padding: 1.5rem;
+            }
+            
+            .info-title {
+                font-size: 1.3rem;
+            }
+            
+            .info-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .live-stats {
+                padding: 1rem;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .instant-quote {
+                padding: 1.5rem;
+                position: sticky;
+                bottom: 0;
+                background: linear-gradient(180deg, rgba(26,26,26,0.98) 0%, rgba(15,15,15,0.98) 100%);
+                border-top: 2px solid var(--yellow);
+            }
+            
+            .quote-amount {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                gap: 0.5rem;
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 0.875rem;
+                font-size: 0.9rem;
             }
             
             .form-row {
@@ -789,6 +893,67 @@
             
             .preview-stats {
                 grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                border-radius: 12px;
+            }
+            
+            .modal-header {
+                padding: 1.5rem;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+            
+            .close-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+            
+            .damage-marker {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .damage-marker .marker-number {
+                font-size: 1rem;
+            }
+            
+            .severity-selector {
+                width: 250px;
+                font-size: 0.9rem;
+            }
+            
+            .severity-option {
+                padding: 0.5rem;
+            }
+            
+            /* Make upload zone more touch-friendly */
+            .upload-zone {
+                padding: 2rem 1rem;
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+            
+            .upload-text {
+                font-size: 1rem;
+            }
+            
+            /* Optimize scroll behavior */
+            body {
+                overflow-y: auto;
+                height: auto;
             }
         }
         
@@ -818,7 +983,7 @@
                 </div>
             </div>
             
-            <div class="damage-canvas" id="damageCanvas" onclick="addDamageMarker(event)">
+            <div class="damage-canvas" id="damageCanvas" onclick="addDamageMarker(event)" ontouchstart="addDamageMarker(event)">
                 <div class="upload-zone" id="uploadZone">
                     <div class="upload-icon">📸</div>
                     <div class="upload-text">Drop your car park photo here</div>
@@ -829,16 +994,16 @@
             
             <div class="canvas-controls">
                 <button class="control-btn" onclick="uploadPhoto()">
-                    <span>📤</span> Upload Photo
+                    <span>📤</span> <span class="btn-text">Upload</span>
                 </button>
                 <button class="control-btn" onclick="useSampleImage()">
-                    <span>🖼️</span> Use Sample
+                    <span>🖼️</span> <span class="btn-text">Sample</span>
                 </button>
                 <button class="control-btn" onclick="aiAutoDetect()">
-                    <span>🤖</span> AI Detect
+                    <span>🤖</span> <span class="btn-text">AI</span>
                 </button>
                 <button class="control-btn" onclick="clearMarkers()">
-                    <span>🗑️</span> Clear All
+                    <span>🗑️</span> <span class="btn-text">Clear</span>
                 </button>
             </div>
         </div>
@@ -1126,9 +1291,8 @@
         }
         
         function useSampleImage() {
-            // Simulate a car park with potholes
-            const sampleImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPgogIDx0ZXh0IHg9IjQwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2NjY2IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlNhbXBsZSBDYXIgUGFyayBJbWFnZTwvdGV4dD4KPC9zdmc+';
-            displayImage(sampleImage);
+            // Use real pothole sample image
+            displayImage('images/Pothole-sample.jpg');
         }
         
         function addDamageMarker(event) {
@@ -1139,15 +1303,32 @@
             
             const canvas = document.getElementById('damageCanvas');
             const rect = canvas.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 100;
-            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            // Handle both mouse and touch events
+            const clientX = event.clientX || (event.touches && event.touches[0].clientX);
+            const clientY = event.clientY || (event.touches && event.touches[0].clientY);
+            
+            const x = ((clientX - rect.left) / rect.width) * 100;
+            const y = ((clientY - rect.top) / rect.height) * 100;
             
             currentMarkerPosition = { x, y };
             
             // Show severity selector
             const selector = document.getElementById('severitySelector');
-            selector.style.left = event.clientX + 'px';
-            selector.style.top = event.clientY + 'px';
+            
+            // Position selector appropriately for mobile/desktop
+            if (window.innerWidth <= 768) {
+                // Center on mobile
+                selector.style.left = '50%';
+                selector.style.top = '50%';
+                selector.style.transform = 'translate(-50%, -50%)';
+            } else {
+                // Follow cursor on desktop
+                selector.style.left = (clientX || event.clientX) + 'px';
+                selector.style.top = (clientY || event.clientY) + 'px';
+                selector.style.transform = 'none';
+            }
+            
             selector.classList.add('active');
         }
         
