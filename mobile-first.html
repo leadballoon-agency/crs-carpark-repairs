@@ -11,7 +11,7 @@
     
     <!-- Android Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0A0E27">
+    <meta name="theme-color" content="#FFFFFF">
     
     <title>CRS - Instant Car Park Quotes</title>
     
@@ -29,14 +29,14 @@
         }
         
         :root {
-            /* Colors */
-            --primary: #0A0E27;
-            --accent: #4F46E5;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --surface: #1E293B;
-            --text: #FFFFFF;
-            --text-secondary: #94A3B8;
+            /* Colors - High contrast for outdoor use */
+            --primary: #FFFFFF;
+            --accent: #2563EB;
+            --success: #059669;
+            --warning: #DC2626;
+            --surface: #F8FAFC;
+            --text: #0F172A;
+            --text-secondary: #475569;
             
             /* Safe areas for notched phones */
             --safe-top: env(safe-area-inset-top);
@@ -72,11 +72,12 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(10, 14, 39, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: calc(var(--safe-top) + 1rem) 1rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
         .header-content {
@@ -89,15 +90,16 @@
             font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: -0.02em;
+            color: var(--text);
         }
         
         .header-cta {
-            background: var(--accent);
+            background: #000000;
             color: white;
             padding: 0.625rem 1.25rem;
             border-radius: 25px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 0.875rem;
         }
         
@@ -111,7 +113,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(180deg, #0A0E27 0%, #1E293B 100%);
+            background: #FFFFFF;
         }
         
         .hero-content {
@@ -126,8 +128,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 0.5rem 1rem;
             border-radius: 25px;
             margin-bottom: 1.5rem;
@@ -137,20 +139,20 @@
         .pulse-dot {
             width: 8px;
             height: 8px;
-            background: var(--warning);
+            background: #22C55E;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
             0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.7; }
         }
         
         .badge-text {
-            color: var(--warning);
+            color: var(--text);
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
@@ -161,13 +163,12 @@
             line-height: 1.1;
             margin-bottom: 1rem;
             letter-spacing: -0.03em;
+            color: var(--text);
         }
         
         .gradient-text {
-            background: linear-gradient(135deg, #FFFFFF 0%, #4F46E5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text);
+            font-weight: 800;
         }
         
         .hero-subtitle {
@@ -182,16 +183,16 @@
            ======================================== */
         
         .capture-section {
-            background: var(--surface);
+            background: white;
             border-radius: 24px 24px 0 0;
-            padding: 2rem 1rem;
+            padding: 2rem 1rem calc(var(--safe-bottom) + 2rem) 1rem;
             margin-top: 2rem;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .capture-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed rgba(79, 70, 229, 0.3);
+            background: #FAFAFA;
+            border: 2px dashed rgba(0, 0, 0, 0.1);
             border-radius: 20px;
             padding: 2rem 1.5rem;
             text-align: center;
@@ -203,19 +204,19 @@
             width: 80px;
             height: 80px;
             margin: 0 auto 1rem;
-            background: linear-gradient(135deg, var(--accent), var(--warning));
+            background: #F3F4F6;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
-            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
         }
         
         .capture-title {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: var(--text);
         }
         
         .capture-subtitle {
@@ -248,7 +249,7 @@
         }
         
         .btn-camera {
-            background: var(--accent);
+            background: #000000;
             color: white;
         }
         
@@ -257,13 +258,13 @@
         }
         
         .btn-gallery {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: white;
+            color: var(--text);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
         
         .btn-gallery:active {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--surface);
         }
         
         .btn-icon {
@@ -282,11 +283,12 @@
         
         .quote-result {
             display: none;
-            background: var(--surface);
+            background: white;
             border-radius: 20px;
             padding: 1.5rem;
             margin-top: 1rem;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             animation: slideUp 0.5s ease;
         }
         
@@ -311,7 +313,7 @@
         .quote-icon {
             width: 48px;
             height: 48px;
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(5, 150, 105, 0.1);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -322,6 +324,7 @@
         .quote-title {
             font-size: 1.25rem;
             font-weight: 700;
+            color: var(--text);
         }
         
         .quote-price {
@@ -332,7 +335,7 @@
         }
         
         .quote-details {
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--surface);
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1rem;
@@ -342,7 +345,7 @@
             display: flex;
             justify-content: space-between;
             padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .detail-row:last-child {
@@ -356,56 +359,9 @@
         
         .detail-value {
             font-weight: 600;
+            color: var(--text);
         }
         
-        /* ========================================
-           BOTTOM NAVIGATION - iOS STYLE
-           ======================================== */
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 0.75rem 0 calc(var(--safe-bottom) + 0.75rem);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-        }
-        
-        .nav-items {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        
-        .nav-item.active {
-            color: var(--accent);
-        }
-        
-        .nav-item:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .nav-icon {
-            font-size: 1.25rem;
-        }
         
         /* ========================================
            INFO CARDS - MOBILE OPTIMIZED
@@ -419,8 +375,8 @@
         }
         
         .info-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 16px;
             padding: 1rem;
             text-align: center;
@@ -428,8 +384,8 @@
         
         .info-value {
             font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--warning);
+            font-weight: 600;
+            color: var(--text);
             display: block;
         }
         
@@ -470,24 +426,24 @@
         }
         
         .btn-primary {
-            background: var(--accent);
+            background: #000000;
             color: white;
-            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+            box-shadow: none;
         }
         
         .btn-primary:active {
             transform: scale(0.98);
-            box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+            background: #1F1F1F;
         }
         
         .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: white;
+            color: var(--text);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .btn-secondary:active {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface);
         }
         
         /* ========================================
@@ -501,7 +457,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(10, 14, 39, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             z-index: 2000;
             justify-content: center;
@@ -517,7 +473,7 @@
         .spinner {
             width: 60px;
             height: 60px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(0, 0, 0, 0.1);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -543,7 +499,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--primary);
+            background: white;
             z-index: 3000;
             padding: 2rem;
             justify-content: center;
@@ -584,6 +540,7 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 1rem;
+            color: var(--text);
         }
         
         .success-message {
@@ -625,20 +582,12 @@
             }
         }
         
-        /* Desktop (still mobile-first but centered) */
+        /* Desktop - just center content, no fake phone */
         @media (min-width: 1024px) {
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            .mobile-container {
-                width: 428px; /* iPhone 14 Pro Max width */
-                max-height: 926px;
-                border-radius: 40px;
-                overflow: hidden;
-                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            .hero-content,
+            .capture-section {
+                max-width: 500px;
+                margin: 0 auto;
             }
         }
     </style>
@@ -782,27 +731,6 @@
         </div>
     </section>
     
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <div class="nav-items">
-            <a href="#home" class="nav-item active">
-                <span class="nav-icon">🏠</span>
-                <span>Home</span>
-            </a>
-            <a href="#quote" class="nav-item">
-                <span class="nav-icon">📸</span>
-                <span>Quote</span>
-            </a>
-            <a href="#track" class="nav-item">
-                <span class="nav-icon">📍</span>
-                <span>Track</span>
-            </a>
-            <a href="#contact" class="nav-item">
-                <span class="nav-icon">💬</span>
-                <span>Contact</span>
-            </a>
-        </div>
-    </nav>
     
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
@@ -910,19 +838,6 @@
             window.location.href = 'tel:07833588488';
         }
         
-        // Bottom nav handling
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Haptic feedback
-                if (navigator.vibrate) {
-                    navigator.vibrate(10);
-                }
-            });
-        });
         
         // Prevent pull-to-refresh on iOS
         let lastY = 0;

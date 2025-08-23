@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS - Interactive Car Park Damage Mapper</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0A0A0A;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+        
+        /* Floating Interactive Tool Button */
+        .tool-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #FF6B6B, #FF3838);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(255, 56, 56, 0.4);
+            z-index: 9999;
+            animation: pulse 2s infinite;
+            transition: all 0.3s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .tool-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 50px rgba(255, 56, 56, 0.5);
+        }
+        
+        .tool-trigger-icon {
+            font-size: 2rem;
+        }
+        
+        .tool-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #00FF88;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Full Screen Tool Modal */
+        .tool-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tool-modal.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .tool-container {
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Left Panel - Interactive Canvas */
+        .canvas-panel {
+            flex: 1;
+            background: #0F0F0F;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .canvas-header {
+            padding: 2rem;
+            background: linear-gradient(180deg, #1A1A1A 0%, transparent 100%);
+        }
+        
+        .canvas-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .canvas-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .damage-canvas {
+            flex: 1;
+            position: relative;
+            margin: 2rem;
+            background: #1A1A1A;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: crosshair;
+            border: 2px dashed #333;
+            transition: all 0.3s;
+        }
+        
+        .damage-canvas.has-image {
+            border-style: solid;
+            border-color: #FF3838;
+        }
+        
+        .canvas-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+        
+        .damage-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #FF3838;
+            border-radius: 50%;
+            background: rgba(255, 56, 56, 0.2);
+            transform: translate(-50%, -50%);
+            cursor: move;
+            animation: markerPulse 2s infinite;
+        }
+        
+        @keyframes markerPulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(255, 56, 56, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 20px rgba(255, 56, 56, 0);
+            }
+        }
+        
+        .damage-marker.severe {
+            border-color: #FF0000;
+            background: rgba(255, 0, 0, 0.3);
+            width: 50px;
+            height: 50px;
+        }
+        
+        .damage-marker.moderate {
+            border-color: #FFA500;
+            background: rgba(255, 165, 0, 0.3);
+        }
+        
+        .damage-marker.minor {
+            border-color: #FFFF00;
+            background: rgba(255, 255, 0, 0.3);
+            width: 30px;
+            height: 30px;
+        }
+        
+        .damage-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        /* Canvas Controls */
+        .canvas-controls {
+            display: flex;
+            gap: 1rem;
+            padding: 0 2rem 2rem;
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 1rem;
+            background: #1A1A1A;
+            border: 1px solid #333;
+            color: #FFF;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .control-btn:hover {
+            background: #FF3838;
+            border-color: #FF3838;
+            transform: translateY(-2px);
+        }
+        
+        .upload-zone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .upload-text {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-hint {
+            font-size: 0.875rem;
+            color: #444;
+        }
+        
+        /* Right Panel - Live Calculation */
+        .info-panel {
+            width: 400px;
+            background: #0A0A0A;
+            border-left: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #FF3838 0%, #FF6B6B 100%);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            border-radius: 50%;
+            color: #FFF;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: rotate(90deg);
+        }
+        
+        .info-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-subtitle {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        /* Live Stats */
+        .live-stats {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .stat-card {
+            background: #1A1A1A;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #222;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            border-color: #FF3838;
+            transform: translateX(-5px);
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FFF;
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        
+        .stat-unit {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        .damage-list {
+            background: #1A1A1A;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .damage-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #222;
+        }
+        
+        .damage-item:last-child {
+            border-bottom: none;
+        }
+        
+        .damage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .damage-info {
+            flex: 1;
+        }
+        
+        .damage-severity {
+            font-size: 0.875rem;
+            color: #888;
+        }
+        
+        .damage-remove {
+            background: none;
+            border: none;
+            color: #FF3838;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .damage-remove:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Instant Quote Section */
+        .instant-quote {
+            padding: 2rem;
+            background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+            border-top: 1px solid #222;
+        }
+        
+        .quote-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00FF88 0%, #00CC6A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .quote-details {
+            font-size: 0.875rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-primary {
+            flex: 1;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00FF88 0%, #00CC6A 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .btn-secondary {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            color: #FFF;
+            border: 1px solid #333;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #FF3838;
+            color: #FF3838;
+        }
+        
+        /* Severity Selector */
+        .severity-selector {
+            position: fixed;
+            background: #1A1A1A;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 10001;
+        }
+        
+        .severity-selector.active {
+            display: block;
+        }
+        
+        .severity-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .severity-option:hover {
+            background: #2A2A2A;
+        }
+        
+        .severity-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .severity-dot.severe { background: #FF0000; }
+        .severity-dot.moderate { background: #FFA500; }
+        .severity-dot.minor { background: #FFFF00; }
+        
+        /* AI Analysis Animation */
+        .ai-analyzing {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .ai-analyzing.active {
+            display: block;
+        }
+        
+        .ai-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #333;
+            border-top-color: #00FF88;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .ai-text {
+            font-size: 1rem;
+            color: #888;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tool-container {
+                flex-direction: column;
+            }
+            
+            .info-panel {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid #222;
+            }
+            
+            .canvas-panel {
+                height: 60vh;
+            }
+            
+            .info-panel {
+                height: 40vh;
+            }
+        }
+        
+        /* Gamification Elements */
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
+            display: none;
+            animation: slideIn 0.5s;
+            z-index: 10002;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes slideDown {
+            from { 
+                transform: translateX(-50%) translateY(-20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .achievement-popup.active {
+            display: block;
+        }
+        
+        .achievement-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .achievement-desc {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00FF88 0%, #00CC6A 100%);
+            border-radius: 3px;
+            transition: width 0.5s;
+            width: 0%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Full Screen Interactive Tool (Always Active) -->
+    <div class="tool-modal active" id="toolModal" style="display: block;">
+        <div class="tool-container">
+            <!-- Left Panel - Interactive Canvas -->
+            <div class="canvas-panel">
+                <button class="close-btn" onclick="closeTool()">✕</button>
+                
+                <div class="canvas-header">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <img src="images/logo-3.png" alt="CRS" style="height: 40px; width: auto;">
+                        <h2 class="canvas-title">Mark Your Car Park Damage</h2>
+                    </div>
+                    <p class="canvas-subtitle">Upload a photo or use our sample, then click to mark damage areas</p>
+                    <p style="color: #4CAF50; font-size: 0.8rem; margin-top: 0.5rem;">
+                        🔒 Your photos stay on your device • Never uploaded to servers • 100% private
+                    </p>
+                </div>
+                
+                <div class="damage-canvas" id="damageCanvas" onclick="addDamageMarker(event)">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">Drop your car park photo here</div>
+                        <div class="upload-hint">or click buttons below</div>
+                    </div>
+                    <img class="canvas-image" id="canvasImage" style="display: none;">
+                    <div class="ai-analyzing" id="aiAnalyzing">
+                        <div class="ai-spinner"></div>
+                        <div class="ai-text">AI is analyzing your image...</div>
+                    </div>
+                </div>
+                
+                <div class="canvas-controls">
+                    <button class="control-btn" onclick="uploadPhoto()">
+                        <span>📤</span> Upload Photo
+                    </button>
+                    <button class="control-btn" onclick="useSampleImage()">
+                        <span>🖼️</span> Use Sample
+                    </button>
+                    <button class="control-btn" onclick="aiAutoDetect()">
+                        <span>🤖</span> AI Auto-Detect
+                    </button>
+                    <button class="control-btn" onclick="clearMarkers()">
+                        <span>🗑️</span> Clear All
+                    </button>
+                </div>
+                
+                <input type="file" id="photoInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif" capture="environment" style="display: none;" onchange="handlePhotoUpload(event)">
+            </div>
+            
+            <!-- Right Panel - Live Calculation -->
+            <div class="info-panel">
+                <div class="info-header">
+                    <h2 class="info-title">Live Quote Calculator</h2>
+                    <p class="info-subtitle">Real-time pricing as you mark damage</p>
+                </div>
+                
+                <div class="live-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Damage Points Marked</div>
+                        <div class="stat-value">
+                            <span id="damageCount">0</span>
+                            <span class="stat-unit">areas</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Estimated Zone Size</div>
+                        <div class="stat-value">
+                            <span id="zoneSize">0</span>
+                            <span class="stat-unit">m²</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Repair Time</div>
+                        <div class="stat-value">
+                            <span id="repairTime">0</span>
+                            <span class="stat-unit">days</span>
+                        </div>
+                    </div>
+                    
+                    <div class="damage-list" id="damageList">
+                        <div class="stat-label">Marked Damage Areas</div>
+                        <div id="damageItems">
+                            <p style="color: #666; text-align: center; padding: 1rem;">No damage marked yet</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instant-quote">
+                    <div class="quote-amount" id="quoteAmount">£0</div>
+                    <div class="quote-details">
+                        Instant quote • 5-year warranty • Zone-based pricing
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="acceptQuote()">Accept Quote</button>
+                        <button class="btn-secondary" onclick="scheduleCall()">Schedule Call</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Severity Selector Popup -->
+    <div class="severity-selector" id="severitySelector">
+        <div class="severity-option" onclick="selectSeverity('severe')">
+            <span class="severity-dot severe"></span>
+            <span>Severe (Deep pothole)</span>
+        </div>
+        <div class="severity-option" onclick="selectSeverity('moderate')">
+            <span class="severity-dot moderate"></span>
+            <span>Moderate (Surface crack)</span>
+        </div>
+        <div class="severity-option" onclick="selectSeverity('minor')">
+            <span class="severity-dot minor"></span>
+            <span>Minor (Small crack)</span>
+        </div>
+    </div>
+    
+    <!-- Achievement Popup -->
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-title">🏆 First Damage Marked!</div>
+        <div class="achievement-desc">You're on your way to a perfect car park</div>
+    </div>
+    
+    <script>
+        let damageMarkers = [];
+        let currentMarkerPosition = null;
+        let hasImage = false;
+        
+        // Tool is always open when page loads
+        
+        function closeTool() {
+            // If opened directly, go back or go to home
+            if (window.history.length > 1 && document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'index-unified.html';
+            }
+        }
+        
+        function uploadPhoto() {
+            document.getElementById('photoInput').click();
+        }
+        
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // File validation
+            const errors = validateFile(file);
+            if (errors.length > 0) {
+                showError(errors.join(' '));
+                event.target.value = ''; // Reset input
+                return;
+            }
+            
+            // Show loading state
+            showLoading('Processing your image...');
+            
+            // Handle HEIC conversion for iPhones
+            if (file.type === 'image/heic' || file.type === 'image/heif') {
+                convertHEICtoJPEG(file);
+                return;
+            }
+            
+            // Resize image if needed
+            resizeImage(file, (resizedBlob) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    displayImage(e.target.result);
+                    hideLoading();
+                    showSuccess('Image uploaded successfully!');
+                };
+                reader.onerror = function() {
+                    showError('Failed to read image. Please try again.');
+                    hideLoading();
+                };
+                reader.readAsDataURL(resizedBlob);
+            });
+        }
+        
+        function validateFile(file) {
+            const errors = [];
+            
+            // Check file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            // Check if it's a video
+            if (file.type.startsWith('video/')) {
+                errors.push('❌ Videos not supported. Please upload a photo instead.');
+                return errors;
+            }
+            
+            // Check if it's an unsupported image type
+            if (!file.type.startsWith('image/')) {
+                errors.push('❌ Please upload an image file (JPG, PNG, or HEIC).');
+                return errors;
+            }
+            
+            // Check file size (10MB max for photos)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                errors.push(`❌ Image too large (${sizeMB}MB). Maximum size is 10MB.`);
+                
+                // Helpful message for iPhone users
+                if (sizeMB > 20) {
+                    errors.push('💡 Tip: On iPhone, choose "Most Compatible" in Settings > Camera > Formats');
+                }
+            }
+            
+            // Check for common mistakes
+            if (fileExtension === 'pdf') {
+                errors.push('❌ PDFs not supported. Please upload a photo of your car park.');
+            }
+            
+            if (fileExtension === 'gif') {
+                errors.push('❌ GIFs not supported. Please upload a static photo.');
+            }
+            
+            return errors;
+        }
+        
+        function resizeImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Calculate new dimensions (max 2000px wide/tall for performance)
+                    const maxDimension = 2000;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = (height / width) * maxDimension;
+                            width = maxDimension;
+                        } else {
+                            width = (width / height) * maxDimension;
+                            height = maxDimension;
+                        }
+                    }
+                    
+                    // Create canvas for resizing
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert to blob with compression
+                    canvas.toBlob((blob) => {
+                        callback(blob);
+                    }, 'image/jpeg', 0.85); // 85% quality
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function convertHEICtoJPEG(file) {
+            // For HEIC files from iPhone
+            showError('HEIC format detected. Converting to JPEG...');
+            
+            // In production, use heic2any library
+            // For now, ask user to change camera settings
+            setTimeout(() => {
+                showError(
+                    'HEIC files need conversion. ' +
+                    'Please go to iPhone Settings > Camera > Formats > Most Compatible, ' +
+                    'then take a new photo.'
+                );
+                hideLoading();
+            }, 1000);
+        }
+        
+        function showError(message) {
+            // Create error toast
+            const toast = document.createElement('div');
+            toast.className = 'error-toast';
+            toast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 100px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #FF3838;
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 40px rgba(255, 56, 56, 0.3);
+                    z-index: 10003;
+                    animation: slideDown 0.5s;
+                    max-width: 90%;
+                    text-align: center;
+                    font-weight: 600;
+                ">
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 100px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #00FF88;
+                    color: #000;
+                    padding: 1rem 2rem;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+                    z-index: 10003;
+                    animation: slideDown 0.5s;
+                    font-weight: 600;
+                ">
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        function showLoading(message) {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'uploadLoading';
+            loadingDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.9);
+                    color: white;
+                    padding: 2rem 3rem;
+                    border-radius: 20px;
+                    z-index: 10004;
+                    text-align: center;
+                ">
+                    <div class="ai-spinner" style="
+                        width: 50px;
+                        height: 50px;
+                        border: 3px solid #333;
+                        border-top-color: #00FF88;
+                        border-radius: 50%;
+                        margin: 0 auto 1rem;
+                        animation: spin 1s linear infinite;
+                    "></div>
+                    <div>${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(loadingDiv);
+        }
+        
+        function hideLoading() {
+            const loading = document.getElementById('uploadLoading');
+            if (loading) loading.remove();
+        }
+        
+        function useSampleImage() {
+            // Simulate loading a sample damaged car park image
+            const sampleImage = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect fill="%23333" width="800" height="600"/><circle cx="200" cy="150" r="20" fill="%23222"/><circle cx="400" cy="300" r="30" fill="%23222"/><circle cx="600" cy="200" r="25" fill="%23222"/><circle cx="300" cy="400" r="35" fill="%23222"/><circle cx="500" cy="450" r="20" fill="%23222"/><text x="400" y="550" fill="%23666" text-anchor="middle" font-size="20">Sample Car Park with Damage</text></svg>';
+            displayImage(sampleImage);
+        }
+        
+        function displayImage(imageSrc) {
+            const canvas = document.getElementById('damageCanvas');
+            const image = document.getElementById('canvasImage');
+            const uploadZone = document.getElementById('uploadZone');
+            
+            image.src = imageSrc;
+            image.style.display = 'block';
+            uploadZone.style.display = 'none';
+            canvas.classList.add('has-image');
+            hasImage = true;
+        }
+        
+        function addDamageMarker(event) {
+            if (!hasImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            const canvas = document.getElementById('damageCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            currentMarkerPosition = { x, y };
+            
+            // Show severity selector at click position
+            const selector = document.getElementById('severitySelector');
+            selector.style.left = event.clientX + 'px';
+            selector.style.top = event.clientY + 'px';
+            selector.classList.add('active');
+        }
+        
+        function selectSeverity(severity) {
+            const selector = document.getElementById('severitySelector');
+            selector.classList.remove('active');
+            
+            if (!currentMarkerPosition) return;
+            
+            const markerId = Date.now();
+            const marker = {
+                id: markerId,
+                x: currentMarkerPosition.x,
+                y: currentMarkerPosition.y,
+                severity: severity
+            };
+            
+            damageMarkers.push(marker);
+            
+            // Create visual marker
+            const markerElement = document.createElement('div');
+            markerElement.className = `damage-marker ${severity}`;
+            markerElement.id = `marker-${markerId}`;
+            markerElement.style.left = currentMarkerPosition.x + '%';
+            markerElement.style.top = currentMarkerPosition.y + '%';
+            markerElement.innerHTML = `<span class="damage-label">Damage #${damageMarkers.length}</span>`;
+            
+            document.getElementById('damageCanvas').appendChild(markerElement);
+            
+            // Update calculations
+            updateCalculations();
+            
+            // Show achievement for first marker
+            if (damageMarkers.length === 1) {
+                showAchievement();
+            }
+            
+            currentMarkerPosition = null;
+        }
+        
+        function aiAutoDetect() {
+            if (!hasImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            // Show AI analyzing animation
+            const aiAnalyzing = document.getElementById('aiAnalyzing');
+            aiAnalyzing.classList.add('active');
+            
+            setTimeout(() => {
+                // Simulate AI detection
+                const aiDetectedDamage = [
+                    { x: 25, y: 30, severity: 'severe' },
+                    { x: 60, y: 45, severity: 'moderate' },
+                    { x: 40, y: 70, severity: 'minor' },
+                    { x: 75, y: 25, severity: 'moderate' },
+                    { x: 30, y: 55, severity: 'severe' }
+                ];
+                
+                clearMarkers();
+                
+                aiDetectedDamage.forEach((damage, index) => {
+                    setTimeout(() => {
+                        const markerId = Date.now() + index;
+                        const marker = {
+                            id: markerId,
+                            x: damage.x,
+                            y: damage.y,
+                            severity: damage.severity
+                        };
+                        
+                        damageMarkers.push(marker);
+                        
+                        const markerElement = document.createElement('div');
+                        markerElement.className = `damage-marker ${damage.severity}`;
+                        markerElement.id = `marker-${markerId}`;
+                        markerElement.style.left = damage.x + '%';
+                        markerElement.style.top = damage.y + '%';
+                        markerElement.innerHTML = `<span class="damage-label">AI Detected #${index + 1}</span>`;
+                        
+                        document.getElementById('damageCanvas').appendChild(markerElement);
+                        
+                        updateCalculations();
+                    }, index * 200);
+                });
+                
+                aiAnalyzing.classList.remove('active');
+            }, 2000);
+        }
+        
+        function clearMarkers() {
+            damageMarkers = [];
+            const markers = document.querySelectorAll('.damage-marker');
+            markers.forEach(marker => marker.remove());
+            updateCalculations();
+        }
+        
+        function updateCalculations() {
+            const count = damageMarkers.length;
+            
+            // Update damage count
+            document.getElementById('damageCount').textContent = count;
+            
+            // Calculate zone size using bounding box method
+            const zoneSize = calculateRealisticZoneSize();
+            document.getElementById('zoneSize').textContent = zoneSize;
+            
+            // Calculate repair time (based on zone size and severity)
+            const repairTime = calculateRepairTime(zoneSize);
+            document.getElementById('repairTime').textContent = repairTime;
+            
+            // Calculate quote based on zone
+            const quote = calculateZoneQuote(zoneSize);
+            
+            
+            // Animate quote change
+            animateValue('quoteAmount', parseInt(document.getElementById('quoteAmount').textContent.replace('£', '').replace(',', '')), quote, 500);
+            
+            // Update progress bar
+            const progress = Math.min((count / 10) * 100, 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update damage list
+            updateDamageList();
+        }
+        
+        function updateDamageList() {
+            const damageItems = document.getElementById('damageItems');
+            
+            if (damageMarkers.length === 0) {
+                damageItems.innerHTML = '<p style="color: #666; text-align: center; padding: 1rem;">No damage marked yet</p>';
+                return;
+            }
+            
+            damageItems.innerHTML = damageMarkers.map((marker, index) => `
+                <div class="damage-item">
+                    <div style="display: flex; align-items: center;">
+                        <span class="damage-dot" style="background: ${
+                            marker.severity === 'severe' ? '#FF0000' :
+                            marker.severity === 'moderate' ? '#FFA500' : '#FFFF00'
+                        }"></span>
+                        <div class="damage-info">
+                            <div>Point ${index + 1}</div>
+                            <div class="damage-severity">${marker.severity}</div>
+                        </div>
+                    </div>
+                    <button class="damage-remove" onclick="removeMarker(${marker.id})">✕</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeMarker(markerId) {
+            damageMarkers = damageMarkers.filter(m => m.id !== markerId);
+            document.getElementById(`marker-${markerId}`).remove();
+            updateCalculations();
+        }
+        
+        // Realistic zone size calculation
+        function calculateRealisticZoneSize() {
+            if (damageMarkers.length === 0) return 0;
+            
+            // Method 1: Bounding Box (finds rectangle containing all damage)
+            const xCoords = damageMarkers.map(m => m.x);
+            const yCoords = damageMarkers.map(m => m.y);
+            
+            const minX = Math.min(...xCoords);
+            const maxX = Math.max(...xCoords);
+            const minY = Math.min(...yCoords);
+            const maxY = Math.max(...yCoords);
+            
+            // Calculate spread (0-100 scale to real meters)
+            const xSpread = (maxX - minX) / 100; // Percentage to ratio
+            const ySpread = (maxY - minY) / 100;
+            
+            // Assume typical car park section is 50m x 30m
+            const typicalWidth = 50;
+            const typicalDepth = 30;
+            
+            const actualWidth = Math.max(10, xSpread * typicalWidth); // Min 10m
+            const actualDepth = Math.max(10, ySpread * typicalDepth); // Min 10m
+            
+            let baseZone = actualWidth * actualDepth;
+            
+            // Method 2: Severity multiplier
+            const severeCount = damageMarkers.filter(m => m.severity === 'severe').length;
+            const moderateCount = damageMarkers.filter(m => m.severity === 'moderate').length;
+            const minorCount = damageMarkers.filter(m => m.severity === 'minor').length;
+            
+            // Severe damage needs more surrounding area fixed
+            const severityMultiplier = 1 + (severeCount * 0.2) + (moderateCount * 0.1) + (minorCount * 0.05);
+            
+            // Method 3: Clustering bonus (close damage = bigger zone)
+            const clusterBonus = calculateClusterBonus();
+            
+            // Final calculation
+            let totalZone = baseZone * severityMultiplier * clusterBonus;
+            
+            // Add buffer zone around damage (standard practice)
+            totalZone = totalZone * 1.3; // 30% buffer
+            
+            // Round to nearest 10m²
+            totalZone = Math.round(totalZone / 10) * 10;
+            
+            // Minimum zone size is 50m² (company policy)
+            return Math.max(50, Math.min(1000, totalZone)); // Cap at 1000m² for this tool
+        }
+        
+        // Calculate if damage is clustered (requires bigger zone)
+        function calculateClusterBonus() {
+            if (damageMarkers.length < 2) return 1;
+            
+            let totalDistance = 0;
+            let comparisons = 0;
+            
+            // Check distance between each pair of markers
+            for (let i = 0; i < damageMarkers.length; i++) {
+                for (let j = i + 1; j < damageMarkers.length; j++) {
+                    const dx = damageMarkers[i].x - damageMarkers[j].x;
+                    const dy = damageMarkers[i].y - damageMarkers[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    totalDistance += distance;
+                    comparisons++;
+                }
+            }
+            
+            const avgDistance = totalDistance / comparisons;
+            
+            // If damage is clustered (avg distance < 30), bigger zone needed
+            if (avgDistance < 30) return 1.5; // 50% bigger zone
+            if (avgDistance < 50) return 1.2; // 20% bigger zone
+            return 1; // Normal zone
+        }
+        
+        // Calculate repair time based on zone and complexity
+        function calculateRepairTime(zoneSize) {
+            if (zoneSize === 0) return 0;
+            
+            // Base rate: 150m² per day
+            let days = Math.ceil(zoneSize / 150);
+            
+            // Severity affects time
+            const severeCount = damageMarkers.filter(m => m.severity === 'severe').length;
+            if (severeCount > 3) days += 1; // Extra day for many severe repairs
+            
+            // Minimum 1 day, maximum 5 days for this tool
+            return Math.min(5, Math.max(1, days));
+        }
+        
+        // Calculate quote based on zone size
+        function calculateZoneQuote(zoneSize) {
+            if (zoneSize === 0) return 0;
+            
+            // Zone-based pricing tiers
+            if (zoneSize <= 100) return 2000;      // Small zone
+            if (zoneSize <= 200) return 3000;      // Small-medium
+            if (zoneSize <= 300) return 3500;      // Medium
+            if (zoneSize <= 400) return 4000;      // Medium-large
+            if (zoneSize <= 500) return 5000;      // Large
+            if (zoneSize <= 750) return 6500;      // Extra large
+            
+            // Over 750m² - custom quote
+            return Math.ceil(zoneSize / 100) * 900;
+        }
+        
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + range * progress);
+                element.textContent = '£' + current.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        function showAchievement() {
+            const popup = document.getElementById('achievementPopup');
+            popup.classList.add('active');
+            setTimeout(() => {
+                popup.classList.remove('active');
+            }, 3000);
+        }
+        
+        function acceptQuote() {
+            const quote = document.getElementById('quoteAmount').textContent;
+            alert(`Quote accepted: ${quote}\nWe'll contact you within 24 hours to schedule your repair.`);
+            // Here you would send the data to your backend
+            console.log('Quote accepted:', { markers: damageMarkers, quote });
+        }
+        
+        function scheduleCall() {
+            alert('Perfect! We\'ll call you within 2 hours to discuss your car park repair needs.');
+            // Track this high-intent action
+            console.log('Call scheduled');
+        }
+        
+        // Make canvas draggable on mobile
+        let isDragging = false;
+        let startX, startY;
+        
+        const canvas = document.getElementById('damageCanvas');
+        
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 2) {
+                e.preventDefault();
+                // Implement pinch to zoom if needed
+            }
+        });
+        
+        canvas.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+    </script>
+</body>
+</html>

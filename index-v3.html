@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS Car Park Repairs | Pothole Repair Specialists | Line Marking | Tarmac Surfacing</title>
+    
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+            --text: #333333;
+            --red: #DC143C;
+            --green: #28A745;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header - Number Plate Style */
+        .header {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            right: 0;
+            background: var(--yellow);
+            border-bottom: 4px solid var(--black);
+            z-index: 1000;
+            transition: top 0.3s;
+        }
+        
+        .header.visible {
+            top: 0;
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+        
+        .logo-plate {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-plate img {
+            height: 35px;
+            width: auto;
+            filter: brightness(0) saturate(100%);
+        }
+        
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav a {
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .header-phone {
+            background: var(--black);
+            color: var(--yellow);
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 4px;
+            font-size: 1.1rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: 
+                /* Dark overlay for text readability */
+                linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 100%),
+                /* Real tarmac texture */
+                url('images/tarmac-bg.jpg') center/cover;
+            background-size: cover, cover;
+            background-attachment: fixed, fixed;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Subtle road marking effect */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                /* Yellow parking line effect */
+                linear-gradient(90deg, transparent 48%, rgba(255,215,0,0.05) 49%, rgba(255,215,0,0.05) 51%, transparent 52%),
+                /* Crack/wear patterns */
+                repeating-linear-gradient(60deg, transparent, transparent 200px, rgba(0,0,0,0.1) 200px, rgba(0,0,0,0.1) 201px),
+                repeating-linear-gradient(-60deg, transparent, transparent 200px, rgba(0,0,0,0.1) 200px, rgba(0,0,0,0.1) 201px);
+            opacity: 0.3;
+        }
+        
+        /* Optional: Add subtle pothole shadows for depth */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(0,0,0,0.2) 0%, transparent 20%),
+                radial-gradient(ellipse at 70% 60%, rgba(0,0,0,0.15) 0%, transparent 15%),
+                radial-gradient(ellipse at 85% 20%, rgba(0,0,0,0.1) 0%, transparent 10%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 2rem 0;
+        }
+        
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 80vh;
+        }
+        
+        .hero-left {
+            color: var(--white);
+        }
+        
+        .emergency-strip {
+            background: linear-gradient(135deg, var(--red), #FF0000);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-radius: 50px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3);
+            animation: pulse 2s infinite, fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+        
+        .emergency-strip .blink {
+            width: 10px;
+            height: 10px;
+            background: var(--white);
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        h1 {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -3px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 .highlight {
+            color: var(--yellow);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .trust-indicators {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .trust-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .trust-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--yellow);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+        
+        .trust-item .number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--yellow);
+            display: block;
+        }
+        
+        .trust-item .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--yellow), #FFC700);
+            color: var(--black);
+            padding: 1.5rem 2.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1.25rem 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+        
+        .service-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+        
+        .service-badge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--yellow);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .service-badge::before {
+            content: '✓';
+            color: var(--yellow);
+            font-weight: bold;
+        }
+        
+        /* Quote Calculator */
+        .quote-calculator {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                0 0 100px rgba(255, 215, 0, 0.1);
+            border: 2px solid var(--yellow);
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quote-calculator::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--yellow), transparent, var(--yellow));
+            border-radius: 24px;
+            opacity: 0.5;
+            z-index: -1;
+            animation: glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes pulse-highlight {
+            0% { transform: scale(1); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 100px rgba(255, 215, 0, 0.1); }
+            50% { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 150px rgba(255, 215, 0, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 100px rgba(255, 215, 0, 0.1); }
+        }
+        
+        .calculator-header {
+            background: var(--yellow);
+            margin: -2rem -2rem 2rem;
+            padding: 1.5rem 2rem;
+            border-radius: 17px 17px 0 0;
+            text-align: center;
+        }
+        
+        .calculator-header h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .calculator-header p {
+            color: var(--black);
+            font-weight: 600;
+        }
+        
+        .calc-option {
+            background: var(--gray);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .calc-option:hover {
+            border-color: var(--yellow);
+            transform: translateX(5px);
+        }
+        
+        .calc-option h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .calc-option .price {
+            color: var(--green);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .calc-option p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .ai-tool-cta {
+            background: linear-gradient(135deg, var(--black), #333);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .ai-tool-cta h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .ai-tool-cta button {
+            background: var(--yellow);
+            color: var(--black);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .ai-tool-cta button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Services Section */
+        .services-section {
+            background: var(--white);
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+        
+        .section-header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .service-card:hover {
+            border-color: var(--yellow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--yellow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .service-features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .service-features li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .service-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: bold;
+        }
+        
+        /* Method Section */
+        .method-section {
+            background: var(--gray);
+            padding: 80px 0;
+        }
+        
+        .method-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .method-content h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+        }
+        
+        .method-steps {
+            counter-reset: step;
+        }
+        
+        .method-step {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+            counter-increment: step;
+        }
+        
+        .method-step::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+        
+        .method-step h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .method-step p {
+            color: #666;
+        }
+        
+        .method-image {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        .method-image img {
+            width: 100%;
+            border-radius: 12px;
+        }
+        
+        .method-guarantee {
+            background: var(--green);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .method-guarantee h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Sectors Section */
+        .sectors-section {
+            background: var(--white);
+            padding: 80px 0;
+        }
+        
+        .sectors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .sector-card {
+            background: linear-gradient(135deg, #f8f8f8 0%, #fff 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .sector-card:hover {
+            border-color: var(--yellow);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sector-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sector-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sector-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 10;
+        }
+        
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border-right: 3px solid var(--yellow);
+            border-bottom: 3px solid var(--yellow);
+            transform: rotate(45deg);
+            opacity: 0.7;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--yellow);
+            padding: 3rem 0;
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: var(--black);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Clients Section */
+        .clients-section {
+            background: var(--gray);
+            padding: 60px 0;
+        }
+        
+        .clients-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .clients-header h3 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+        
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .client-logo {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            transition: all 0.3s;
+        }
+        
+        .client-logo:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .client-logo img {
+            max-width: 100%;
+            max-height: 60px;
+            filter: grayscale(100%);
+            transition: all 0.3s;
+        }
+        
+        .client-logo:hover img {
+            filter: grayscale(0%);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--black) 0%, #333 100%);
+            padding: 80px 0;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-brand h3 {
+            color: var(--yellow);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-col h4 {
+            color: var(--yellow);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: all 0.3s;
+        }
+        
+        .footer-col a:hover {
+            opacity: 1;
+            color: var(--yellow);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 2rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 100vh;
+                padding: 20px 0;
+            }
+            
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                line-height: 1.2;
+                letter-spacing: -1px;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .emergency-strip {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .trust-indicators {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .trust-item {
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .trust-item .number {
+                font-size: 1.5rem;
+            }
+            
+            .trust-item .label {
+                font-size: 0.7rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .btn-hero-primary,
+            .btn-hero-secondary {
+                width: 100%;
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .service-badges {
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .service-badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .quote-calculator {
+                margin: 0 -20px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .method-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .header-phone {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Hidden Initially -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <div class="logo-plate">
+                <img src="images/logo-3.png" alt="CRS">
+            </div>
+            <nav class="nav">
+                <a href="#services">Services</a>
+                <a href="#method">Our Method</a>
+                <a href="#sectors">Sectors</a>
+                <a href="#quote">Get Quote</a>
+            </nav>
+            <a href="tel:02476992244" class="header-phone">📞 024 7699 2244</a>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-grid">
+                    <div class="hero-left">
+                        <div class="emergency-strip">
+                            <span class="blink"></span>
+                            <strong>24/7 EMERGENCY REPAIRS</strong>
+                            <span>Same Day Response</span>
+                        </div>
+                        
+                        <h1>
+                            Fix Your <span class="highlight">Entire Car Park</span>
+                            <br>One Zone. One Price.
+                        </h1>
+                        
+                        <p class="hero-subtitle">
+                            From £2,000. All potholes included.
+                        </p>
+                        
+                        <div class="trust-indicators">
+                            <div class="trust-item">
+                                <span class="number">500+</span>
+                                <span class="label">Car Parks Repaired</span>
+                            </div>
+                            <div class="trust-item">
+                                <span class="number">15+</span>
+                                <span class="label">Years Experience</span>
+                            </div>
+                            <div class="trust-item">
+                                <span class="number">24hr</span>
+                                <span class="label">Emergency Response</span>
+                            </div>
+                        </div>
+                        
+                        <div class="hero-buttons">
+                            <a href="interactive-tool-v2.html" class="btn-primary">Get Instant Quote →</a>
+                            <a href="tel:02476992244" class="btn-secondary">📞 Call Now</a>
+                        </div>
+                        
+                        <div class="service-badges">
+                            <span class="service-badge">Pothole Repairs</span>
+                            <span class="service-badge">Line Marking</span>
+                            <span class="service-badge">NHS Approved</span>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-right">
+                        <div class="quote-calculator" id="quote">
+                            <div class="calculator-header">
+                                <h3>Instant Zone Quote</h3>
+                                <p>Select your car park size</p>
+                            </div>
+                            
+                            <div class="calc-option" onclick="selectZone('small')">
+                                <h4>Small Car Park</h4>
+                                <span class="price">From £2,000</span>
+                                <p>Up to 50 spaces • All potholes fixed</p>
+                            </div>
+                            
+                            <div class="calc-option" onclick="selectZone('medium')">
+                                <h4>Medium Car Park</h4>
+                                <span class="price">From £3,500</span>
+                                <p>50-150 spaces • Complete zone repair</p>
+                            </div>
+                            
+                            <div class="calc-option" onclick="selectZone('large')">
+                                <h4>Large Car Park</h4>
+                                <span class="price">From £5,000</span>
+                                <p>150+ spaces • Priority service</p>
+                            </div>
+                            
+                            <div class="ai-tool-cta">
+                                <h4>🤖 AI Damage Assessment</h4>
+                                <p>Upload a photo for instant analysis</p>
+                                <button onclick="openAITool()">Use AI Tool</button>
+                                <p style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.7;">
+                                    🔒 Photos processed locally • Never uploaded • 100% private
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+    
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">15,000+</span>
+                    <span class="stat-label">Potholes Fixed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Customer Satisfaction</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24hr</span>
+                    <span class="stat-label">Response Time</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5 Year</span>
+                    <span class="stat-label">Guarantee</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section class="services-section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comprehensive Car Park Services</h2>
+                <p>Everything your car park needs, from repairs to complete resurfacing</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3>Pothole Repairs</h3>
+                    <p>Professional pothole repairs using our proven 3-step method. All repairs come with a 5-year warranty.</p>
+                    <ul class="service-features">
+                        <li>Same-day emergency service</li>
+                        <li>Zone-based pricing</li>
+                        <li>5-year warranty</li>
+                        <li>Minimal disruption</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <h3>Line Marking</h3>
+                    <p>Clear, durable line marking for parking bays, walkways, and directional arrows.</p>
+                    <ul class="service-features">
+                        <li>Thermoplastic markings</li>
+                        <li>Disabled bay marking</li>
+                        <li>Safety signage</li>
+                        <li>Anti-slip surfaces</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🛣️</div>
+                    <h3>Tarmac Surfacing</h3>
+                    <p>Complete resurfacing solutions for car parks of all sizes.</p>
+                    <ul class="service-features">
+                        <li>Full resurfacing</li>
+                        <li>Overlay systems</li>
+                        <li>Drainage solutions</li>
+                        <li>Heavy-duty surfaces</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🏥</div>
+                    <h3>NHS Specialist</h3>
+                    <p>Approved contractor for NHS trusts with experience in healthcare facilities.</p>
+                    <ul class="service-features">
+                        <li>24/7 emergency access</li>
+                        <li>Infection control compliance</li>
+                        <li>Minimal disruption</li>
+                        <li>Priority response</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🏫</div>
+                    <h3>School Playgrounds</h3>
+                    <p>Safe, durable surfacing for school playgrounds and sports areas.</p>
+                    <ul class="service-features">
+                        <li>MUGA courts</li>
+                        <li>Safety surfacing</li>
+                        <li>Colorful designs</li>
+                        <li>Term-time scheduling</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>Private Driveways</h3>
+                    <p>Professional repairs and resurfacing for residential driveways.</p>
+                    <ul class="service-features">
+                        <li>Block paving repairs</li>
+                        <li>Resin bound surfaces</li>
+                        <li>Drainage solutions</li>
+                        <li>Decorative options</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Method Section -->
+    <section class="method-section" id="method">
+        <div class="container">
+            <div class="method-grid">
+                <div class="method-content">
+                    <h2>Our Proven Repair Method</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #666;">
+                        Developed over 15 years, our method ensures long-lasting repairs that actually work.
+                    </p>
+                    
+                    <div class="method-steps">
+                        <div class="method-step">
+                            <h4>Assessment & Cleaning</h4>
+                            <p>We thoroughly clean and assess the damage, removing all debris and loose material.</p>
+                        </div>
+                        
+                        <div class="method-step">
+                            <h4>Professional Preparation</h4>
+                            <p>Square-cut edges and prime the area for maximum adhesion and longevity.</p>
+                        </div>
+                        
+                        <div class="method-step">
+                            <h4>Hot-Mix Application</h4>
+                            <p>Apply professional-grade hot mix asphalt, compacted to industry standards.</p>
+                        </div>
+                        
+                        <div class="method-step">
+                            <h4>Seal & Protect</h4>
+                            <p>Apply protective sealant to prevent water ingress and extend repair life.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="method-guarantee">
+                        <h4>5-Year Warranty Included</h4>
+                        <p>Every repair is backed by our comprehensive warranty</p>
+                    </div>
+                </div>
+                
+                <div class="method-image">
+                    <div style="background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); height: 300px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #999;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🛠️</div>
+                            <p>Professional Equipment</p>
+                            <p>Industry-Leading Methods</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem;">
+                        <div style="background: var(--gray); padding: 1rem; border-radius: 8px; text-align: center;">
+                            <strong style="color: var(--green);">Before</strong>
+                            <p style="font-size: 0.9rem; color: #666;">Damaged surface</p>
+                        </div>
+                        <div style="background: var(--gray); padding: 1rem; border-radius: 8px; text-align: center;">
+                            <strong style="color: var(--green);">After</strong>
+                            <p style="font-size: 0.9rem; color: #666;">Professional repair</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sectors Section -->
+    <section class="sectors-section" id="sectors">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sectors We Serve</h2>
+                <p>Trusted by organizations across all industries</p>
+            </div>
+            
+            <div class="sectors-grid">
+                <div class="sector-card">
+                    <div class="sector-icon">🏥</div>
+                    <h3>Healthcare & NHS</h3>
+                    <p>Approved contractor for NHS trusts, hospitals, and medical centers with 24/7 emergency response.</p>
+                </div>
+                
+                <div class="sector-card">
+                    <div class="sector-icon">🏢</div>
+                    <h3>Commercial</h3>
+                    <p>Office complexes, business parks, and corporate facilities requiring professional maintenance.</p>
+                </div>
+                
+                <div class="sector-card">
+                    <div class="sector-icon">🛒</div>
+                    <h3>Retail</h3>
+                    <p>Shopping centers, supermarkets, and retail parks with high traffic requirements.</p>
+                </div>
+                
+                <div class="sector-card">
+                    <div class="sector-icon">🏫</div>
+                    <h3>Education</h3>
+                    <p>Schools, colleges, and universities with specialized safety requirements.</p>
+                </div>
+                
+                <div class="sector-card">
+                    <div class="sector-icon">🏛️</div>
+                    <h3>Local Authority</h3>
+                    <p>Council facilities, public car parks, and community centers.</p>
+                </div>
+                
+                <div class="sector-card">
+                    <div class="sector-icon">🏭</div>
+                    <h3>Industrial</h3>
+                    <p>Warehouses, distribution centers, and manufacturing facilities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Clients Section -->
+    <section class="clients-section">
+        <div class="container">
+            <div class="clients-header">
+                <h3>Trusted By Leading Organizations</h3>
+                <p>We're proud to work with some of the UK's most respected companies</p>
+            </div>
+            
+            <div class="clients-grid">
+                <div class="client-logo">
+                    <img src="images/client-01.jpg" alt="Client 1">
+                </div>
+                <div class="client-logo">
+                    <img src="images/client-02.jpg" alt="Client 2">
+                </div>
+                <div class="client-logo">
+                    <img src="images/client-04.jpg" alt="Client 3">
+                </div>
+                <div class="client-logo">
+                    <img src="images/client-05.jpg" alt="Client 4">
+                </div>
+                <div class="client-logo">
+                    <img src="images/client-06.jpg" alt="Client 5">
+                </div>
+                <div class="client-logo">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #999;">NHS Trust</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Fix Your Car Park?</h2>
+            <p>Get your instant quote or speak to our team today</p>
+            <div class="cta-buttons">
+                <a href="interactive-tool-v2.html" class="btn-primary">🤖 Use AI Assessment Tool</a>
+                <a href="tel:02476992244" class="btn-primary">📞 024 7699 2244</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>CRS Car Park Repairs</h3>
+                    <p>Professional car park repair specialists serving the UK since 2009.</p>
+                    <p style="margin-top: 1rem;">
+                        📞 024 7699 2244<br>
+                        📧 info@carparkrepair.co.uk<br>
+                        📍 Coventry, West Midlands
+                    </p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Pothole Repairs</a></li>
+                        <li><a href="#services">Line Marking</a></li>
+                        <li><a href="#services">Tarmac Surfacing</a></li>
+                        <li><a href="#services">Emergency Repairs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Sectors</h4>
+                    <ul>
+                        <li><a href="#sectors">NHS & Healthcare</a></li>
+                        <li><a href="#sectors">Schools</a></li>
+                        <li><a href="#sectors">Retail</a></li>
+                        <li><a href="#sectors">Commercial</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#method">Our Method</a></li>
+                        <li><a href="#quote">Get Quote</a></li>
+                        <li><a href="interactive-tool-v2.html">AI Tool</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 CRS Car Park Repairs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Show header on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('visible');
+            } else {
+                header.classList.remove('visible');
+            }
+        });
+        
+        // Zone selection
+        function selectZone(size) {
+            const prices = {
+                small: '£2,000',
+                medium: '£3,500',
+                large: '£5,000'
+            };
+            
+            alert(`Selected ${size} car park - Starting from ${prices[size]}. We'll call you within 1 hour to discuss your requirements.`);
+            // In production, this would submit to a form handler
+        }
+        
+        // Open AI Tool
+        function openAITool() {
+            window.location.href = 'interactive-tool-v2.html';
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    // Special handling for quote calculator
+                    if (this.getAttribute('href') === '#quote') {
+                        // On desktop, just highlight the calculator
+                        if (window.innerWidth > 768) {
+                            target.style.animation = 'pulse-highlight 1s';
+                            setTimeout(() => {
+                                target.style.animation = '';
+                            }, 1000);
+                        } else {
+                            // On mobile, scroll to it
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    } else {
+                        // Normal scroll for other anchors
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

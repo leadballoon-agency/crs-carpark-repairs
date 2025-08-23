@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS AI Damage Assessment Tool (Beta) | Professional Car Park Analysis</title>
+    
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+            --text: #333333;
+            --red: #FF3838;
+            --green: #4CAF50;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #FFF;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%),
+                url('images/tarmac-bg.jpg') center/cover;
+            background-attachment: fixed;
+        }
+        
+        /* Tool Container */
+        .tool-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid var(--yellow);
+            color: var(--yellow);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: scale(1.1);
+        }
+        
+        /* Subtle Beta Badge */
+        .beta-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--yellow);
+            padding: 0.25rem 0.75rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            z-index: 100;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+        
+        /* Left Panel - Canvas */
+        .canvas-panel {
+            flex: 1;
+            background: transparent;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .canvas-header {
+            padding: 2rem;
+            background: linear-gradient(180deg, rgba(26,26,26,0.8) 0%, transparent 100%);
+        }
+        
+        .canvas-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .canvas-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .privacy-notice {
+            color: var(--green);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .damage-canvas {
+            flex: 1;
+            position: relative;
+            margin: 2rem;
+            background: #1A1A1A;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: crosshair;
+            border: 2px dashed #333;
+            transition: all 0.3s;
+        }
+        
+        .damage-canvas.has-image {
+            border-style: solid;
+            border-color: var(--yellow);
+        }
+        
+        .canvas-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+        
+        .upload-zone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .damage-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #FFF;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s;
+            animation: markerPulse 2s infinite;
+        }
+        
+        @keyframes markerPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        .damage-marker.severe {
+            background: rgba(255, 0, 0, 0.6);
+            border-color: #FF0000;
+        }
+        
+        .damage-marker.moderate {
+            background: rgba(255, 165, 0, 0.6);
+            border-color: #FFA500;
+        }
+        
+        .damage-marker.minor {
+            background: rgba(255, 255, 0, 0.6);
+            border-color: #FFFF00;
+        }
+        
+        .damage-marker .marker-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #FFF;
+        }
+        
+        /* Canvas Controls */
+        .canvas-controls {
+            display: flex;
+            gap: 1rem;
+            padding: 0 2rem 2rem;
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 1rem;
+            background: #1A1A1A;
+            border: 2px solid #333;
+            color: #FFF;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .control-btn:hover {
+            border-color: var(--yellow);
+            transform: translateY(-2px);
+        }
+        
+        .control-btn span {
+            font-size: 1.5rem;
+        }
+        
+        /* Right Panel - Info */
+        .info-panel {
+            width: 450px;
+            background: linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .info-header {
+            padding: 2rem;
+            background: var(--yellow);
+            color: var(--black);
+            border-bottom: 4px solid var(--black);
+        }
+        
+        .info-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-subtitle {
+            font-weight: 600;
+        }
+        
+        /* Stats */
+        .live-stats {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .stat-card {
+            background: #1A1A1A;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 2px solid #222;
+            border-left: 4px solid var(--yellow);
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FFF;
+        }
+        
+        .stat-unit {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        .damage-list {
+            background: #1A1A1A;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .damage-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #222;
+        }
+        
+        .damage-item:last-child {
+            border-bottom: none;
+        }
+        
+        .damage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .damage-remove {
+            background: none;
+            border: none;
+            color: var(--red);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        /* Quote Section */
+        .instant-quote {
+            padding: 2rem;
+            background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
+            border-top: 2px solid var(--yellow);
+        }
+        
+        .quote-amount {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--yellow);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quote-details {
+            text-align: center;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .btn-primary {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 1rem;
+            border: 3px solid var(--black);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1rem;
+            border: 2px solid #333;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+        
+        /* Severity Selector */
+        .severity-selector {
+            position: fixed;
+            background: #1A1A1A;
+            border: 2px solid var(--yellow);
+            border-radius: 15px;
+            padding: 1rem;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+        
+        .severity-selector.active {
+            display: block;
+        }
+        
+        .severity-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .severity-option:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .severity-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        
+        .severity-dot.severe {
+            background: #FF0000;
+        }
+        
+        .severity-dot.moderate {
+            background: #FFA500;
+        }
+        
+        .severity-dot.minor {
+            background: #FFFF00;
+        }
+        
+        /* Survey Booking Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal.active {
+            display: block;
+        }
+        
+        .modal-content {
+            max-width: 700px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
+            border-radius: 20px;
+            border: 2px solid var(--yellow);
+            position: relative;
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: var(--yellow);
+            padding: 2rem;
+            border-radius: 18px 18px 0 0;
+            color: var(--black);
+            border-bottom: 4px solid var(--black);
+        }
+        
+        .modal-header h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-header p {
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: var(--black);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            color: var(--yellow);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0F0F0F;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .urgency-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .urgency-btn {
+            padding: 1rem;
+            background: #0F0F0F;
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .urgency-btn:hover {
+            border-color: var(--yellow);
+        }
+        
+        .urgency-btn.selected {
+            background: var(--yellow);
+            color: var(--black);
+            border-color: var(--yellow);
+        }
+        
+        .urgency-btn .urgency-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .urgency-btn .urgency-label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .urgency-btn .urgency-time {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .assessment-preview {
+            background: #0F0F0F;
+            border: 2px solid #333;
+            border-left: 4px solid var(--yellow);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .assessment-preview h3 {
+            color: var(--yellow);
+            margin-bottom: 1rem;
+        }
+        
+        .preview-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .preview-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .preview-stat {
+            text-align: center;
+            padding: 0.75rem;
+            background: #1A1A1A;
+            border-radius: 8px;
+        }
+        
+        .preview-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--yellow);
+        }
+        
+        .preview-stat-label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            color: #888;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--yellow);
+            color: var(--black);
+            border: 3px solid var(--black);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+        
+        .privacy-note {
+            text-align: center;
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--green);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 20000;
+            display: none;
+        }
+        
+        .success-message.active {
+            display: block;
+            animation: successPop 0.5s;
+        }
+        
+        @keyframes successPop {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 15000;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #333;
+            border-top-color: var(--yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tool-container {
+                flex-direction: column;
+            }
+            
+            .info-panel {
+                width: 100%;
+                height: 40vh;
+            }
+            
+            .canvas-panel {
+                height: 60vh;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .urgency-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Hidden File Input */
+        #photoInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Subtle Beta Badge -->
+    <div class="beta-badge">Beta</div>
+    
+    <div class="tool-container">
+        <!-- Left Panel - Canvas -->
+        <div class="canvas-panel">
+            <button class="close-btn" onclick="closeTool()">✕</button>
+            
+            <div class="canvas-header">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <img src="images/yellow-logo.png" alt="CRS" style="height: 40px; width: auto;">
+                    <h2 class="canvas-title">AI Damage Assessment</h2>
+                </div>
+                <p class="canvas-subtitle">Upload a photo of your car park, then click to mark damage areas</p>
+                <div class="privacy-notice">
+                    🔒 Your photo is processed locally • You control what's shared
+                </div>
+            </div>
+            
+            <div class="damage-canvas" id="damageCanvas" onclick="addDamageMarker(event)">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Drop your car park photo here</div>
+                    <div class="upload-hint">or click buttons below</div>
+                </div>
+                <img class="canvas-image" id="canvasImage" style="display: none;">
+            </div>
+            
+            <div class="canvas-controls">
+                <button class="control-btn" onclick="uploadPhoto()">
+                    <span>📤</span> Upload Photo
+                </button>
+                <button class="control-btn" onclick="useSampleImage()">
+                    <span>🖼️</span> Use Sample
+                </button>
+                <button class="control-btn" onclick="aiAutoDetect()">
+                    <span>🤖</span> AI Detect
+                </button>
+                <button class="control-btn" onclick="clearMarkers()">
+                    <span>🗑️</span> Clear All
+                </button>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Info -->
+        <div class="info-panel">
+            <div class="info-header">
+                <div class="info-title">Live Assessment</div>
+                <div class="info-subtitle">Zone-based pricing from £2,000</div>
+            </div>
+            
+            <div class="live-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Damage Points</div>
+                    <div class="stat-value">
+                        <span id="damageCount">0</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Zone Size</div>
+                    <div class="stat-value">
+                        <span id="zoneSize">0</span>
+                        <span class="stat-unit">m²</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Estimated Time</div>
+                    <div class="stat-value">
+                        <span id="repairTime">0</span>
+                        <span class="stat-unit">days</span>
+                    </div>
+                </div>
+                
+                <div class="damage-list" id="damageList">
+                    <div class="stat-label">Marked Damage</div>
+                    <div id="damageItems">
+                        <p style="color: #666; text-align: center; padding: 1rem;">No damage marked yet</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instant-quote">
+                <div class="quote-amount" id="quoteAmount">£0</div>
+                <div class="quote-details">
+                    Instant estimate • Professional quality
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="openSurveyModal()">
+                        📋 Book Free Site Survey
+                    </button>
+                    <button class="btn-secondary" onclick="callNow()">
+                        📞 Call 024 7699 2244
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Severity Selector -->
+    <div class="severity-selector" id="severitySelector">
+        <div class="severity-option" onclick="selectSeverity('severe')">
+            <span class="severity-dot severe"></span>
+            <span>Severe (Deep pothole)</span>
+        </div>
+        <div class="severity-option" onclick="selectSeverity('moderate')">
+            <span class="severity-dot moderate"></span>
+            <span>Moderate (Surface damage)</span>
+        </div>
+        <div class="severity-option" onclick="selectSeverity('minor')">
+            <span class="severity-dot minor"></span>
+            <span>Minor (Small crack)</span>
+        </div>
+    </div>
+    
+    <!-- Site Survey Booking Modal -->
+    <div class="modal" id="surveyModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSurveyModal()">×</button>
+            
+            <div class="modal-header">
+                <h2 style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="images/yellow-logo.png" alt="CRS" style="height: 35px; width: auto; filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);">
+                    Book Your Free Site Survey
+                </h2>
+                <p>Get an accurate quote from our experts - no obligation</p>
+            </div>
+            
+            <div class="modal-body">
+                <form id="surveyForm" onsubmit="submitSurvey(event)">
+                    <!-- Assessment Preview -->
+                    <div class="assessment-preview" id="assessmentPreview">
+                        <h3>Your Assessment</h3>
+                        <img class="preview-image" id="previewImage" style="display: none;">
+                        <div class="preview-stats">
+                            <div class="preview-stat">
+                                <div class="preview-stat-value" id="previewDamage">0</div>
+                                <div class="preview-stat-label">Damage Points</div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="preview-stat-value" id="previewZone">0m²</div>
+                                <div class="preview-stat-label">Zone Size</div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="preview-stat-value" id="previewQuote">£0</div>
+                                <div class="preview-stat-label">Estimate</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Details -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Your Name *</label>
+                            <input type="text" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Company</label>
+                            <input type="text" name="company">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Site Details -->
+                    <div class="form-group full">
+                        <label>Car Park Address *</label>
+                        <textarea name="address" required placeholder="Full address including postcode"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Number of Spaces</label>
+                            <select name="spaces">
+                                <option value="">Select...</option>
+                                <option value="1-25">1-25 spaces</option>
+                                <option value="26-50">26-50 spaces</option>
+                                <option value="51-100">51-100 spaces</option>
+                                <option value="101-200">101-200 spaces</option>
+                                <option value="200+">200+ spaces</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Survey Time</label>
+                            <select name="timing">
+                                <option value="anytime">Any time</option>
+                                <option value="morning">Morning (8am-12pm)</option>
+                                <option value="afternoon">Afternoon (12pm-5pm)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Urgency Selection -->
+                    <label>How urgent is this?</label>
+                    <div class="urgency-options">
+                        <div class="urgency-btn" onclick="selectUrgency(this, 'standard')">
+                            <div class="urgency-icon">📅</div>
+                            <span class="urgency-label">Standard</span>
+                            <span class="urgency-time">Within 2 weeks</span>
+                        </div>
+                        <div class="urgency-btn" onclick="selectUrgency(this, 'urgent')">
+                            <div class="urgency-icon">⚡</div>
+                            <span class="urgency-label">Urgent</span>
+                            <span class="urgency-time">Within 1 week</span>
+                        </div>
+                        <div class="urgency-btn" onclick="selectUrgency(this, 'emergency')">
+                            <div class="urgency-icon">🚨</div>
+                            <span class="urgency-label">Emergency</span>
+                            <span class="urgency-time">24-48 hours</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Options -->
+                    <div class="form-group full">
+                        <label>Additional Notes</label>
+                        <textarea name="notes" placeholder="Access restrictions, specific requirements, best contact times..."></textarea>
+                    </div>
+                    
+                    <label class="checkbox-group">
+                        <input type="checkbox" name="includeAssessment" checked>
+                        <label>Include my photo and damage assessment (recommended for accurate quote)</label>
+                    </label>
+                    
+                    <label class="checkbox-group">
+                        <input type="checkbox" name="newsletter">
+                        <label>Send me maintenance tips and special offers</label>
+                    </label>
+                    
+                    <button type="submit" class="submit-btn">
+                        <span>Book Free Survey</span>
+                        <span>→</span>
+                    </button>
+                    
+                    <p class="privacy-note">
+                        We'll only use your information to arrange your survey and provide a quote. 
+                        Your data is secure and never shared.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Survey Booked!</h3>
+        <p>We'll call you within 1 hour to confirm your appointment.</p>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- Hidden File Input -->
+    <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)">
+    
+    <script>
+        let damageMarkers = [];
+        let currentMarkerPosition = null;
+        let hasImage = false;
+        let imageData = null;
+        let selectedUrgency = 'standard';
+        
+        function closeTool() {
+            if (window.history.length > 1 && document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'index-v3.html';
+            }
+        }
+        
+        function uploadPhoto() {
+            document.getElementById('photoInput').click();
+        }
+        
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Image must be less than 10MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                displayImage(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function displayImage(src) {
+            const canvas = document.getElementById('damageCanvas');
+            const image = document.getElementById('canvasImage');
+            const uploadZone = document.getElementById('uploadZone');
+            
+            imageData = src;
+            image.src = src;
+            image.style.display = 'block';
+            uploadZone.style.display = 'none';
+            canvas.classList.add('has-image');
+            hasImage = true;
+            
+            // Update preview
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = src;
+            previewImage.style.display = 'block';
+        }
+        
+        function useSampleImage() {
+            // Simulate a car park with potholes
+            const sampleImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPgogIDx0ZXh0IHg9IjQwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2NjY2IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlNhbXBsZSBDYXIgUGFyayBJbWFnZTwvdGV4dD4KPC9zdmc+';
+            displayImage(sampleImage);
+        }
+        
+        function addDamageMarker(event) {
+            if (!hasImage) {
+                alert('Please upload an image first');
+                return;
+            }
+            
+            const canvas = document.getElementById('damageCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            currentMarkerPosition = { x, y };
+            
+            // Show severity selector
+            const selector = document.getElementById('severitySelector');
+            selector.style.left = event.clientX + 'px';
+            selector.style.top = event.clientY + 'px';
+            selector.classList.add('active');
+        }
+        
+        function selectSeverity(severity) {
+            if (!currentMarkerPosition) return;
+            
+            const marker = {
+                id: Date.now(),
+                x: currentMarkerPosition.x,
+                y: currentMarkerPosition.y,
+                severity: severity
+            };
+            
+            damageMarkers.push(marker);
+            renderMarker(marker);
+            updateStats();
+            
+            // Hide severity selector
+            document.getElementById('severitySelector').classList.remove('active');
+            currentMarkerPosition = null;
+        }
+        
+        function renderMarker(marker) {
+            const canvas = document.getElementById('damageCanvas');
+            const markerEl = document.createElement('div');
+            markerEl.className = `damage-marker ${marker.severity}`;
+            markerEl.style.left = marker.x + '%';
+            markerEl.style.top = marker.y + '%';
+            markerEl.innerHTML = `<span class="marker-number">${damageMarkers.length}</span>`;
+            markerEl.onclick = () => removeMarker(marker.id);
+            canvas.appendChild(markerEl);
+        }
+        
+        function removeMarker(id) {
+            damageMarkers = damageMarkers.filter(m => m.id !== id);
+            redrawMarkers();
+            updateStats();
+        }
+        
+        function redrawMarkers() {
+            const canvas = document.getElementById('damageCanvas');
+            const existingMarkers = canvas.querySelectorAll('.damage-marker');
+            existingMarkers.forEach(m => m.remove());
+            
+            damageMarkers.forEach((marker, index) => {
+                const markerEl = document.createElement('div');
+                markerEl.className = `damage-marker ${marker.severity}`;
+                markerEl.style.left = marker.x + '%';
+                markerEl.style.top = marker.y + '%';
+                markerEl.innerHTML = `<span class="marker-number">${index + 1}</span>`;
+                markerEl.onclick = () => removeMarker(marker.id);
+                canvas.appendChild(markerEl);
+            });
+        }
+        
+        function clearMarkers() {
+            damageMarkers = [];
+            redrawMarkers();
+            updateStats();
+        }
+        
+        function aiAutoDetect() {
+            if (!hasImage) {
+                alert('Please upload an image first');
+                return;
+            }
+            
+            // Simulate AI detection
+            const detectedDamage = [
+                { x: 30, y: 40, severity: 'severe' },
+                { x: 60, y: 50, severity: 'moderate' },
+                { x: 45, y: 70, severity: 'minor' },
+                { x: 70, y: 30, severity: 'moderate' }
+            ];
+            
+            clearMarkers();
+            detectedDamage.forEach(damage => {
+                const marker = {
+                    id: Date.now() + Math.random(),
+                    ...damage
+                };
+                damageMarkers.push(marker);
+                renderMarker(marker);
+            });
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            const count = damageMarkers.length;
+            const severeCount = damageMarkers.filter(m => m.severity === 'severe').length;
+            const moderateCount = damageMarkers.filter(m => m.severity === 'moderate').length;
+            
+            // Calculate zone size
+            let zoneSize = 0;
+            if (count > 0) {
+                const baseSize = 50;
+                zoneSize = baseSize + (count * 15) + (severeCount * 25) + (moderateCount * 10);
+            }
+            
+            // Calculate repair time
+            const repairTime = Math.ceil(zoneSize / 100) || 0;
+            
+            // Calculate quote
+            let quote = 0;
+            if (zoneSize > 0) {
+                if (zoneSize < 100) quote = 2000;
+                else if (zoneSize < 200) quote = 3500;
+                else if (zoneSize < 400) quote = 5000;
+                else quote = Math.ceil(zoneSize / 80) * 1000;
+            }
+            
+            // Update display
+            document.getElementById('damageCount').textContent = count;
+            document.getElementById('zoneSize').textContent = zoneSize;
+            document.getElementById('repairTime').textContent = repairTime;
+            document.getElementById('quoteAmount').textContent = `£${quote.toLocaleString()}`;
+            
+            // Update damage list
+            const damageItems = document.getElementById('damageItems');
+            if (count === 0) {
+                damageItems.innerHTML = '<p style="color: #666; text-align: center; padding: 1rem;">No damage marked yet</p>';
+            } else {
+                damageItems.innerHTML = damageMarkers.map((marker, index) => `
+                    <div class="damage-item">
+                        <div style="display: flex; align-items: center;">
+                            <span class="damage-dot ${marker.severity}" style="background: ${
+                                marker.severity === 'severe' ? '#FF0000' :
+                                marker.severity === 'moderate' ? '#FFA500' : '#FFFF00'
+                            }"></span>
+                            <span>Point ${index + 1} - ${marker.severity}</span>
+                        </div>
+                        <button class="damage-remove" onclick="removeMarker(${marker.id})">×</button>
+                    </div>
+                `).join('');
+            }
+            
+            // Update preview
+            document.getElementById('previewDamage').textContent = count;
+            document.getElementById('previewZone').textContent = zoneSize + 'm²';
+            document.getElementById('previewQuote').textContent = `£${quote.toLocaleString()}`;
+        }
+        
+        function openSurveyModal() {
+            document.getElementById('surveyModal').classList.add('active');
+            updateStats(); // Ensure preview is updated
+        }
+        
+        function closeSurveyModal() {
+            document.getElementById('surveyModal').classList.remove('active');
+        }
+        
+        function selectUrgency(btn, urgency) {
+            document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedUrgency = urgency;
+        }
+        
+        function submitSurvey(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {
+                ...Object.fromEntries(formData),
+                urgency: selectedUrgency,
+                damageCount: damageMarkers.length,
+                zoneSize: document.getElementById('zoneSize').textContent,
+                quote: document.getElementById('quoteAmount').textContent,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Include image if checkbox is checked
+            if (formData.get('includeAssessment') && imageData) {
+                data.assessmentImage = imageData;
+                data.damageMarkers = damageMarkers;
+            }
+            
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            // Simulate API call
+            setTimeout(() => {
+                console.log('Survey submission:', data);
+                
+                // In production, this would send to your API:
+                // fetch('/api/survey', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(data)
+                // });
+                
+                // Hide loading
+                document.getElementById('loadingOverlay').classList.remove('active');
+                
+                // Show success
+                closeSurveyModal();
+                document.getElementById('successMessage').classList.add('active');
+                
+                setTimeout(() => {
+                    document.getElementById('successMessage').classList.remove('active');
+                }, 3000);
+                
+                // Track conversion for Facebook Pixel
+                if (typeof fbq !== 'undefined') {
+                    fbq('track', 'Lead', {
+                        value: parseFloat(data.quote.replace(/[^0-9]/g, '')),
+                        currency: 'GBP'
+                    });
+                }
+            }, 1500);
+        }
+        
+        function callNow() {
+            window.location.href = 'tel:02476992244';
+        }
+        
+        // Click outside to close modals
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

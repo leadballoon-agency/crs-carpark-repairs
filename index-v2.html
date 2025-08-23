@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS Car Park Repairs | Professional Pothole Repair Coventry | 5 Year Warranty</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+            --text: #333333;
+            --red: #DC143C;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header - Number Plate Style - Hidden Initially */
+        .header {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            right: 0;
+            background: var(--yellow);
+            border-bottom: 4px solid var(--black);
+            z-index: 1000;
+            transition: top 0.3s;
+        }
+        
+        .header.visible {
+            top: 0;
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+        
+        .logo-plate {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--yellow);
+            padding: 0.5rem 1rem;
+            border: 3px solid var(--black);
+            border-radius: 4px;
+            font-family: 'Arial Black', sans-serif;
+        }
+        
+        .logo-plate img {
+            height: 30px;
+            width: auto;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav a {
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .header-phone {
+            background: var(--black);
+            color: var(--yellow);
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 4px;
+            font-size: 1.1rem;
+        }
+        
+        /* MEGA HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background Pattern */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,215,0,.03) 35px, rgba(255,215,0,.03) 70px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,215,0,.02) 35px, rgba(255,215,0,.02) 70px);
+            animation: backgroundMove 20s linear infinite;
+        }
+        
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(70px, 70px); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        /* Left Side - Main Content */
+        .hero-left {
+            color: var(--white);
+        }
+        
+        .trust-badges {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .trust-badge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--yellow);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .trust-badge span {
+            color: var(--yellow);
+        }
+        
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+        
+        h1 .highlight {
+            color: var(--yellow);
+            display: block;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .hero-feature .icon {
+            width: 24px;
+            height: 24px;
+            background: var(--yellow);
+            color: var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-hero-primary {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 1.25rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+        }
+        
+        .btn-hero-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1.25rem 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-hero-secondary:hover {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+        
+        .emergency-banner {
+            background: rgba(220, 20, 60, 0.1);
+            border-left: 4px solid var(--red);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .emergency-banner strong {
+            color: var(--red);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Right Side - Live Quote Tool */
+        .hero-right {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--yellow);
+        }
+        
+        .quote-card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .quote-card-badge {
+            background: var(--yellow);
+            color: var(--black);
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .quote-card-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--black);
+        }
+        
+        .quote-card-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .quote-options {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quote-option {
+            background: var(--gray);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .quote-option:hover {
+            border-color: var(--yellow);
+            transform: translateX(5px);
+        }
+        
+        .quote-option-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .quote-option-info span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .quote-option-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--black);
+        }
+        
+        .quote-cta {
+            background: var(--black);
+            color: var(--yellow);
+            width: 100%;
+            padding: 1.25rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quote-cta:hover {
+            background: var(--yellow);
+            color: var(--black);
+        }
+        
+        /* Client Logos Bar */
+        .client-bar {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem 0;
+            margin-top: -2rem;
+        }
+        
+        .client-bar-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.7;
+        }
+        
+        .client-bar-label {
+            color: var(--white);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-right: 2rem;
+        }
+        
+        .client-logos {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .client-logo {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--yellow);
+            padding: 2rem 0;
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stat {
+            color: var(--black);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            display: block;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+        
+        /* Floating AI Widget */
+        .ai-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--yellow);
+            color: var(--black);
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            border: 3px solid var(--black);
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: all 0.3s;
+            animation: wiggle 2s infinite;
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+        
+        .ai-widget:hover {
+            transform: scale(1.1);
+            animation: none;
+        }
+        
+        /* Services, Gallery, etc - Keep existing */
+        .section {
+            padding: 5rem 0;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .client-logos {
+                flex-wrap: wrap;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (Hidden Until Scroll) -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <div class="logo-plate">
+                <img src="images/logo-3.png" alt="CRS">
+                <span>CRS REPAIRS</span>
+            </div>
+            <nav class="nav">
+                <a href="#services">Services</a>
+                <a href="#process">Process</a>
+                <a href="#quote">Quote</a>
+            </nav>
+            <a href="tel:07833588488" class="header-phone">📞 07833 588488</a>
+        </div>
+    </header>
+    
+    <!-- MEGA HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-grid">
+                    <!-- Left Side - Main Content -->
+                    <div class="hero-left">
+                        <!-- Trust Badges -->
+                        <div class="trust-badges">
+                            <div class="trust-badge">
+                                <span>✓</span> 5 Year Warranty
+                            </div>
+                            <div class="trust-badge">
+                                <span>⚡</span> 24hr Response
+                            </div>
+                            <div class="trust-badge">
+                                <span>🏆</span> 500+ Sites Fixed
+                            </div>
+                            <div class="trust-badge">
+                                <span>📍</span> Coventry Based
+                            </div>
+                        </div>
+                        
+                        <!-- Main Headline -->
+                        <h1>
+                            Professional Car Park
+                            <span class="highlight">Pothole Repairs</span>
+                            From £2,000
+                        </h1>
+                        
+                        <!-- Subtitle -->
+                        <p class="hero-subtitle">
+                            Zone-based pricing means you pay one fixed price to repair ALL damage 
+                            in your car park area. No hidden costs, no per-pothole charges. 
+                            Our AI tool gives you an instant quote in 60 seconds.
+                        </p>
+                        
+                        <!-- Emergency Banner -->
+                        <div class="emergency-banner">
+                            <strong>⚠️ EMERGENCY REPAIRS AVAILABLE</strong>
+                            Major damage? We can be on-site within 24-48 hours. Weekend and evening work available.
+                        </div>
+                        
+                        <!-- Features Grid -->
+                        <div class="hero-features">
+                            <div class="hero-feature">
+                                <div class="icon">✓</div>
+                                <span>All potholes in zone included</span>
+                            </div>
+                            <div class="hero-feature">
+                                <div class="icon">✓</div>
+                                <span>Professional grade materials</span>
+                            </div>
+                            <div class="hero-feature">
+                                <div class="icon">✓</div>
+                                <span>Insurance approved contractor</span>
+                            </div>
+                            <div class="hero-feature">
+                                <div class="icon">✓</div>
+                                <span>Minimal business disruption</span>
+                            </div>
+                        </div>
+                        
+                        <!-- CTA Buttons -->
+                        <div class="hero-buttons">
+                            <button class="btn-hero-primary" onclick="window.location.href='interactive-tool.html'">
+                                🤖 Get AI Instant Quote
+                            </button>
+                            <a href="tel:07833588488" class="btn-hero-secondary">
+                                📞 Call Now
+                            </a>
+                        </div>
+                        
+                        <!-- Trust Statement -->
+                        <p style="opacity: 0.7; font-size: 0.9rem;">
+                            ⭐⭐⭐⭐⭐ Rated 5.0 on Google Reviews • Fully Insured • SafeContractor Approved
+                        </p>
+                    </div>
+                    
+                    <!-- Right Side - Interactive Quote Card -->
+                    <div class="hero-right">
+                        <div class="quote-card-header">
+                            <div class="quote-card-badge">INSTANT PRICING</div>
+                            <h3 class="quote-card-title">Quick Quote Calculator</h3>
+                            <p class="quote-card-subtitle">Select your zone size for instant pricing</p>
+                        </div>
+                        
+                        <div class="quote-options">
+                            <div class="quote-option" onclick="selectQuote('small')">
+                                <div class="quote-option-info">
+                                    <h4>Small Zone</h4>
+                                    <span>Up to 100m² (10 spaces)</span>
+                                </div>
+                                <div class="quote-option-price">£2,000</div>
+                            </div>
+                            
+                            <div class="quote-option" onclick="selectQuote('medium')">
+                                <div class="quote-option-info">
+                                    <h4>Medium Zone</h4>
+                                    <span>100-250m² (25 spaces)</span>
+                                </div>
+                                <div class="quote-option-price">£3,500</div>
+                            </div>
+                            
+                            <div class="quote-option" onclick="selectQuote('large')">
+                                <div class="quote-option-info">
+                                    <h4>Large Zone</h4>
+                                    <span>250-500m² (50 spaces)</span>
+                                </div>
+                                <div class="quote-option-price">£5,000</div>
+                            </div>
+                        </div>
+                        
+                        <button class="quote-cta" onclick="window.location.href='interactive-tool.html'">
+                            Or Use AI Photo Detection →
+                        </button>
+                        
+                        <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #666;">
+                            ✓ No site visit needed • ✓ 60-second quote • ✓ 5-year warranty included
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Client Bar -->
+    <section class="client-bar">
+        <div class="container">
+            <div class="client-bar-inner">
+                <div class="client-bar-label">TRUSTED BY</div>
+                <div class="client-logos">
+                    <div class="client-logo">TESCO</div>
+                    <div class="client-logo">McDONALD'S</div>
+                    <div class="client-logo">COSTA</div>
+                    <div class="client-logo">B&Q</div>
+                    <div class="client-logo">ASDA</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Car Parks Repaired</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">5 Year</span>
+                    <span class="stat-label">Warranty Standard</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">24hr</span>
+                    <span class="stat-label">Emergency Response</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">£2k</span>
+                    <span class="stat-label">Starting Price</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Floating AI Widget -->
+    <div class="ai-widget" onclick="window.location.href='interactive-tool.html'">
+        🤖 AI Quote Tool
+    </div>
+    
+    <script>
+        // Show header on scroll
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const header = document.getElementById('header');
+            
+            if (currentScroll > 100) {
+                header.classList.add('visible');
+            } else {
+                header.classList.remove('visible');
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Quote selector
+        function selectQuote(size) {
+            alert(`Selected ${size} zone. Click "Use AI Photo Detection" for accurate quote based on actual damage.`);
+        }
+    </script>
+</body>
+</html>
