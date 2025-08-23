@@ -30,7 +30,10 @@
             color: #FFF;
             line-height: 1.6;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
+            margin: 0;
+            padding: 0;
             background: 
                 linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%),
                 url('images/tarmac-bg.jpg') center/cover;
@@ -41,6 +44,7 @@
         .tool-container {
             display: flex;
             height: 100vh;
+            width: 100vw;
             position: relative;
         }
         
@@ -89,15 +93,16 @@
         
         /* Left Panel - Canvas */
         .canvas-panel {
-            flex: 1;
+            flex: 1.5;
             background: transparent;
             position: relative;
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
         
         .canvas-header {
-            padding: 2rem;
+            padding: 1.5rem;
             background: linear-gradient(180deg, rgba(26,26,26,0.8) 0%, transparent 100%);
         }
         
@@ -134,13 +139,14 @@
         .damage-canvas {
             flex: 1;
             position: relative;
-            margin: 2rem;
+            margin: 1rem;
             background: #1A1A1A;
             border-radius: 20px;
             overflow: hidden;
             cursor: crosshair;
             border: 2px dashed #333;
             transition: all 0.3s;
+            min-height: 400px;
         }
         
         .damage-canvas.has-image {
@@ -153,6 +159,7 @@
             height: 100%;
             object-fit: contain;
             pointer-events: none;
+            display: block;
         }
         
         .upload-zone {
@@ -219,8 +226,8 @@
         /* Canvas Controls */
         .canvas-controls {
             display: flex;
-            gap: 1rem;
-            padding: 0 2rem 2rem;
+            gap: 0.75rem;
+            padding: 0 1rem 1rem;
         }
         
         .control-btn {
@@ -250,11 +257,12 @@
         
         /* Right Panel - Info */
         .info-panel {
-            width: 450px;
+            width: 380px;
             background: linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%);
             display: flex;
             flex-direction: column;
             border-left: 1px solid rgba(255, 215, 0, 0.2);
+            flex-shrink: 0;
         }
         
         .info-header {
@@ -276,7 +284,7 @@
         
         /* Stats */
         .live-stats {
-            padding: 2rem;
+            padding: 1.5rem;
             flex: 1;
             overflow-y: auto;
         }
@@ -284,8 +292,8 @@
         .stat-card {
             background: #1A1A1A;
             border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
             border: 2px solid #222;
             border-left: 4px solid var(--yellow);
         }
@@ -345,7 +353,7 @@
         
         /* Quote Section */
         .instant-quote {
-            padding: 2rem;
+            padding: 1.5rem;
             background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
             border-top: 2px solid var(--yellow);
         }
@@ -775,6 +783,21 @@
         }
         
         /* Mobile Responsive */
+        /* Large screens - use even more space */
+        @media (min-width: 1400px) {
+            .canvas-panel {
+                flex: 2;
+            }
+            
+            .info-panel {
+                width: 420px;
+            }
+            
+            .damage-canvas {
+                margin: 1.5rem;
+            }
+        }
+        
         @media (max-width: 768px) {
             .tool-container {
                 flex-direction: column;
@@ -849,7 +872,7 @@
             
             .live-stats {
                 padding: 1rem;
-                max-height: 300px;
+                flex: 1;
                 overflow-y: auto;
             }
             
