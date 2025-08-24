@@ -692,7 +692,10 @@
                         <div class="client-company" id="clientCompany">Loading...</div>
                     </div>
                 </div>
-                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="adminBtn" class="logout-btn" onclick="goToAdmin()" style="display: none; background: #333; color: #FFD700;">Admin Panel</button>
+                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                </div>
             </div>
         </header>
         
@@ -885,6 +888,11 @@
             document.getElementById('clientName').textContent = currentUser.name;
             document.getElementById('clientCompany').textContent = currentUser.company;
             
+            // Show admin button if user is admin
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminBtn').style.display = 'block';
+            }
+            
             try {
                 // Fetch stats
                 const statsResponse = await fetch(`${API_URL}/dashboard/stats`, {
@@ -1020,6 +1028,11 @@
         // View all reports
         function viewReports() {
             alert('Reports dashboard coming soon!');
+        }
+        
+        // Go to admin panel
+        function goToAdmin() {
+            window.location.href = 'admin-dashboard.html';
         }
         
         // Add new site
