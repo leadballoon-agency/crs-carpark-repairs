@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Welcome to CRS - Setup Your Account</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --green: #00A652;
+            --blue: #1E90FF;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-fill {
+            background: var(--yellow);
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: 1rem auto 0;
+        }
+        
+        .step {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        
+        .step.active {
+            color: var(--yellow);
+            font-weight: 600;
+        }
+        
+        .step.completed {
+            color: var(--green);
+        }
+        
+        /* Main Container */
+        .onboarding-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Cards */
+        .onboarding-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .onboarding-card.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            color: var(--black);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .option-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option-card:hover {
+            border-color: var(--yellow);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option-card.selected {
+            background: var(--yellow);
+            border-color: var(--yellow);
+        }
+        
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .option-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .option-card.selected .option-desc {
+            color: var(--black);
+        }
+        
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .time-slot {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-slot:hover {
+            border-color: var(--yellow);
+        }
+        
+        .time-slot.selected {
+            background: var(--yellow);
+            border-color: var(--yellow);
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-back {
+            background: #f5f5f5;
+            color: var(--black);
+        }
+        
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn-next {
+            background: var(--yellow);
+            color: var(--black);
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .btn-next:hover {
+            background: #FFC700;
+            transform: scale(1.02);
+        }
+        
+        .btn-skip {
+            background: transparent;
+            color: #999;
+            text-decoration: underline;
+        }
+        
+        /* Success State */
+        .success-message {
+            background: linear-gradient(135deg, var(--green) 0%, #00C853 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .onboarding-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .progress-steps {
+                font-size: 0.75rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 20%"></div>
+        </div>
+        <div class="progress-steps">
+            <span class="step active">Welcome</span>
+            <span class="step">Your Sites</span>
+            <span class="step">Service Need</span>
+            <span class="step">Schedule</span>
+            <span class="step">Complete</span>
+        </div>
+    </div>
+    
+    <!-- Onboarding Container -->
+    <div class="onboarding-container">
+        <!-- Step 1: Welcome -->
+        <div class="onboarding-card active" id="step1">
+            <div class="card-header">
+                <div class="welcome-icon">👋</div>
+                <h1>Welcome to CRS, <span id="userName">John</span>!</h1>
+                <p class="subtitle">Let's get your car parks protected in just 3 minutes</p>
+            </div>
+            
+            <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="margin-bottom: 1rem;">What happens next?</h3>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: var(--yellow); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+                        <span>Tell us about your car park locations</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: var(--yellow); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</span>
+                        <span>Choose your service priority</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: var(--yellow); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
+                        <span>Schedule your free assessment</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-skip" onclick="skipOnboarding()">I'll do this later</button>
+                <button class="btn btn-next" onclick="nextStep()">Let's Get Started →</button>
+            </div>
+        </div>
+        
+        <!-- Step 2: Sites -->
+        <div class="onboarding-card" id="step2">
+            <div class="card-header">
+                <div class="welcome-icon">🏢</div>
+                <h1>Your Car Park Locations</h1>
+                <p class="subtitle">Add your first site to get started</p>
+            </div>
+            
+            <form id="siteForm">
+                <div class="form-group">
+                    <label>Site Name</label>
+                    <input type="text" id="siteName" placeholder="e.g., Main Office Car Park" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" id="siteAddress" placeholder="Full address or postcode" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Number of Parking Spaces (Optional)</label>
+                    <input type="number" id="parkingSpaces" placeholder="e.g., 50">
+                </div>
+                
+                <div class="form-group">
+                    <label>How many sites do you manage?</label>
+                    <select id="totalSites">
+                        <option value="1">Just this one</option>
+                        <option value="2-5">2-5 sites</option>
+                        <option value="6-10">6-10 sites</option>
+                        <option value="11-20">11-20 sites</option>
+                        <option value="20+">More than 20 sites</option>
+                    </select>
+                </div>
+            </form>
+            
+            <div class="button-group">
+                <button class="btn btn-back" onclick="previousStep()">← Back</button>
+                <button class="btn btn-next" onclick="nextStep()">Continue →</button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Service Need -->
+        <div class="onboarding-card" id="step3">
+            <div class="card-header">
+                <div class="welcome-icon">🔧</div>
+                <h1>What brings you to CRS?</h1>
+                <p class="subtitle">Select your primary need</p>
+            </div>
+            
+            <div class="options-grid">
+                <div class="option-card" onclick="selectOption(this, 'urgent')">
+                    <div class="option-icon">🚨</div>
+                    <div class="option-title">Urgent Repair</div>
+                    <div class="option-desc">Safety hazard or immediate damage</div>
+                </div>
+                
+                <div class="option-card" onclick="selectOption(this, 'assessment')">
+                    <div class="option-icon">📋</div>
+                    <div class="option-title">Free Assessment</div>
+                    <div class="option-desc">Evaluate current condition</div>
+                </div>
+                
+                <div class="option-card" onclick="selectOption(this, 'preventive')">
+                    <div class="option-icon">🛡️</div>
+                    <div class="option-title">Preventive Care</div>
+                    <div class="option-desc">Maintain before problems arise</div>
+                </div>
+                
+                <div class="option-card" onclick="selectOption(this, 'priority')">
+                    <div class="option-icon">⭐</div>
+                    <div class="option-title">Priority Plan</div>
+                    <div class="option-desc">Ongoing maintenance program</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Any specific concerns? (Optional)</label>
+                <textarea id="concerns" placeholder="e.g., Large pothole near entrance, faded line markings..."></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-back" onclick="previousStep()">← Back</button>
+                <button class="btn btn-next" onclick="nextStep()">Continue →</button>
+            </div>
+        </div>
+        
+        <!-- Step 4: Schedule -->
+        <div class="onboarding-card" id="step4">
+            <div class="card-header">
+                <div class="welcome-icon">📅</div>
+                <h1>Schedule Your Free Site Survey</h1>
+                <p class="subtitle">We'll visit at your convenience</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Preferred Week</label>
+                <select id="preferredWeek">
+                    <option>This week (Fast-track)</option>
+                    <option>Next week</option>
+                    <option>Week of March 3rd</option>
+                    <option>Week of March 10th</option>
+                    <option>I'll decide later</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Best Time</label>
+                <div class="time-slots">
+                    <div class="time-slot" onclick="selectTime(this)">Morning</div>
+                    <div class="time-slot" onclick="selectTime(this)">Afternoon</div>
+                    <div class="time-slot" onclick="selectTime(this)">Any time</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Best Phone Number</label>
+                <input type="tel" id="phone" placeholder="07XXX XXXXXX" required>
+            </div>
+            
+            <div style="background: #FFF9E6; border: 2px solid var(--yellow); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <strong>🎁 New Customer Bonus:</strong> Get 15% off your first repair when you book a survey this week!
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-back" onclick="previousStep()">← Back</button>
+                <button class="btn btn-next" onclick="completeOnboarding()">Complete Setup ✓</button>
+            </div>
+        </div>
+        
+        <!-- Step 5: Complete -->
+        <div class="onboarding-card" id="step5">
+            <div class="card-header">
+                <div class="welcome-icon">🎉</div>
+                <h1>You're All Set!</h1>
+                <p class="subtitle">Welcome to the CRS family</p>
+            </div>
+            
+            <div class="success-message">
+                <div class="success-icon">✅</div>
+                <h2>What Happens Next?</h2>
+                <p style="margin-top: 1rem;">Our team will contact you within 2 hours to confirm your site survey.</p>
+            </div>
+            
+            <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="margin-bottom: 1rem;">Your Portal is Ready!</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 0.5rem;">✅ Track repair status in real-time</li>
+                    <li style="margin-bottom: 0.5rem;">✅ Upload damage photos instantly</li>
+                    <li style="margin-bottom: 0.5rem;">✅ View maintenance history</li>
+                    <li style="margin-bottom: 0.5rem;">✅ Access priority support</li>
+                </ul>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-next" onclick="goToDashboard()" style="width: 100%;">Go to Your Dashboard →</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        let selectedService = null;
+        let selectedTime = null;
+        const totalSteps = 5;
+        
+        // Get user name from localStorage or session
+        window.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (userData.name) {
+                document.getElementById('userName').textContent = userData.name.split(' ')[0];
+            }
+        });
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgress();
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgress();
+            }
+        }
+        
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update step indicators
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index < currentStep - 1) {
+                    step.classList.add('completed');
+                } else if (index === currentStep - 1) {
+                    step.classList.add('active');
+                }
+            });
+        }
+        
+        function selectOption(element, service) {
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedService = service;
+        }
+        
+        function selectTime(element) {
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedTime = element.textContent;
+        }
+        
+        function completeOnboarding() {
+            // Collect all data
+            const onboardingData = {
+                siteName: document.getElementById('siteName').value,
+                siteAddress: document.getElementById('siteAddress').value,
+                parkingSpaces: document.getElementById('parkingSpaces').value,
+                totalSites: document.getElementById('totalSites').value,
+                serviceNeed: selectedService,
+                concerns: document.getElementById('concerns').value,
+                preferredWeek: document.getElementById('preferredWeek').value,
+                preferredTime: selectedTime,
+                phone: document.getElementById('phone').value,
+                completedAt: new Date().toISOString()
+            };
+            
+            // Save to localStorage (in production, send to API)
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            localStorage.setItem('onboardingData', JSON.stringify(onboardingData));
+            localStorage.setItem(`onboarding_${currentUser.id}`, 'true');
+            
+            // Move to completion step
+            nextStep();
+        }
+        
+        function skipOnboarding() {
+            if (confirm('You can complete setup anytime from your dashboard. Skip for now?')) {
+                localStorage.setItem('onboardingSkipped', 'true');
+                window.location.href = 'portal-api.html';
+            }
+        }
+        
+        function goToDashboard() {
+            window.location.href = 'portal-api.html';
+        }
+    </script>
+</body>
+</html>

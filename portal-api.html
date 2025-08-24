@@ -763,13 +763,21 @@
                     localStorage.setItem('authToken', authToken);
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     
-                    // Show portal
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    setTimeout(() => {
-                        document.getElementById('loginScreen').style.display = 'none';
-                        document.getElementById('portalContainer').classList.add('active');
-                        loadDashboard();
-                    }, 500);
+                    // Check if this is their first login
+                    const hasCompletedOnboarding = localStorage.getItem(`onboarding_${currentUser.id}`);
+                    
+                    if (!hasCompletedOnboarding && currentUser.role !== 'admin') {
+                        // New user - redirect to onboarding
+                        window.location.href = 'portal-onboarding.html';
+                    } else {
+                        // Existing user - show portal
+                        document.getElementById('loginScreen').classList.add('hidden');
+                        setTimeout(() => {
+                            document.getElementById('loginScreen').style.display = 'none';
+                            document.getElementById('portalContainer').classList.add('active');
+                            loadDashboard();
+                        }, 500);
+                    }
                 } else {
                     showMessage(result.error || 'Invalid credentials', 'error');
                 }
