@@ -37,64 +37,104 @@
             padding: 0 20px;
         }
         
-        /* Header - Number Plate Style */
+        /* Header - Glassmorphism Style */
         .header {
             position: fixed;
             top: -100px;
             left: 0;
             right: 0;
-            background: var(--yellow);
-            border-bottom: 4px solid var(--black);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
             z-index: 1000;
-            transition: top 0.3s;
+            transition: all 0.3s ease;
         }
         
         .header.visible {
             top: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
         }
         
         .header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: 1.25rem 2rem;
         }
         
         .logo-plate {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-plate:hover {
+            transform: scale(1.05);
         }
         
         .logo-plate img {
-            height: 35px;
+            height: 40px;
             width: auto;
-            filter: brightness(0) saturate(100%);
+            /* Use yellow version of logo */
         }
         
         .nav {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             align-items: center;
         }
         
         .nav a {
-            color: var(--black);
+            color: var(--yellow);
             text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: none;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--yellow);
+            transition: width 0.3s ease;
+        }
+        
+        .nav a:hover {
+            color: var(--white);
+        }
+        
+        .nav a:hover::after {
+            width: 100%;
         }
         
         .header-phone {
-            background: var(--black);
-            color: var(--yellow);
-            padding: 0.75rem 1.5rem;
+            background: var(--yellow);
+            color: var(--black);
+            padding: 0.75rem 1.75rem;
             text-decoration: none;
-            font-weight: 700;
-            border-radius: 4px;
-            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        .header-phone:hover {
+            background: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
         }
         
         /* Hero Section */
@@ -950,13 +990,28 @@
                 text-align: center;
             }
             
+            .header {
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+            }
+            
+            .header-inner {
+                padding: 1rem;
+            }
+            
+            .logo-plate img {
+                height: 30px;
+            }
+            
             .nav {
                 display: none;
             }
             
             .header-phone {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
                 padding: 0.5rem 1rem;
+                border-radius: 30px;
             }
             
             .section-header h2 {
@@ -969,16 +1024,16 @@
     <!-- Header - Hidden Initially -->
     <header class="header" id="header">
         <div class="header-inner">
-            <div class="logo-plate">
-                <img src="images/logo-3.png" alt="CRS">
-            </div>
+            <a href="index.html" class="logo-plate">
+                <img src="images/yellow-logo.png" alt="CRS">
+            </a>
             <nav class="nav">
                 <a href="#services">Services</a>
                 <a href="#method">Our Method</a>
                 <a href="#sectors">Sectors</a>
                 <a href="#quote">Get Quote</a>
             </nav>
-            <a href="tel:02476992244" class="header-phone">📞 024 7699 2244</a>
+            <a href="tel:02476992244" class="header-phone">Call Now</a>
         </div>
     </header>
     
@@ -1019,7 +1074,7 @@
                         </div>
                         
                         <div class="hero-buttons">
-                            <a href="interactive-tool-v2.html" class="btn-primary">Get Instant Quote →</a>
+                            <a href="damage-mapper.html" class="btn-primary">Map Your Damage →</a>
                             <a href="tel:02476992244" class="btn-secondary">📞 Call Now</a>
                         </div>
                         
@@ -1056,9 +1111,9 @@
                             </div>
                             
                             <div class="ai-tool-cta">
-                                <h4>🤖 AI Damage Assessment</h4>
-                                <p>Upload a photo for instant analysis</p>
-                                <button onclick="openAITool()">Use AI Tool</button>
+                                <h4>📍 Interactive Damage Mapper</h4>
+                                <p>Mark damage areas on your photos</p>
+                                <button onclick="openAITool()">Map Damage</button>
                                 <p style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.7;">
                                     🔒 Photos processed locally • Never uploaded • 100% private
                                 </p>
@@ -1092,8 +1147,8 @@
                     <span class="stat-label">Response Time</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">5 Year</span>
-                    <span class="stat-label">Guarantee</span>
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Quality Focus</span>
                 </div>
             </div>
         </div>
@@ -1111,11 +1166,11 @@
                 <div class="service-card">
                     <div class="service-icon">🔧</div>
                     <h3>Pothole Repairs</h3>
-                    <p>Professional pothole repairs using our proven 3-step method. All repairs come with a 5-year warranty.</p>
+                    <p>Professional pothole repairs using our proven 3-step method. Quality workmanship guaranteed.</p>
                     <ul class="service-features">
                         <li>Same-day emergency service</li>
                         <li>Zone-based pricing</li>
-                        <li>5-year warranty</li>
+                        <li>Professional quality</li>
                         <li>Minimal disruption</li>
                     </ul>
                 </div>
@@ -1216,8 +1271,8 @@
                     </div>
                     
                     <div class="method-guarantee">
-                        <h4>5-Year Warranty Included</h4>
-                        <p>Every repair is backed by our comprehensive warranty</p>
+                        <h4>Quality Guarantee</h4>
+                        <p>Professional standards on every repair</p>
                     </div>
                 </div>
                 
@@ -1330,7 +1385,7 @@
             <h2>Ready to Fix Your Car Park?</h2>
             <p>Get your instant quote or speak to our team today</p>
             <div class="cta-buttons">
-                <a href="interactive-tool-v2.html" class="btn-primary">🤖 Use AI Assessment Tool</a>
+                <a href="damage-mapper.html" class="btn-primary">📍 Map Your Damage</a>
                 <a href="tel:02476992244" class="btn-primary">📞 024 7699 2244</a>
             </div>
         </div>
@@ -1375,7 +1430,7 @@
                     <ul>
                         <li><a href="#method">Our Method</a></li>
                         <li><a href="#quote">Get Quote</a></li>
-                        <li><a href="interactive-tool-v2.html">AI Tool</a></li>
+                        <li><a href="damage-mapper.html">Damage Mapper</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
@@ -1383,19 +1438,39 @@
             
             <div class="footer-bottom">
                 <p>&copy; 2024 CRS Car Park Repairs. All rights reserved.</p>
+                <p style="margin-top: 1rem;">
+                    <a href="privacy.html" style="color: #FFD700; text-decoration: none; margin: 0 1rem;">Privacy Policy</a>
+                    <a href="terms.html" style="color: #FFD700; text-decoration: none; margin: 0 1rem;">Terms & Conditions</a>
+                </p>
             </div>
         </div>
     </footer>
     
     <script>
-        // Show header on scroll
+        // Show header on scroll with smooth transition
+        let lastScroll = 0;
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
-            if (window.scrollY > 100) {
+            const currentScroll = window.scrollY;
+            
+            if (currentScroll > 100) {
                 header.classList.add('visible');
+                
+                // Add extra blur when scrolling down more
+                if (currentScroll > 500) {
+                    header.style.backdropFilter = 'blur(40px)';
+                    header.style.webkitBackdropFilter = 'blur(40px)';
+                    header.style.background = 'rgba(0, 0, 0, 0.8)';
+                } else {
+                    header.style.backdropFilter = 'blur(30px)';
+                    header.style.webkitBackdropFilter = 'blur(30px)';
+                    header.style.background = 'rgba(0, 0, 0, 0.7)';
+                }
             } else {
                 header.classList.remove('visible');
             }
+            
+            lastScroll = currentScroll;
         });
         
         // Zone selection
@@ -1412,7 +1487,7 @@
         
         // Open AI Tool
         function openAITool() {
-            window.location.href = 'interactive-tool-v2.html';
+            window.location.href = 'damage-mapper.html';
         }
         
         // Smooth scrolling for anchor links

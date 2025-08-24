@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS Car Park Assessment Tool | Upload Photos & Get Quote</title>
+    
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+            --text: #333333;
+            --red: #DC143C;
+            --green: #28A745;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%),
+                url('images/tarmac-bg.jpg') center/cover;
+            background-attachment: fixed;
+            color: var(--white);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--yellow);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+        }
+        
+        .close-btn {
+            background: var(--black);
+            color: var(--yellow);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255,255,255,0.2);
+            z-index: -1;
+        }
+        
+        .step {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .step.active {
+            background: var(--yellow);
+            color: var(--black);
+            border-color: var(--yellow);
+        }
+        
+        .step.completed {
+            background: var(--green);
+            border-color: var(--green);
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 50px;
+            white-space: nowrap;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .step.active .step-label {
+            color: var(--yellow);
+        }
+        
+        /* Card Styles */
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(255,215,0,0.5);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--yellow);
+            background: rgba(255,215,0,0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--yellow);
+            background: rgba(255,215,0,0.1);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-hint {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        /* Mobile Capture Buttons */
+        .capture-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .capture-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,215,0,0.3);
+            color: var(--white);
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .capture-btn:hover {
+            background: rgba(255,215,0,0.1);
+            border-color: var(--yellow);
+        }
+        
+        .capture-btn .icon {
+            font-size: 1.5rem;
+        }
+        
+        /* Uploaded Files */
+        .uploaded-files {
+            margin-top: 2rem;
+        }
+        
+        .file-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .file-thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .file-size {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .file-remove {
+            background: none;
+            border: none;
+            color: var(--red);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--yellow);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* Quick Options */
+        .quick-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-btn {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,215,0,0.3);
+            color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .option-btn:hover {
+            border-color: var(--yellow);
+        }
+        
+        .option-btn.selected {
+            background: var(--yellow);
+            color: var(--black);
+            border-color: var(--yellow);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: var(--yellow);
+            color: var(--black);
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255,255,255,0.3);
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+        
+        /* Success Message */
+        .success-card {
+            background: rgba(40,167,69,0.1);
+            border: 2px solid var(--green);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-card.active {
+            display: block;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-message {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .capture-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .progress-steps {
+                margin-bottom: 2rem;
+            }
+            
+            .step-label {
+                font-size: 0.7rem;
+            }
+        }
+        
+        /* Hidden Elements */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Loading State */
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: var(--yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <img src="images/yellow-logo.png" alt="CRS" class="logo">
+            <a href="index.html" class="close-btn">✕ Close</a>
+        </div>
+    </header>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="step active" id="step1">
+                1
+                <span class="step-label">Upload Evidence</span>
+            </div>
+            <div class="step" id="step2">
+                2
+                <span class="step-label">Site Details</span>
+            </div>
+            <div class="step" id="step3">
+                3
+                <span class="step-label">Contact Info</span>
+            </div>
+            <div class="step" id="step4">
+                ✓
+                <span class="step-label">Complete</span>
+            </div>
+        </div>
+        
+        <!-- Step 1: Upload Evidence -->
+        <div class="card" id="uploadStep">
+            <div class="card-header">
+                <h2 class="card-title">📸 Capture Your Car Park Damage</h2>
+                <p class="card-subtitle">Walk around your car park and capture photos or videos of any damage. Upload multiple files for a complete assessment.</p>
+            </div>
+            
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                <div class="upload-icon">📤</div>
+                <div class="upload-text">Drop files here or click to browse</div>
+                <div class="upload-hint">Photos and videos accepted • Max 50MB per file</div>
+            </div>
+            
+            <input type="file" id="fileInput" class="file-input" multiple accept="image/*,video/*" onchange="handleFileSelect(event)">
+            
+            <div class="capture-buttons">
+                <button class="capture-btn" onclick="document.getElementById('cameraInput').click()">
+                    <span class="icon">📷</span>
+                    <span>Take Photo</span>
+                </button>
+                <button class="capture-btn" onclick="document.getElementById('videoInput').click()">
+                    <span class="icon">🎥</span>
+                    <span>Record Video</span>
+                </button>
+            </div>
+            
+            <input type="file" id="cameraInput" class="file-input" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
+            <input type="file" id="videoInput" class="file-input" accept="video/*" capture="environment" onchange="handleFileSelect(event)">
+            
+            <div class="uploaded-files" id="uploadedFiles"></div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="nextStep()" id="nextBtn" disabled>
+                    Continue →
+                </button>
+            </div>
+        </div>
+        
+        <!-- Step 2: Site Details -->
+        <div class="card hidden" id="detailsStep">
+            <div class="card-header">
+                <h2 class="card-title">📍 Tell Us About Your Car Park</h2>
+                <p class="card-subtitle">This helps our experts provide an accurate quote</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Car Park Location</label>
+                <input type="text" id="location" placeholder="Address or postcode" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Approximate Number of Spaces</label>
+                <div class="quick-options">
+                    <button class="option-btn" onclick="selectOption(this, 'spaces', '1-25')">1-25</button>
+                    <button class="option-btn" onclick="selectOption(this, 'spaces', '26-50')">26-50</button>
+                    <button class="option-btn" onclick="selectOption(this, 'spaces', '51-100')">51-100</button>
+                    <button class="option-btn" onclick="selectOption(this, 'spaces', '101-200')">101-200</button>
+                    <button class="option-btn" onclick="selectOption(this, 'spaces', '200+')">200+</button>
+                </div>
+                <input type="hidden" id="spaces">
+            </div>
+            
+            <div class="form-group">
+                <label>Urgency</label>
+                <div class="quick-options">
+                    <button class="option-btn" onclick="selectOption(this, 'urgency', 'standard')">Standard<br><small>2 weeks</small></button>
+                    <button class="option-btn" onclick="selectOption(this, 'urgency', 'urgent')">Urgent<br><small>1 week</small></button>
+                    <button class="option-btn" onclick="selectOption(this, 'urgency', 'emergency')">Emergency<br><small>24-48hr</small></button>
+                </div>
+                <input type="hidden" id="urgency">
+            </div>
+            
+            <div class="form-group">
+                <label>Describe the Main Issues (Optional)</label>
+                <textarea id="description" placeholder="e.g., Multiple potholes near entrance, cracking in disabled bays, drainage issues..."></textarea>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="previousStep()">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="nextStep()">
+                    Continue →
+                </button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Contact Info -->
+        <div class="card hidden" id="contactStep">
+            <div class="card-header">
+                <h2 class="card-title">📞 Your Contact Details</h2>
+                <p class="card-subtitle">We'll send your quote here and call to discuss</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Your Name *</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" id="company">
+            </div>
+            
+            <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Phone Number *</label>
+                <input type="tel" id="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Best Time to Call</label>
+                <div class="quick-options">
+                    <button class="option-btn" onclick="selectOption(this, 'callTime', 'morning')">Morning</button>
+                    <button class="option-btn" onclick="selectOption(this, 'callTime', 'afternoon')">Afternoon</button>
+                    <button class="option-btn" onclick="selectOption(this, 'callTime', 'anytime')">Anytime</button>
+                </div>
+                <input type="hidden" id="callTime">
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="previousStep()">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="submitAssessment()">
+                    Get My Quote →
+                </button>
+            </div>
+        </div>
+        
+        <!-- Success Message -->
+        <div class="success-card" id="successStep">
+            <div class="success-icon">✅</div>
+            <h2 class="success-title">Assessment Submitted!</h2>
+            <p class="success-message">
+                Our experts are reviewing your car park evidence.<br>
+                You'll receive a detailed quote within 1 hour during business hours.
+            </p>
+            <div class="action-buttons">
+                <a href="index.html" class="btn btn-secondary">
+                    Back to Home
+                </a>
+                <a href="tel:02476992244" class="btn btn-primary">
+                    📞 Call Now
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        let uploadedFilesList = [];
+        let selectedOptions = {};
+        
+        // File Upload Handling
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            processFiles(files);
+        }
+        
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const dt = event.dataTransfer;
+            const files = dt.files;
+            processFiles(files);
+            event.currentTarget.classList.remove('dragover');
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.add('dragover');
+        }
+        
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+        
+        function processFiles(files) {
+            for (let file of files) {
+                // Validate file
+                if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+                    alert('Please upload only images or videos');
+                    continue;
+                }
+                
+                if (file.size > 50 * 1024 * 1024) {
+                    alert('File size must be less than 50MB');
+                    continue;
+                }
+                
+                uploadedFilesList.push(file);
+                displayFile(file);
+            }
+            
+            // Enable next button if files uploaded
+            if (uploadedFilesList.length > 0) {
+                document.getElementById('nextBtn').disabled = false;
+            }
+        }
+        
+        function displayFile(file) {
+            const container = document.getElementById('uploadedFiles');
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            // Create thumbnail
+            let thumbnail = '';
+            if (file.type.startsWith('image/')) {
+                const url = URL.createObjectURL(file);
+                thumbnail = `<img src="${url}" class="file-thumbnail">`;
+            } else {
+                thumbnail = `<div class="file-thumbnail" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🎥</div>`;
+            }
+            
+            fileItem.innerHTML = `
+                ${thumbnail}
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                </div>
+                <button class="file-remove" onclick="removeFile(this, '${file.name}')">×</button>
+            `;
+            
+            container.appendChild(fileItem);
+        }
+        
+        function removeFile(button, fileName) {
+            uploadedFilesList = uploadedFilesList.filter(f => f.name !== fileName);
+            button.parentElement.remove();
+            
+            if (uploadedFilesList.length === 0) {
+                document.getElementById('nextBtn').disabled = true;
+            }
+        }
+        
+        // Option Selection
+        function selectOption(button, field, value) {
+            // Remove selected from siblings
+            button.parentElement.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected to clicked
+            button.classList.add('selected');
+            
+            // Store value
+            selectedOptions[field] = value;
+            document.getElementById(field).value = value;
+        }
+        
+        // Step Navigation
+        function nextStep() {
+            if (currentStep === 1) {
+                document.getElementById('uploadStep').classList.add('hidden');
+                document.getElementById('detailsStep').classList.remove('hidden');
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('active');
+                currentStep = 2;
+            } else if (currentStep === 2) {
+                // Validate required fields
+                if (!document.getElementById('location').value) {
+                    alert('Please enter the car park location');
+                    return;
+                }
+                
+                document.getElementById('detailsStep').classList.add('hidden');
+                document.getElementById('contactStep').classList.remove('hidden');
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step2').classList.add('completed');
+                document.getElementById('step3').classList.add('active');
+                currentStep = 3;
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep === 2) {
+                document.getElementById('detailsStep').classList.add('hidden');
+                document.getElementById('uploadStep').classList.remove('hidden');
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step1').classList.remove('completed');
+                document.getElementById('step1').classList.add('active');
+                currentStep = 1;
+            } else if (currentStep === 3) {
+                document.getElementById('contactStep').classList.add('hidden');
+                document.getElementById('detailsStep').classList.remove('hidden');
+                document.getElementById('step3').classList.remove('active');
+                document.getElementById('step2').classList.remove('completed');
+                document.getElementById('step2').classList.add('active');
+                currentStep = 2;
+            }
+        }
+        
+        function submitAssessment() {
+            // Validate required fields
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (!name || !email || !phone) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Prepare submission data
+            const formData = new FormData();
+            
+            // Add files
+            uploadedFilesList.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            // Add form data
+            formData.append('location', document.getElementById('location').value);
+            formData.append('spaces', selectedOptions.spaces || '');
+            formData.append('urgency', selectedOptions.urgency || 'standard');
+            formData.append('description', document.getElementById('description').value);
+            formData.append('name', name);
+            formData.append('company', document.getElementById('company').value);
+            formData.append('email', email);
+            formData.append('phone', phone);
+            formData.append('callTime', selectedOptions.callTime || 'anytime');
+            formData.append('timestamp', new Date().toISOString());
+            
+            // In production, this would submit to your API
+            console.log('Submitting assessment:', Object.fromEntries(formData));
+            
+            // Show success message
+            document.getElementById('contactStep').classList.add('hidden');
+            document.getElementById('successStep').classList.add('active');
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step3').classList.add('completed');
+            document.getElementById('step4').classList.add('completed');
+            
+            // Track conversion
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'Lead', {
+                    content_name: 'Car Park Assessment',
+                    status: 'submitted'
+                });
+            }
+        }
+    </script>
+</body>
+</html>

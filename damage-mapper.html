@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#FFD700">
+    <title>Car Park Damage Mapper - CRS Repairs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1a1a;
+            color: #333;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .close-btn:hover {
+            background: #FFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .logo-link {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            height: 40px;
+            display: block;
+        }
+
+        .beta-badge {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tool-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tool-title h1 {
+            color: #FFD700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-title p {
+            color: #999;
+            font-size: 1.125rem;
+        }
+
+        .workflow-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .workflow-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-section, .marking-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            background: #FFD700;
+            color: #000;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .upload-area {
+            border: 2px dashed #FFD700;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #FFFEF5;
+        }
+
+        .upload-area:hover {
+            border-color: #FFA500;
+            background: #FFF;
+        }
+
+        .upload-area.dragging {
+            background: #FFD700;
+            background-opacity: 0.1;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .image-container {
+            position: relative;
+            background: #f5f5f5;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: crosshair;
+            margin-bottom: 1rem;
+        }
+
+        #damageImage {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .damage-marker {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .severity-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .severity-btn {
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .severity-btn.active {
+            border-color: #FFD700;
+            background: #FFFEF5;
+        }
+
+        .severity-low { color: #4CAF50; }
+        .severity-medium { color: #FF9800; }
+        .severity-high { color: #f44336; }
+
+        .marker-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .marker-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .marker-item:last-child {
+            border-bottom: none;
+        }
+
+        .remove-marker {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .details-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .info-box {
+            background: #FFFEF5;
+            border-left: 4px solid #FFD700;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .submit-btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .submit-btn:hover {
+            background: #FFA500;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,215,0,0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .share-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .share-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .email-btn {
+            background: #333;
+            color: white;
+        }
+
+        .email-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-btn {
+            background: #FFD700;
+            color: #000;
+        }
+
+        .download-btn:hover {
+            background: #FFA500;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                padding-top: calc(1rem + env(safe-area-inset-top));
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+            }
+
+            .header-content {
+                padding: 0 0.5rem;
+            }
+
+            .logo {
+                height: 30px;
+            }
+
+            .beta-badge {
+                display: none; /* Hide on mobile to save space */
+            }
+
+            .close-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+                border-radius: 30px;
+            }
+
+            .main-container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .tool-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .tool-title p {
+                font-size: 1rem;
+            }
+
+            .workflow-container {
+                gap: 1rem;
+            }
+
+            .upload-section, .marking-section {
+                padding: 1.5rem;
+            }
+
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+
+            .image-container {
+                height: 60vh;
+                max-height: 500px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #000;
+            }
+
+            #damageImage {
+                max-height: 100%;
+                width: auto;
+                max-width: 100%;
+                object-fit: contain;
+            }
+
+            .details-section {
+                padding: 1.5rem;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .submit-btn {
+                width: 100%;
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .severity-controls {
+                position: sticky;
+                top: 60px;
+                background: white;
+                z-index: 50;
+                padding: 0.5rem 0;
+                margin-bottom: 1rem;
+            }
+
+            .severity-btn {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 1rem;
+            }
+
+            .section-header {
+                margin-bottom: 1rem;
+            }
+
+            .step-number {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            /* Full-width sections on mobile */
+            .upload-section,
+            .marking-section,
+            .details-section,
+            .share-section,
+            .submit-section {
+                border-radius: 0;
+                margin-left: -0.5rem;
+                margin-right: -0.5rem;
+            }
+
+            /* Better touch targets */
+            .damage-marker {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .remove-marker {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            /* Optimize for camera capture */
+            input[type="file"] {
+                font-size: 16px;
+            }
+
+            /* Prevent horizontal scroll */
+            html, body {
+                overflow-x: hidden;
+            }
+
+            /* Better spacing for iPhone notch */
+            .tool-title {
+                margin-top: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        /* iPhone X and newer specific adjustments */
+        @supports (padding: max(0px)) {
+            .header {
+                padding-top: max(1rem, env(safe-area-inset-top));
+            }
+
+            .main-container {
+                padding-bottom: max(2rem, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Landscape mode adjustments */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .image-container {
+                height: 50vh;
+            }
+
+            .tool-title {
+                margin: 0.5rem 0;
+            }
+
+            .tool-title h1 {
+                font-size: 1.25rem;
+            }
+        }
+
+        .instructions {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .instructions h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .instructions ul {
+            margin-left: 1.5rem;
+            color: #666;
+        }
+
+        .instructions li {
+            margin-bottom: 0.25rem;
+        }
+
+        .success-message {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .clear-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo-link">
+                <img src="images/yellow-logo.png" alt="CRS Repairs" class="logo">
+            </a>
+            <span class="beta-badge">BETA TOOL</span>
+            <a href="index.html" class="close-btn">
+                ← Back to Site
+            </a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="tool-title">
+            <h1>Car Park Damage Mapper</h1>
+            <p>Help us understand your repair needs</p>
+        </div>
+
+        <div class="workflow-container">
+            <div class="upload-section">
+                <div class="section-header">
+                    <span class="step-number">1</span>
+                    <h2 class="section-title">Upload Your Photo</h2>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📸</div>
+                    <h3>Tap to take photo or upload</h3>
+                    <p>Capture damage directly with your camera</p>
+                    <input type="file" id="fileInput" class="file-input" accept="image/*" capture="environment">
+                </div>
+            </div>
+
+            <div class="marking-section">
+                <div class="section-header">
+                    <span class="step-number">2</span>
+                    <h2 class="section-title">Mark Damage Areas</h2>
+                </div>
+
+                <div class="instructions">
+                    <h4>How to mark damage:</h4>
+                    <ul>
+                        <li>Click on the image to mark damage locations</li>
+                        <li>Select severity level for each marker</li>
+                        <li>Add as many markers as needed</li>
+                        <li>This helps our experts understand your concerns</li>
+                    </ul>
+                </div>
+
+                <div class="severity-controls">
+                    <button class="severity-btn severity-low active" data-severity="low">
+                        🟢 Minor
+                    </button>
+                    <button class="severity-btn severity-medium" data-severity="medium">
+                        🟠 Moderate
+                    </button>
+                    <button class="severity-btn severity-high" data-severity="high">
+                        🔴 Severe
+                    </button>
+                </div>
+
+                <div class="image-container" id="imageContainer" style="display: none;">
+                    <img id="damageImage" src="" alt="Damage photo">
+                </div>
+
+                <div class="marker-list" id="markerList" style="display: none;">
+                    <h4>Marked Areas:</h4>
+                    <div id="markerItems"></div>
+                </div>
+
+                <button class="clear-btn" id="clearMarkers" style="display: none;">Clear All Markers</button>
+            </div>
+        </div>
+
+        <div class="details-section">
+            <div class="section-header">
+                <span class="step-number">3</span>
+                <h2 class="section-title">Get Your Quote</h2>
+            </div>
+
+            <form id="surveyForm">
+                <div class="form-group">
+                    <label for="location">Postcode *</label>
+                    <input type="text" id="location" name="location" placeholder="CV1 2XX" required>
+                </div>
+                
+                <div class="form-group" id="phoneGroup" style="display: none;">
+                    <label for="phone">Mobile Number (for callback)</label>
+                    <input type="tel" id="phone" name="phone" placeholder="07XXX XXXXXX">
+                </div>
+                
+                <div class="quick-options">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #555;">When do you need this fixed?</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="button" class="urgency-option" data-urgency="urgent" style="flex: 1; padding: 0.75rem; border: 2px solid #ddd; background: white; border-radius: 8px; cursor: pointer;">
+                            🚨 ASAP
+                        </button>
+                        <button type="button" class="urgency-option active" data-urgency="soon" style="flex: 1; padding: 0.75rem; border: 2px solid #FFD700; background: #FFFEF5; border-radius: 8px; cursor: pointer;">
+                            📅 This Month
+                        </button>
+                        <button type="button" class="urgency-option" data-urgency="routine" style="flex: 1; padding: 0.75rem; border: 2px solid #ddd; background: white; border-radius: 8px; cursor: pointer;">
+                            ✓ Routine
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" id="urgency" name="urgency" value="soon">
+                <input type="hidden" id="name" name="name" value="">
+                <input type="hidden" id="company" name="company" value="">
+                <input type="hidden" id="email" name="email" value="">
+            </form>
+        </div>
+
+        <div class="share-section" id="shareSection" style="display: none;">
+            <h2>Share Your Damage Report</h2>
+            <p>Send your marked damage photo directly to our team or save it for your records</p>
+            
+            <div class="share-buttons">
+                <button class="share-btn whatsapp-btn" id="whatsappBtn">
+                    📱 Share via WhatsApp
+                </button>
+                
+                <button class="share-btn email-btn" id="emailBtn">
+                    ✉️ Send via Email
+                </button>
+                
+                <button class="share-btn download-btn" id="downloadBtn">
+                    💾 Download Report
+                </button>
+            </div>
+        </div>
+
+        <div class="submit-section">
+            <div class="info-box">
+                <h3>Nearly done!</h3>
+                <p>Share your marked photo directly via WhatsApp for the fastest response, or choose another option below.</p>
+            </div>
+            
+            <button class="submit-btn" id="submitBtn" disabled style="background: #25D366;">
+                📱 Send via WhatsApp
+            </button>
+            
+            <div style="margin-top: 1rem; text-align: center;">
+                <button id="otherOptionsBtn" style="background: none; border: none; color: #666; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">
+                    Other sharing options
+                </button>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <h2>✓ Report Submitted Successfully!</h2>
+            <p>Thank you for using our damage mapper. Our expert team will review your submission and contact you within 24 hours with a comprehensive quote.</p>
+        </div>
+    </div>
+
+    <script>
+        let uploadedImage = null;
+        let damageMarkers = [];
+        let currentSeverity = 'low';
+        let markerCount = 0;
+
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const imageContainer = document.getElementById('imageContainer');
+        const damageImage = document.getElementById('damageImage');
+        const markerList = document.getElementById('markerList');
+        const markerItems = document.getElementById('markerItems');
+        const submitBtn = document.getElementById('submitBtn');
+        const surveyForm = document.getElementById('surveyForm');
+        const successMessage = document.getElementById('successMessage');
+        const clearMarkersBtn = document.getElementById('clearMarkers');
+
+        // Severity button handling
+        document.querySelectorAll('.severity-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentSeverity = this.dataset.severity;
+            });
+        });
+
+        // File upload handling
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragging');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragging');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragging');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                handleImageUpload(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+
+        function handleImageUpload(file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file (JPG, PNG, etc.)');
+                return;
+            }
+            
+            // Validate file size (max 10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                alert('Image is too large. Please upload an image smaller than 10MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onerror = function() {
+                alert('Error reading file. Please try again.');
+                console.error('FileReader error:', reader.error);
+            };
+            
+            reader.onload = function(e) {
+                uploadedImage = e.target.result;
+                damageImage.src = uploadedImage;
+                
+                damageImage.onerror = function() {
+                    alert('Error loading image. Please try a different image.');
+                    uploadedImage = null;
+                    imageContainer.style.display = 'none';
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">📸</div>
+                        <h3>Tap to take photo or upload</h3>
+                        <p>Capture damage directly with your camera</p>
+                    `;
+                };
+                
+                damageImage.onload = function() {
+                    imageContainer.style.display = 'block';
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">✓</div>
+                        <h3>Image Uploaded</h3>
+                        <p>Click here to change image</p>
+                    `;
+                    checkFormValidity();
+                };
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Image clicking for damage marking
+        imageContainer.addEventListener('click', function(e) {
+            if (e.target === damageImage) {
+                const rect = damageImage.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                
+                addDamageMarker(x, y, currentSeverity);
+            }
+        });
+
+        function addDamageMarker(x, y, severity) {
+            markerCount++;
+            const marker = {
+                id: markerCount,
+                x: x,
+                y: y,
+                severity: severity
+            };
+            
+            damageMarkers.push(marker);
+            
+            // Create visual marker
+            const markerEl = document.createElement('div');
+            markerEl.className = 'damage-marker';
+            markerEl.id = `marker-${marker.id}`;
+            markerEl.style.left = `${x}%`;
+            markerEl.style.top = `${y}%`;
+            markerEl.textContent = marker.id;
+            
+            // Set color based on severity
+            if (severity === 'low') {
+                markerEl.style.background = '#4CAF50';
+            } else if (severity === 'medium') {
+                markerEl.style.background = '#FF9800';
+            } else {
+                markerEl.style.background = '#f44336';
+            }
+            
+            markerEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeDamageMarker(marker.id);
+            });
+            
+            imageContainer.appendChild(markerEl);
+            updateMarkerList();
+            
+            markerList.style.display = 'block';
+            clearMarkersBtn.style.display = 'block';
+            checkFormValidity();
+        }
+
+        function removeDamageMarker(id) {
+            damageMarkers = damageMarkers.filter(m => m.id !== id);
+            const markerEl = document.getElementById(`marker-${id}`);
+            if (markerEl) {
+                markerEl.remove();
+            }
+            updateMarkerList();
+            
+            if (damageMarkers.length === 0) {
+                markerList.style.display = 'none';
+                clearMarkersBtn.style.display = 'none';
+            }
+            checkFormValidity();
+        }
+
+        function updateMarkerList() {
+            markerItems.innerHTML = '';
+            damageMarkers.forEach(marker => {
+                const item = document.createElement('div');
+                item.className = 'marker-item';
+                
+                let severityText = '';
+                let severityIcon = '';
+                if (marker.severity === 'low') {
+                    severityText = 'Minor';
+                    severityIcon = '🟢';
+                } else if (marker.severity === 'medium') {
+                    severityText = 'Moderate';
+                    severityIcon = '🟠';
+                } else {
+                    severityText = 'Severe';
+                    severityIcon = '🔴';
+                }
+                
+                item.innerHTML = `
+                    <span>${severityIcon} Area #${marker.id} - ${severityText}</span>
+                    <button class="remove-marker" onclick="removeDamageMarker(${marker.id})">Remove</button>
+                `;
+                markerItems.appendChild(item);
+            });
+        }
+
+        clearMarkersBtn.addEventListener('click', () => {
+            damageMarkers = [];
+            document.querySelectorAll('.damage-marker').forEach(m => m.remove());
+            markerList.style.display = 'none';
+            clearMarkersBtn.style.display = 'none';
+            markerCount = 0;
+            checkFormValidity();
+        });
+
+        // Urgency button handling
+        document.querySelectorAll('.urgency-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.urgency-option').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.border = '2px solid #ddd';
+                    b.style.background = 'white';
+                });
+                this.classList.add('active');
+                this.style.border = '2px solid #FFD700';
+                this.style.background = '#FFFEF5';
+                document.getElementById('urgency').value = this.dataset.urgency;
+            });
+        });
+
+        // Form validation
+        function checkFormValidity() {
+            const location = document.getElementById('location').value;
+            
+            if (uploadedImage && location) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+
+        document.querySelectorAll('#surveyForm input[required]').forEach(input => {
+            input.addEventListener('input', checkFormValidity);
+        });
+
+        // Submit handling - Direct to WhatsApp
+        submitBtn.addEventListener('click', () => {
+            try {
+                const location = document.getElementById('location').value.trim();
+                
+                // Validate postcode
+                if (!location) {
+                    alert('Please enter your postcode');
+                    document.getElementById('location').focus();
+                    return;
+                }
+                
+                const urgency = document.getElementById('urgency').value;
+                const urgencyText = urgency === 'urgent' ? '🚨 URGENT - Need immediate repair' : urgency === 'soon' ? '📅 Within 1 Month' : '✓ Routine Maintenance';
+                
+                const message = `*Car Park Damage Report*\n\n` +
+                    `📍 *Postcode:* ${location}\n` +
+                    `⏰ *Timeline:* ${urgencyText}\n\n` +
+                    `*Damage Marked:*\n` +
+                    `🟢 Minor: ${damageMarkers.filter(m => m.severity === 'low').length}\n` +
+                    `🟠 Moderate: ${damageMarkers.filter(m => m.severity === 'medium').length}\n` +
+                    `🔴 Severe: ${damageMarkers.filter(m => m.severity === 'high').length}\n` +
+                    `Total areas: ${damageMarkers.length}\n\n` +
+                    `Photo attached with marked damage areas`;
+                
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/442476992244?text=${encodedMessage}`;
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Preparing report...';
+                
+                // Create and download marked image first
+                createMarkedCanvas(function(canvas) {
+                    try {
+                        canvas.toBlob(function(blob) {
+                            if (!blob) {
+                                throw new Error('Failed to create image');
+                            }
+                            
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `damage-${location.replace(/\s/g, '')}-${new Date().toISOString().split('T')[0]}.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            
+                            // Then open WhatsApp
+                            setTimeout(() => {
+                                window.open(whatsappUrl, '_blank');
+                                // Reset button
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = '📱 Send via WhatsApp';
+                                
+                                // Show success message
+                                successMessage.classList.add('show');
+                                successMessage.scrollIntoView({ behavior: 'smooth' });
+                            }, 500);
+                        });
+                    } catch (error) {
+                        console.error('Error creating blob:', error);
+                        alert('Error preparing image. Please try again or use other sharing options.');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '📱 Send via WhatsApp';
+                    }
+                });
+            } catch (error) {
+                console.error('Error in submit handler:', error);
+                alert('An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📱 Send via WhatsApp';
+            }
+        });
+
+        // Other options button
+        document.getElementById('otherOptionsBtn').addEventListener('click', () => {
+            const shareSection = document.getElementById('shareSection');
+            shareSection.style.display = 'block';
+            document.getElementById('phoneGroup').style.display = 'block';
+            document.getElementById('otherOptionsBtn').style.display = 'none';
+            shareSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Create canvas with marked image
+        function createMarkedCanvas(callback) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw the image
+                ctx.drawImage(img, 0, 0);
+                
+                // Draw markers
+                damageMarkers.forEach(marker => {
+                    const x = (marker.x / 100) * canvas.width;
+                    const y = (marker.y / 100) * canvas.height;
+                    
+                    // Set color based on severity
+                    let color;
+                    if (marker.severity === 'low') {
+                        color = '#4CAF50';
+                    } else if (marker.severity === 'medium') {
+                        color = '#FF9800';
+                    } else {
+                        color = '#f44336';
+                    }
+                    
+                    // Draw circle
+                    ctx.beginPath();
+                    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Draw number
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(marker.id.toString(), x, y);
+                });
+                
+                // Add watermark
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.7)';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText('CRS Car Park Repairs - Damage Report', 20, canvas.height - 20);
+                
+                callback(canvas);
+            };
+            
+            img.src = uploadedImage;
+        }
+
+        // WhatsApp sharing
+        document.getElementById('whatsappBtn').addEventListener('click', () => {
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const urgency = document.getElementById('urgency').value;
+            const urgencyText = urgency === 'urgent' ? 'ASAP - Emergency' : urgency === 'soon' ? 'Within 1 Month' : 'Routine Maintenance';
+            
+            const message = `*Car Park Damage Report*\n\n` +
+                `📱 *Contact:* ${phone}\n` +
+                `📍 *Postcode:* ${location}\n` +
+                `⚠️ *Urgency:* ${urgencyText}\n\n` +
+                `*Damage Areas Marked:* ${damageMarkers.length}\n` +
+                `🟢 Minor: ${damageMarkers.filter(m => m.severity === 'low').length}\n` +
+                `🟠 Moderate: ${damageMarkers.filter(m => m.severity === 'medium').length}\n` +
+                `🔴 Severe: ${damageMarkers.filter(m => m.severity === 'high').length}\n\n` +
+                `📞 Ready for immediate callback`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/442476992244?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // Email sharing
+        document.getElementById('emailBtn').addEventListener('click', () => {
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const urgency = document.getElementById('urgency').value;
+            const urgencyText = urgency === 'urgent' ? 'URGENT - Emergency' : urgency === 'soon' ? 'Within 1 Month' : 'Routine Maintenance';
+            
+            const subject = `Car Park Damage Report - ${location}`;
+            const body = `Car Park Damage Report\n\n` +
+                `Contact: ${phone}\n` +
+                `Postcode: ${location}\n` +
+                `Urgency: ${urgencyText}\n\n` +
+                `Damage Areas Marked: ${damageMarkers.length}\n` +
+                `Minor: ${damageMarkers.filter(m => m.severity === 'low').length}\n` +
+                `Moderate: ${damageMarkers.filter(m => m.severity === 'medium').length}\n` +
+                `Severe: ${damageMarkers.filter(m => m.severity === 'high').length}\n\n` +
+                `Please find the marked damage photo attached.\n\n` +
+                `Callback requested on: ${phone}`;
+            
+            const mailtoUrl = `mailto:info@carparkrepair.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+        });
+
+        // Download report
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            createMarkedCanvas(function(canvas) {
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `damage-report-${new Date().toISOString().split('T')[0]}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+            });
+        });
+
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (confirm('Are you sure you want to exit? Any unsaved progress will be lost.')) {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+
+        // Warn before leaving if image uploaded
+        window.addEventListener('beforeunload', (e) => {
+            if (uploadedImage && !successMessage.classList.contains('show')) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
+    </script>
+</body>
+</html>

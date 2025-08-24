@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Priority Service Plans - CRS Car Park Repairs</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --green: #00A652;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: black;
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1.25rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        
+        .header.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-link {
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .back-btn {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 0.75rem 1.75rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 100%),
+                url('images/tarmac-bg.jpg') center/cover;
+            background-attachment: fixed;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: visible;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tool-questions-container {
+            position: relative;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-questions-container.collapsed {
+            min-height: 0;
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero .highlight {
+            color: var(--yellow);
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            max-width: 600px;
+            margin: 3rem auto 0;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .hero-stat:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: var(--yellow);
+        }
+
+        .hero-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--yellow);
+            display: block;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 10;
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border-right: 3px solid var(--yellow);
+            border-bottom: 3px solid var(--yellow);
+            transform: rotate(45deg);
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Invitation Banner */
+        .invitation-banner {
+            background: linear-gradient(135deg, var(--yellow) 0%, #FFC700 100%);
+            padding: 2rem;
+            text-align: center;
+            margin: 4rem auto;
+            max-width: 800px;
+            border-radius: 20px;
+            position: relative;
+            z-index: 15;
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+        }
+
+        .invitation-banner h3 {
+            font-size: 1.5rem;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .invitation-banner p {
+            color: var(--black);
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
+            background: black;
+        }
+
+        /* Plans Grid */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem auto 0;
+            max-width: 1200px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 20;
+        }
+
+        .plan-card {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                0 0 100px rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 80px rgba(0,0,0,0.4),
+                0 0 120px rgba(255, 215, 0, 0.2);
+            background: rgba(0, 0, 0, 0.85);
+            border-color: var(--yellow);
+        }
+
+        .plan-card.featured {
+            border: 2px solid var(--yellow);
+        }
+
+        .plan-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--yellow);
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .plan-tagline {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .plan-features {
+            padding: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            color: var(--green);
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            flex: 1;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .plan-cta {
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .plan-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--black);
+            color: var(--yellow);
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .plan-card.featured .plan-btn {
+            background: var(--yellow);
+            color: var(--black);
+        }
+
+        .plan-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            background: black;
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.1);
+        }
+
+        .benefits-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .benefits-header h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .benefits-header p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-item {
+            text-align: center;
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-title {
+            color: var(--yellow);
+        }
+
+        .benefit-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Interactive Tool Section */
+        .tool-section {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 3rem auto;
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.2);
+            position: relative;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tool-header h2 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .tool-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .question-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            padding: 2.5rem;
+            border-radius: 15px;
+            position: absolute;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .question-title {
+            color: var(--yellow);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .answer-options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .answer-btn {
+            background: black;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .answer-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--yellow);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border: 2px solid var(--yellow);
+            padding: 0;
+            border-radius: 12px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        .recommendation-card.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            max-height: 800px;
+            padding: 2rem;
+        }
+        
+        .invitation-badge {
+            background: var(--yellow);
+            color: var(--black);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .cta-message {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .tool-cta-btn.primary {
+            background: var(--yellow);
+            color: var(--black);
+        }
+        
+        .tool-cta-btn.secondary {
+            background: transparent;
+            border: 2px solid var(--yellow);
+            color: var(--yellow);
+        }
+        
+        .tool-cta-btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            margin: 0.5rem;
+        }
+        
+        /* Booking Modal */
+        .booking-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .booking-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: black;
+            border: 2px solid var(--yellow);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--yellow);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-header h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-header p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .booking-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            color: var(--yellow);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--yellow);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .time-slot {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .time-slot:hover {
+            border-color: var(--yellow);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .time-slot.selected {
+            background: var(--yellow);
+            color: var(--black);
+            border-color: var(--yellow);
+        }
+        
+        .date-quick-select {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .date-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .date-option:hover {
+            border-color: var(--yellow);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .date-option.selected {
+            background: var(--yellow);
+            color: var(--black);
+            border-color: var(--yellow);
+        }
+        
+        .time-preference {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        
+        .time-pref {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .time-pref:hover {
+            border-color: var(--yellow);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .time-pref.selected {
+            background: var(--yellow);
+            color: var(--black);
+            border-color: var(--yellow);
+        }
+        
+        .time-slots-mini {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .time-slots-mini .time-slot {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .submit-booking {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .submit-booking:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .recommended-plan {
+            color: var(--yellow);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .savings-estimate {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .savings-estimate span {
+            color: #00ff00;
+            font-weight: 700;
+        }
+
+        .recommendation-details {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .tool-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tool-cta-btn {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .tool-cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .tool-progress {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--yellow);
+            transform: scale(1.3);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: black;
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.1);
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .faq-header h2 {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1.5rem 0;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .faq-answer {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            padding-left: 1rem;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--black);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 16px;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-phone {
+            display: inline-block;
+            background: var(--yellow);
+            color: var(--black);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .cta-phone:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                min-height: auto;
+                padding: 4rem 1rem 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+                letter-spacing: -1px;
+                margin-bottom: 1rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin: 2rem auto;
+            }
+            
+            .hero-stat {
+                padding: 1rem;
+            }
+            
+            .hero-stat-number {
+                font-size: 1.5rem;
+            }
+
+            .plans-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+                margin: 2rem auto 0;
+                gap: 1.5rem;
+            }
+            
+            .plan-card {
+                margin: 0;
+            }
+
+            .plan-price {
+                font-size: 2rem;
+            }
+            
+            .plan-header {
+                padding: 1.5rem;
+            }
+            
+            .plan-features {
+                padding: 1.5rem;
+            }
+            
+            .plan-cta {
+                padding: 1.5rem;
+            }
+            
+            .scroll-indicator {
+                bottom: 1rem;
+            }
+            
+            .container {
+                padding: 2rem 1rem;
+            }
+            
+            .benefits-section,
+            .tool-section,
+            .faq-section {
+                padding: 2rem 1.5rem;
+                border-radius: 12px;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .invitation-banner {
+                padding: 1.5rem;
+                margin: 2rem 1rem;
+            }
+            
+            .invitation-banner h3 {
+                font-size: 1.2rem;
+            }
+            
+            .invitation-banner p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo-link">
+                <img src="images/yellow-logo.png" alt="CRS Repairs" class="logo">
+            </a>
+            <a href="index.html" class="back-btn">← Back</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1><span class="highlight">Priority</span> Service Plans</h1>
+            <p>Predictable costs. Priority response. Peace of mind.</p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">47%</span>
+                    <span class="hero-stat-label">Average Savings</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">24hr</span>
+                    <span class="hero-stat-label">Response Time</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">500+</span>
+                    <span class="hero-stat-label">Happy Clients</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Plans Grid in Hero -->
+        <div class="plans-grid">
+            <!-- Essential Plan -->
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-name">Essential</h3>
+                    <div class="plan-price">£199<span>/month</span></div>
+                    <p class="plan-tagline">Perfect for single sites</p>
+                </div>
+                <div class="plan-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Quarterly professional inspections</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Annual condition report</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">20% discount on all repairs</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">48-hour response guarantee</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Weather damage alerts</span>
+                    </div>
+                </div>
+                <div class="plan-cta">
+                    <button class="plan-btn" onclick="scrollToTool()">Find My Plan →</button>
+                </div>
+            </div>
+
+            <!-- Professional Plan -->
+            <div class="plan-card featured">
+                <div class="plan-header">
+                    <h3 class="plan-name">Professional</h3>
+                    <div class="plan-price">£499<span>/month</span></div>
+                    <p class="plan-tagline">Most popular for businesses</p>
+                </div>
+                <div class="plan-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Monthly detailed inspections</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Minor repairs included (up to £500/month)</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Priority scheduling (24hr response)</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">30% discount on major repairs</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Dedicated account manager</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Quarterly photo reports</span>
+                    </div>
+                </div>
+                <div class="plan-cta">
+                    <button class="plan-btn" onclick="scrollToTool()">Get Your Plan →</button>
+                </div>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-name">Enterprise</h3>
+                    <div class="plan-price">Custom<span>/month</span></div>
+                    <p class="plan-tagline">Multi-site portfolios</p>
+                </div>
+                <div class="plan-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Everything in Professional</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Unlimited minor repairs</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Same-day emergency response</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Multi-site coordination</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Custom reporting dashboard</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">Annual strategic planning</span>
+                    </div>
+                </div>
+                <div class="plan-cta">
+                    <button class="plan-btn" onclick="scrollToTool()">Discover Your Plan →</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Invitation Banner -->
+        <div class="invitation-banner">
+            <h3>🎯 Exclusive Invitation</h3>
+            <p>Available to select clients only • Limited availability</p>
+        </div>
+
+        <!-- Interactive Tool Section -->
+        <div class="tool-section">
+            <div class="tool-header">
+                <h2>Find Your Perfect Plan</h2>
+                <p>Answer a few questions to get your personalized recommendation</p>
+            </div>
+            
+            <div class="tool-progress">
+                <span class="progress-dot active" data-step="1"></span>
+                <span class="progress-dot" data-step="2"></span>
+                <span class="progress-dot" data-step="3"></span>
+                <span class="progress-dot" data-step="4"></span>
+                <span class="progress-dot" data-step="5"></span>
+            </div>
+            
+            <div class="tool-questions-container">
+                <!-- Question 1 -->
+                <div class="question-card active" data-question="1">
+                <h3 class="question-title">How many car park locations do you manage?</h3>
+                <div class="answer-options">
+                    <button class="answer-btn" onclick="nextQuestion(1, 'single')">Just one location</button>
+                    <button class="answer-btn" onclick="nextQuestion(1, 'few')">2-5 locations</button>
+                    <button class="answer-btn" onclick="nextQuestion(1, 'many')">6+ locations</button>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question-card" data-question="2">
+                <h3 class="question-title">What's your typical annual spend on car park repairs?</h3>
+                <div class="answer-options">
+                    <button class="answer-btn" onclick="nextQuestion(2, 'low')">Under £5,000</button>
+                    <button class="answer-btn" onclick="nextQuestion(2, 'medium')">£5,000 - £15,000</button>
+                    <button class="answer-btn" onclick="nextQuestion(2, 'high')">Over £15,000</button>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question-card" data-question="3">
+                <h3 class="question-title">How often do you typically need repairs?</h3>
+                <div class="answer-options">
+                    <button class="answer-btn" onclick="nextQuestion(3, 'rarely')">Once or twice a year</button>
+                    <button class="answer-btn" onclick="nextQuestion(3, 'regular')">Every few months</button>
+                    <button class="answer-btn" onclick="nextQuestion(3, 'frequent')">Monthly or more</button>
+                </div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question-card" data-question="4">
+                <h3 class="question-title">What's most important to you?</h3>
+                <div class="answer-options">
+                    <button class="answer-btn" onclick="nextQuestion(4, 'cost')">Minimizing costs</button>
+                    <button class="answer-btn" onclick="nextQuestion(4, 'speed')">Fastest response times</button>
+                    <button class="answer-btn" onclick="nextQuestion(4, 'prevent')">Preventing future problems</button>
+                </div>
+            </div>
+            
+            <!-- Question 5 - Client Status -->
+            <div class="question-card" data-question="5">
+                <h3 class="question-title">Are you an existing CRS client?</h3>
+                <div class="answer-options">
+                    <button class="answer-btn" onclick="showRecommendation('existing')">Yes, we're already working with CRS</button>
+                    <button class="answer-btn" onclick="showRecommendation('new')">No, we're new to CRS</button>
+                </div>
+            </div>
+            </div>
+            
+            <!-- Recommendation Card -->
+            <div class="recommendation-card" id="recommendationCard">
+                <div class="invitation-badge">🎯 Exclusive Invitation</div>
+                <h3 class="recommended-plan">Professional Plan</h3>
+                <p class="savings-estimate">Estimated savings: <span>£6,800/year</span></p>
+                <p class="recommendation-details">
+                    Based on your responses, the Professional Plan offers the best value. 
+                    You'll get monthly inspections, 35% discount on all repairs, and 24-hour emergency response.
+                </p>
+                <div class="tool-cta" id="existingClientCTA" style="display: none;">
+                    <p class="cta-message">Welcome back! As a valued CRS client, you're invited to join our Priority Service Plans.</p>
+                    <button class="tool-cta-btn primary" onclick="openBookingModal('upgrade')">Schedule Upgrade Discussion</button>
+                    <button class="tool-cta-btn secondary" onclick="openBookingModal('callback')">Request Priority Callback</button>
+                </div>
+                <div class="tool-cta" id="newClientCTA" style="display: none;">
+                    <p class="cta-message">Congratulations! You qualify for our invitation-only Priority Service Plans.</p>
+                    <button class="tool-cta-btn primary" onclick="openBookingModal('survey')">Book Site Survey</button>
+                    <button class="tool-cta-btn secondary" onclick="openBookingModal('consultation')">Schedule Consultation Call</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="benefits-section">
+            <div class="benefits-header">
+                <h2>Why Priority Plans?</h2>
+                <p>Join forward-thinking businesses already saving thousands</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">💰</div>
+                    <h3 class="benefit-title">Predictable Budgets</h3>
+                    <p class="benefit-desc">Fixed monthly costs make financial planning simple</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <h3 class="benefit-title">Priority Response</h3>
+                    <p class="benefit-desc">Jump the queue when you need us most</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <h3 class="benefit-title">Proactive Maintenance</h3>
+                    <p class="benefit-desc">Prevent problems before they become expensive</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🛡️</div>
+                    <h3 class="benefit-title">Extended Warranties</h3>
+                    <p class="benefit-desc">All repairs covered by our industry-leading guarantee</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <h3 class="benefit-title">Digital Dashboard</h3>
+                    <p class="benefit-desc">Track all your sites and maintenance history online</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🌦️</div>
+                    <h3 class="benefit-title">Weather Alerts</h3>
+                    <p class="benefit-desc">Get notified before severe weather impacts your car parks</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <div class="faq-header">
+                <h2>Common Questions</h2>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>How do Priority Plans work?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Priority Plans provide scheduled maintenance and priority response for a fixed monthly fee. You'll receive regular inspections, discounted repairs, and guaranteed response times.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Can I change plans later?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Yes! You can upgrade at any time, or downgrade with 30 days notice. We'll work with you to find the right level of service.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>What's included in minor repairs?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Minor repairs include crack filling, small pothole patches, and preventative maintenance. Major resurfacing or structural work would be quoted separately with your plan discount applied.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Is there a contract commitment?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Plans operate on a rolling monthly basis with no long-term commitment required. Simply provide 30 days notice if you wish to cancel.
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2>Ready to Join?</h2>
+            <p>Speak with our team about the best plan for your needs</p>
+            <a href="tel:02476992244" class="cta-phone">📞 024 7699 2244</a>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBookingModal()">×</button>
+            <div class="modal-header">
+                <h2 id="modalTitle">Schedule Your Consultation</h2>
+                <p id="modalSubtitle">Select your preferred date and time</p>
+            </div>
+            <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
+                <!-- Dynamic form content inserted here -->
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Store user answers
+        let userAnswers = {};
+        
+        // Scroll to tool function
+        function scrollToTool() {
+            const toolSection = document.querySelector('.tool-section');
+            toolSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Reset and restart the tool
+            setTimeout(() => {
+                // Reset answers
+                userAnswers = {};
+                
+                // Reset progress dots
+                document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                    if (index === 0) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+                
+                // Hide recommendation if showing
+                document.getElementById('recommendationCard').classList.remove('show');
+                
+                // Show questions container
+                document.querySelector('.tool-questions-container').classList.remove('collapsed');
+                
+                // Reset all question cards
+                document.querySelectorAll('.question-card').forEach((card, index) => {
+                    card.classList.remove('active');
+                    card.style.opacity = '';
+                    card.style.transform = '';
+                    if (index === 0) {
+                        card.classList.add('active');
+                    }
+                });
+                
+                // Hide any CTAs
+                document.getElementById('existingClientCTA').style.display = 'none';
+                document.getElementById('newClientCTA').style.display = 'none';
+            }, 500);
+        }
+        
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('active');
+            const icon = element.querySelector('span:last-child');
+            icon.textContent = faqItem.classList.contains('active') ? '−' : '+';
+        }
+
+        // Plan Enquiry
+        function enquirePlan(planName) {
+            // Track interest but don't make it obvious
+            console.log('Plan interest:', planName);
+            
+            // Simple redirect to contact with plan info
+            const message = `Hi, I'm interested in learning more about your ${planName} service plan.`;
+            const whatsappUrl = `https://wa.me/442476992244?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Interactive Tool Functions
+        function nextQuestion(currentQuestion, answer) {
+            userAnswers[currentQuestion] = answer;
+            
+            // Fade out current question
+            const currentCard = document.querySelector(`[data-question="${currentQuestion}"]`);
+            currentCard.style.opacity = '0';
+            currentCard.style.transform = 'translateY(-10px)';
+            
+            setTimeout(() => {
+                currentCard.classList.remove('active');
+                
+                // Update progress dots with animation
+                const nextDot = document.querySelector(`.progress-dot[data-step="${currentQuestion + 1}"]`);
+                if (nextDot) {
+                    nextDot.classList.add('active');
+                }
+                
+                // Show next question
+                const nextQ = currentQuestion + 1;
+                if (nextQ <= 5) {
+                    const nextCard = document.querySelector(`[data-question="${nextQ}"]`);
+                    if (nextCard) {
+                        nextCard.classList.add('active');
+                    }
+                }
+            }, 200);
+        }
+        
+        function showRecommendation(clientStatus) {
+            userAnswers[5] = clientStatus;
+            
+            // Fade out last question
+            const lastCard = document.querySelector(`[data-question="5"]`);
+            lastCard.style.opacity = '0';
+            lastCard.style.transform = 'translateY(-10px)';
+            
+            setTimeout(() => {
+                lastCard.classList.remove('active');
+                
+                // Collapse the questions container
+                document.querySelector('.tool-questions-container').classList.add('collapsed');
+                
+                // Mark all progress dots as complete
+                document.querySelectorAll('.progress-dot').forEach(dot => {
+                    dot.classList.add('active');
+                });
+                
+                // Calculate recommendation based on answers
+                let plan = 'Essential';
+                let savings = '£3,600';
+                let details = '';
+                
+                if (userAnswers[1] === 'many' || userAnswers[2] === 'high') {
+                    plan = 'Enterprise';
+                    savings = '£12,000+';
+                    details = 'With multiple locations and high spend, the Enterprise plan provides dedicated account management, custom reporting, and maximum savings.';
+                } else if (userAnswers[2] === 'medium' || userAnswers[3] === 'regular') {
+                    plan = 'Professional';
+                    savings = '£6,800';
+                    details = 'Based on your usage patterns, the Professional plan offers the best balance of service frequency and cost savings.';
+                } else {
+                    plan = 'Essential';
+                    savings = '£3,600';
+                    details = 'The Essential plan is perfect for single sites with moderate maintenance needs, providing significant savings over reactive repairs.';
+                }
+                
+                // Update recommendation card
+                document.querySelector('.recommended-plan').textContent = plan + ' Plan';
+                document.querySelector('.savings-estimate span').textContent = savings + '/year';
+                document.querySelector('.recommendation-details').textContent = details;
+                
+                // Show appropriate CTA based on client status
+                if (clientStatus === 'existing') {
+                    document.getElementById('existingClientCTA').style.display = 'block';
+                    document.getElementById('newClientCTA').style.display = 'none';
+                } else {
+                    document.getElementById('newClientCTA').style.display = 'block';
+                    document.getElementById('existingClientCTA').style.display = 'none';
+                }
+                
+                // Store plan recommendation for booking
+                window.recommendedPlan = plan;
+                
+                // Show recommendation with smooth animation
+                setTimeout(() => {
+                    document.getElementById('recommendationCard').classList.add('show');
+                }, 400);
+                
+                // Track for lead generation
+                console.log('Lead generated:', { plan, clientStatus, answers: userAnswers });
+            }, 200);
+        }
+        
+        // Booking Modal Functions
+        function openBookingModal(type) {
+            const modal = document.getElementById('bookingModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubtitle = document.getElementById('modalSubtitle');
+            const form = document.getElementById('bookingForm');
+            
+            // Store booking type
+            window.bookingType = type;
+            
+            // Get tomorrow's date
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const minDate = tomorrow.toISOString().split('T')[0];
+            
+            // Build form based on type
+            let formHTML = '';
+            
+            switch(type) {
+                case 'upgrade':
+                    modalTitle.textContent = 'Almost There!';
+                    modalSubtitle.textContent = 'Just need your phone number for the upgrade discussion';
+                    formHTML = `
+                        <div class="form-group">
+                            <label for="bookingPhone">Best number to reach you</label>
+                            <input type="tel" id="bookingPhone" placeholder="07xxx xxxxxx" required>
+                        </div>
+                        <button type="submit" class="submit-booking">Request Callback →</button>
+                    `;
+                    break;
+                    
+                case 'callback':
+                    modalTitle.textContent = 'Priority Callback';
+                    modalSubtitle.textContent = 'We\'ll call within 2 hours';
+                    formHTML = `
+                        <div class="form-group">
+                            <label for="bookingName">First name</label>
+                            <input type="text" id="bookingName" placeholder="John" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingPhone">Phone number</label>
+                            <input type="tel" id="bookingPhone" placeholder="07xxx xxxxxx" required>
+                        </div>
+                        <button type="submit" class="submit-booking">Get Priority Call →</button>
+                    `;
+                    break;
+                    
+                case 'survey':
+                    modalTitle.textContent = 'Book Site Survey';
+                    modalSubtitle.textContent = 'Quick 2-step booking';
+                    formHTML = `
+                        <div class="booking-step" id="step1">
+                            <div class="form-group">
+                                <label for="sitePostcode">Site postcode</label>
+                                <input type="text" id="sitePostcode" placeholder="CV1 2AA" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose a day</label>
+                                <div class="date-quick-select">
+                                    <button type="button" class="date-option" onclick="selectQuickDate('tomorrow')">Tomorrow</button>
+                                    <button type="button" class="date-option" onclick="selectQuickDate('day-after')">Day After</button>
+                                    <button type="button" class="date-option" onclick="selectQuickDate('next-week')">Next Week</button>
+                                </div>
+                                <input type="hidden" id="bookingDate" required>
+                            </div>
+                            <button type="button" class="submit-booking" onclick="goToStep2()">Next →</button>
+                        </div>
+                        <div class="booking-step" id="step2" style="display: none;">
+                            <div class="form-group">
+                                <label for="bookingPhone">Contact number</label>
+                                <input type="tel" id="bookingPhone" placeholder="07xxx xxxxxx" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Morning or afternoon?</label>
+                                <div class="time-preference">
+                                    <button type="button" class="time-pref" onclick="selectTimePref(this, 'morning')">Morning</button>
+                                    <button type="button" class="time-pref" onclick="selectTimePref(this, 'afternoon')">Afternoon</button>
+                                </div>
+                                <input type="hidden" id="bookingTime" required>
+                            </div>
+                            <button type="submit" class="submit-booking">Book Survey →</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'consultation':
+                    modalTitle.textContent = 'Schedule Call';
+                    modalSubtitle.textContent = '15-minute consultation about ' + window.recommendedPlan + ' Plan';
+                    formHTML = `
+                        <div class="form-group">
+                            <label for="bookingEmail">Email for calendar invite</label>
+                            <input type="email" id="bookingEmail" placeholder="you@company.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pick a slot this week</label>
+                            <div class="time-slots-mini">
+                                <div class="time-slot" onclick="selectTime(this, 'Mon 10am')">Mon 10am</div>
+                                <div class="time-slot" onclick="selectTime(this, 'Tue 2pm')">Tue 2pm</div>
+                                <div class="time-slot" onclick="selectTime(this, 'Wed 11am')">Wed 11am</div>
+                                <div class="time-slot" onclick="selectTime(this, 'Thu 3pm')">Thu 3pm</div>
+                                <div class="time-slot" onclick="selectTime(this, 'Fri 10am')">Fri 10am</div>
+                            </div>
+                            <input type="hidden" id="bookingTime" required>
+                        </div>
+                        <button type="submit" class="submit-booking">Book Call →</button>
+                    `;
+                    break;
+            }
+            
+            form.innerHTML = formHTML;
+            
+            // Show modal
+            modal.classList.add('show');
+        }
+        
+        // New helper functions
+        function selectQuickDate(option) {
+            const dateOptions = document.querySelectorAll('.date-option');
+            dateOptions.forEach(opt => opt.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            const today = new Date();
+            let selectedDate;
+            
+            switch(option) {
+                case 'tomorrow':
+                    selectedDate = new Date(today);
+                    selectedDate.setDate(today.getDate() + 1);
+                    break;
+                case 'day-after':
+                    selectedDate = new Date(today);
+                    selectedDate.setDate(today.getDate() + 2);
+                    break;
+                case 'next-week':
+                    selectedDate = new Date(today);
+                    selectedDate.setDate(today.getDate() + 7);
+                    break;
+            }
+            
+            document.getElementById('bookingDate').value = selectedDate.toISOString().split('T')[0];
+        }
+        
+        function selectTimePref(element, preference) {
+            document.querySelectorAll('.time-pref').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('bookingTime').value = preference;
+        }
+        
+        function goToStep2() {
+            if (document.getElementById('sitePostcode').value && document.getElementById('bookingDate').value) {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+            }
+        }
+        
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.remove('show');
+            // Reset form
+            document.querySelector('.booking-form').reset();
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+        }
+        
+        function selectTime(element, time) {
+            // Remove selected from all time slots
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            // Add selected to clicked slot
+            element.classList.add('selected');
+            // Set hidden input value
+            document.getElementById('bookingTime').value = time;
+        }
+        
+        function submitBooking(event) {
+            event.preventDefault();
+            
+            // Gather form data based on what's available
+            const bookingData = {
+                type: window.bookingType,
+                plan: window.recommendedPlan,
+                answers: userAnswers
+            };
+            
+            // Get form values that exist
+            if (document.getElementById('bookingName')) {
+                bookingData.name = document.getElementById('bookingName').value;
+            }
+            if (document.getElementById('bookingPhone')) {
+                bookingData.phone = document.getElementById('bookingPhone').value;
+            }
+            if (document.getElementById('bookingEmail')) {
+                bookingData.email = document.getElementById('bookingEmail').value;
+            }
+            if (document.getElementById('bookingDate')) {
+                bookingData.date = document.getElementById('bookingDate').value;
+            }
+            if (document.getElementById('bookingTime')) {
+                bookingData.time = document.getElementById('bookingTime').value;
+            }
+            if (document.getElementById('sitePostcode')) {
+                bookingData.postcode = document.getElementById('sitePostcode').value;
+            }
+            
+            // In production, this would send to your backend
+            console.log('Booking submitted:', bookingData);
+            
+            // Show success message
+            const modalContent = document.querySelector('.modal-content');
+            let successMessage = 'Perfect! ';
+            
+            switch(window.bookingType) {
+                case 'upgrade':
+                case 'callback':
+                    successMessage += `We'll call you at ${bookingData.phone} very soon.`;
+                    break;
+                case 'survey':
+                    successMessage += `Site survey booked for ${bookingData.postcode}.`;
+                    break;
+                case 'consultation':
+                    successMessage += `Calendar invite sent to ${bookingData.email}.`;
+                    break;
+            }
+            
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                    <h2 style="color: white; margin-bottom: 1rem;">All Set!</h2>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                        ${successMessage}
+                    </p>
+                    <button class="submit-booking" onclick="closeBookingModal()">Close</button>
+                </div>
+            `;
+            
+            // Auto close after 3 seconds
+            setTimeout(() => {
+                closeBookingModal();
+            }, 3000);
+        }
+
+        // Show/hide header on scroll
+        let lastScrollY = 0;
+        const header = document.querySelector('.header');
+        const heroHeight = document.querySelector('.hero').offsetHeight;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // Show header when scrolled past 50% of hero
+            if (currentScrollY > heroHeight * 0.5) {
+                header.classList.add('visible');
+            } else {
+                header.classList.remove('visible');
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+    </script>
+</body>
+</html>
