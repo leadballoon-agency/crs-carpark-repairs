@@ -55,5 +55,20 @@
     }
   ],
   "reports": [],
-  "sessions": []
+  "sessions": [
+    {
+      "id": "1756037873133",
+      "userId": "1",
+      "token": "069dbf52b762942ffba149622707b3efc547a38a5cd799954440cd6d8435c69e",
+      "createdAt": "2025-08-24T12:17:53.133Z",
+      "expiresAt": "2025-08-25T12:17:53.133Z"
+    },
+    {
+      "id": "1756037890032",
+      "userId": "2",
+      "token": "11b138b7d1ae22fd9906af2732a1e6a9acf43dcf1ca4a68e9fa67757b3c79712",
+      "createdAt": "2025-08-24T12:18:10.032Z",
+      "expiresAt": "2025-08-25T12:18:10.032Z"
+    }
+  ]
 }
