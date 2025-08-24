@@ -1,0 +1,59 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "admin@crs.com",
+      "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "name": "Admin User",
+      "company": "CRS Car Park Repairs",
+      "phone": "024 7699 2244",
+      "role": "admin",
+      "createdAt": "2025-08-24T11:40:38.609Z"
+    },
+    {
+      "id": "2",
+      "email": "mcdonalds@franchise.com",
+      "password": "d3ad9315b7be5dd53b31a273b3b3aba5defe700808305aa16a3062b76658a791",
+      "name": "John Richardson",
+      "company": "McDonald's Franchise Group",
+      "phone": "07700 900123",
+      "role": "client",
+      "sites": 23,
+      "createdAt": "2025-08-24T11:40:38.609Z"
+    }
+  ],
+  "sites": [
+    {
+      "id": "1",
+      "userId": "2",
+      "location": "Birmingham City Centre",
+      "address": "High Street, B1 2XX",
+      "status": "critical",
+      "lastInspection": "2024-02-15",
+      "nextService": "2024-03-12",
+      "issues": 7
+    },
+    {
+      "id": "2",
+      "userId": "2",
+      "location": "Coventry Ring Road",
+      "address": "Ring Road, CV1 3XX",
+      "status": "scheduled",
+      "lastInspection": "2024-02-20",
+      "nextService": "2024-03-15",
+      "issues": 3
+    },
+    {
+      "id": "3",
+      "userId": "2",
+      "location": "Solihull Retail Park",
+      "address": "Retail Park, B91 4XX",
+      "status": "healthy",
+      "lastInspection": "2024-02-28",
+      "nextService": "2024-04-28",
+      "issues": 0
+    }
+  ],
+  "reports": [],
+  "sessions": []
+}

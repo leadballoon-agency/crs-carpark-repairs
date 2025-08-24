@@ -25,6 +25,132 @@
             color: #333;
             min-height: 100vh;
         }
+        
+        /* Login Screen */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .login-overlay.hidden {
+            display: none;
+        }
+        
+        .login-box {
+            background: black;
+            border: 2px solid var(--yellow);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-logo img {
+            height: 60px;
+        }
+        
+        .login-title {
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            color: var(--yellow);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--yellow);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .login-btn {
+            background: var(--yellow);
+            color: black;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: white;
+            transform: scale(1.02);
+        }
+        
+        .demo-hint {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+        
+        .error-message {
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid var(--red);
+            color: #ff6b6b;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
 
         /* Header */
         .header {
@@ -525,6 +651,39 @@
     </style>
 </head>
 <body>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="images/yellow-logo.png" alt="CRS">
+            </div>
+            <h2 class="login-title">Client Portal</h2>
+            <p class="login-subtitle">Access your priority service dashboard</p>
+            
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="error-message" id="errorMessage">
+                    Invalid credentials. Please try again.
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="you@company.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+            
+            <div class="demo-hint">
+                Demo: Use email "demo@mcdonalds.com" and password "demo123"
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -771,6 +930,45 @@
     </div>
 
     <script>
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginOverlay = document.getElementById('loginOverlay');
+            
+            // Demo credentials check
+            if (email === 'demo@mcdonalds.com' && password === 'demo123') {
+                // Success - hide login overlay
+                loginOverlay.classList.add('hidden');
+                // In production, would set session/cookie here
+                localStorage.setItem('crs_logged_in', 'true');
+            } else {
+                // Show error message
+                errorMessage.classList.add('show');
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            // Clear any previous session for testing
+            localStorage.removeItem('crs_logged_in');
+            // Login overlay is shown by default via CSS
+        });
+        
+        // Handle logout
+        document.querySelector('.logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('crs_logged_in');
+            window.location.href = 'index.html';
+        });
+        
         // Filter functionality
         document.querySelectorAll('.filter-tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -783,9 +981,11 @@
         // Simulate real-time updates
         setTimeout(() => {
             const alertBanner = document.querySelector('.alert-banner');
-            alertBanner.style.background = 'var(--orange)';
-            alertBanner.querySelector('.alert-text').innerHTML = 
-                '<strong>Good news!</strong> Birmingham crew can handle 2 urgent sites today';
+            if (alertBanner) {
+                alertBanner.style.background = 'var(--orange)';
+                alertBanner.querySelector('.alert-text').innerHTML = 
+                    '<strong>Good news!</strong> Birmingham crew can handle 2 urgent sites today';
+            }
         }, 5000);
     </script>
 </body>

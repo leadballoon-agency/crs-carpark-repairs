@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS Client Portal - Dashboard</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --green: #00A652;
+            --red: #DC143C;
+            --orange: #FF8C00;
+            --blue: #1E90FF;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .login-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .login-box {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--yellow);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-logo img {
+            height: 50px;
+        }
+        
+        .login-title {
+            color: white;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-form {
+            margin-top: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            color: var(--yellow);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--yellow);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .login-btn {
+            width: 100%;
+            background: var(--yellow);
+            color: black;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: white;
+            transform: scale(1.02);
+        }
+        
+        .demo-hint {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+        
+        .error-msg {
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid var(--red);
+            color: #ff6b6b;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .error-msg.show {
+            display: block;
+        }
+        
+        /* Main Portal */
+        .portal-container {
+            display: none;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+        
+        .portal-container.active {
+            display: block;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--yellow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .logo {
+            height: 35px;
+        }
+        
+        .client-info {
+            color: white;
+        }
+        
+        .client-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--yellow);
+        }
+        
+        .client-company {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: var(--yellow);
+            padding: 0.5rem 0.75rem;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .logout-btn {
+            background: var(--yellow);
+            color: black;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--yellow);
+        }
+        
+        .stat-card.urgent::before {
+            background: var(--red);
+        }
+        
+        .stat-card.success::before {
+            background: var(--green);
+        }
+        
+        .stat-card.warning::before {
+            background: var(--orange);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--black);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .stat-change {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(0, 166, 82, 0.1);
+            color: var(--green);
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .stat-change.negative {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--red);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            background: var(--black);
+            color: var(--yellow);
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .action-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+        
+        /* Sites Table */
+        .sites-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 250px;
+        }
+        
+        .filter-btn {
+            background: var(--yellow);
+            color: black;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .sites-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .sites-table th {
+            background: #f9f9f9;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .sites-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .sites-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-critical {
+            background: rgba(220, 20, 60, 0.2);
+            color: var(--red);
+        }
+        
+        .status-scheduled {
+            background: rgba(255, 140, 0, 0.2);
+            color: var(--orange);
+        }
+        
+        .status-healthy {
+            background: rgba(0, 166, 82, 0.2);
+            color: var(--green);
+        }
+        
+        .view-btn {
+            background: var(--black);
+            color: var(--yellow);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        
+        .view-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--black);
+        }
+        
+        .report-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-field label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: var(--yellow);
+            color: black;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: var(--black);
+            color: var(--yellow);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .sites-table {
+                font-size: 0.85rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-input {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box" id="loginBox">
+            <div class="login-logo">
+                <img src="images/yellow-logo.png" alt="CRS">
+            </div>
+            <h1 class="login-title">Client Portal</h1>
+            
+            <div class="error-msg" id="errorMsg">
+                Invalid credentials. Please try again.
+            </div>
+            
+            <div class="success-msg" id="successMsg" style="background: rgba(0, 166, 82, 0.2); border: 1px solid var(--green); color: #4CAF50; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: none; text-align: center;">
+                Account created successfully! Please sign in.
+            </div>
+            
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+            
+            <!-- Registration Form (Hidden by default) -->
+            <form class="login-form" id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" required placeholder="John Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regCompany">Company Name</label>
+                    <input type="text" id="regCompany" required placeholder="Your Company Ltd">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" required placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required placeholder="Min 6 characters">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPhone">Phone Number</label>
+                    <input type="tel" id="regPhone" required placeholder="07XXX XXXXXX">
+                </div>
+                
+                <button type="submit" class="login-btn">Create Account</button>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" onclick="showLoginForm(); return false;" style="color: var(--yellow); text-decoration: none;">← Back to Sign In</a>
+                </div>
+            </form>
+            
+            <div class="demo-hint">
+                <a href="#" onclick="showRegisterForm(); return false;" style="color: var(--yellow); text-decoration: none; font-weight: 600;">Create New Account →</a><br>
+                <span style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">Demo: admin@crs.com / admin123</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Portal -->
+    <div class="portal-container" id="portalContainer">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <img src="images/yellow-logo.png" alt="CRS" class="logo">
+                    <div class="client-info">
+                        <div class="client-name" id="clientName">John Richardson</div>
+                        <div class="client-company" id="clientCompany">McDonald's Franchise Group</div>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-value" id="totalSites">23</div>
+                    <div class="stat-label">Total Sites</div>
+                    <span class="stat-change">+2 this month</span>
+                </div>
+                
+                <div class="stat-card urgent">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-value" id="urgentSites">4</div>
+                    <div class="stat-label">Urgent Repairs</div>
+                    <span class="stat-change negative">↑ 2 new</span>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="scheduledRepairs">8</div>
+                    <div class="stat-label">Scheduled This Month</div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">£47.3k</div>
+                    <div class="stat-label">Saved This Year</div>
+                    <span class="stat-change">62% reduction</span>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="openReportModal()">
+                        📸 Report Damage
+                    </button>
+                    <button class="action-btn" onclick="scheduleInspection()">
+                        🔍 Schedule Inspection
+                    </button>
+                    <button class="action-btn" onclick="viewInvoices()">
+                        📄 View Invoices
+                    </button>
+                    <button class="action-btn" onclick="downloadReport()">
+                        📊 Download Report
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Sites Table -->
+            <div class="sites-section">
+                <div class="table-header">
+                    <h2 class="section-title">Your Sites</h2>
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Search sites..." id="searchInput" onkeyup="filterSites()">
+                        <button class="filter-btn" onclick="toggleFilters()">Filters</button>
+                    </div>
+                </div>
+                
+                <table class="sites-table">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>Last Inspection</th>
+                            <th>Next Service</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sitesTableBody">
+                        <!-- Sites will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Damage Modal -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <h2 class="modal-title">Report New Damage</h2>
+            
+            <form class="report-form" onsubmit="submitReport(event)">
+                <div class="form-field">
+                    <label for="site">Select Site</label>
+                    <select id="site" required>
+                        <option value="">Choose a site...</option>
+                        <option value="birmingham">Birmingham City Centre</option>
+                        <option value="coventry">Coventry Ring Road</option>
+                        <option value="solihull">Solihull Retail Park</option>
+                        <option value="wolverhampton">Wolverhampton Drive-Thru</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="severity">Severity</label>
+                    <select id="severity" required>
+                        <option value="">Select severity...</option>
+                        <option value="critical">Critical - Safety Risk</option>
+                        <option value="high">High - Needs Attention</option>
+                        <option value="medium">Medium - Monitor</option>
+                        <option value="low">Low - Cosmetic</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="description">Description</label>
+                    <textarea id="description" required placeholder="Describe the damage..."></textarea>
+                </div>
+                
+                <div class="form-field">
+                    <label for="photo">Upload Photo (Optional)</label>
+                    <input type="file" id="photo" accept="image/*">
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Report</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Sample data
+        const sites = [
+            {
+                location: 'Birmingham City Centre',
+                address: 'High Street, B1 2XX',
+                status: 'critical',
+                lastInspection: '2024-02-15',
+                nextService: '2024-03-12',
+                issues: 7
+            },
+            {
+                location: 'Coventry Ring Road',
+                address: 'Ring Road, CV1 3XX',
+                status: 'scheduled',
+                lastInspection: '2024-02-20',
+                nextService: '2024-03-15',
+                issues: 3
+            },
+            {
+                location: 'Solihull Retail Park',
+                address: 'Retail Park, B91 4XX',
+                status: 'healthy',
+                lastInspection: '2024-02-28',
+                nextService: '2024-04-28',
+                issues: 0
+            },
+            {
+                location: 'Wolverhampton Drive-Thru',
+                address: 'Queen Street, WV1 5XX',
+                status: 'scheduled',
+                lastInspection: '2024-02-10',
+                nextService: '2024-03-20',
+                issues: 2
+            },
+            {
+                location: 'Walsall Town Centre',
+                address: 'Park Street, WS1 1XX',
+                status: 'healthy',
+                lastInspection: '2024-02-25',
+                nextService: '2024-04-25',
+                issues: 0
+            },
+            {
+                location: 'Sutton Coldfield',
+                address: 'Parade, B72 1XX',
+                status: 'critical',
+                lastInspection: '2024-02-18',
+                nextService: '2024-03-10',
+                issues: 5
+            }
+        ];
+        
+        // Initialize accounts storage
+        function initAccounts() {
+            if (!localStorage.getItem('crsAccounts')) {
+                const defaultAccounts = [
+                    {
+                        email: 'admin@crs.com',
+                        password: 'admin123',
+                        name: 'Admin User',
+                        company: 'CRS Car Park Repairs',
+                        phone: '024 7699 2244'
+                    },
+                    {
+                        email: 'mcdonalds@franchise.com',
+                        password: 'demo123',
+                        name: 'John Richardson',
+                        company: "McDonald's Franchise Group",
+                        phone: '07700 900123'
+                    }
+                ];
+                localStorage.setItem('crsAccounts', JSON.stringify(defaultAccounts));
+            }
+        }
+        
+        // Show registration form
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.querySelector('.login-title').textContent = 'Create Account';
+            document.querySelector('.demo-hint').style.display = 'none';
+            document.getElementById('errorMsg').classList.remove('show');
+            document.getElementById('successMsg').style.display = 'none';
+        }
+        
+        // Show login form
+        function showLoginForm() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.querySelector('.login-title').textContent = 'Client Portal';
+            document.querySelector('.demo-hint').style.display = 'block';
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+        
+        // Handle registration
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('regName').value;
+            const company = document.getElementById('regCompany').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const phone = document.getElementById('regPhone').value;
+            
+            // Validate password length
+            if (password.length < 6) {
+                document.getElementById('errorMsg').textContent = 'Password must be at least 6 characters';
+                document.getElementById('errorMsg').classList.add('show');
+                return;
+            }
+            
+            // Get existing accounts
+            const accounts = JSON.parse(localStorage.getItem('crsAccounts') || '[]');
+            
+            // Check if email already exists
+            if (accounts.find(acc => acc.email === email)) {
+                document.getElementById('errorMsg').textContent = 'Email already registered';
+                document.getElementById('errorMsg').classList.add('show');
+                return;
+            }
+            
+            // Add new account
+            accounts.push({ email, password, name, company, phone });
+            localStorage.setItem('crsAccounts', JSON.stringify(accounts));
+            
+            // Show success and switch to login
+            document.getElementById('successMsg').style.display = 'block';
+            showLoginForm();
+            
+            // Pre-fill email
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = '';
+            
+            // Clear registration form
+            document.getElementById('registerForm').reset();
+        }
+        
+        // Login handling
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Get accounts from storage
+            const accounts = JSON.parse(localStorage.getItem('crsAccounts') || '[]');
+            
+            // Find matching account
+            const account = accounts.find(acc => acc.email === email && acc.password === password);
+            
+            if (account) {
+                // Store user info
+                localStorage.setItem('currentUser', JSON.stringify(account));
+                localStorage.setItem('clientName', account.name);
+                localStorage.setItem('clientCompany', account.company);
+                
+                // Show portal
+                document.getElementById('loginScreen').classList.add('hidden');
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('portalContainer').classList.add('active');
+                    loadDashboard();
+                }, 500);
+            } else {
+                // Show error
+                document.getElementById('errorMsg').textContent = 'Invalid credentials. Please try again.';
+                document.getElementById('errorMsg').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('errorMsg').classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // Logout
+        function handleLogout() {
+            document.getElementById('portalContainer').classList.remove('active');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        // Load dashboard
+        function loadDashboard() {
+            // Set client info
+            document.getElementById('clientName').textContent = localStorage.getItem('clientName') || 'Guest User';
+            document.getElementById('clientCompany').textContent = localStorage.getItem('clientCompany') || 'Company Name';
+            
+            // Populate sites table
+            populateSitesTable(sites);
+        }
+        
+        // Populate sites table
+        function populateSitesTable(sitesData) {
+            const tbody = document.getElementById('sitesTableBody');
+            tbody.innerHTML = '';
+            
+            sitesData.forEach(site => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${site.location}</strong></td>
+                    <td>${site.address}</td>
+                    <td>
+                        <span class="status-badge status-${site.status}">
+                            ${site.status === 'critical' ? 'Critical' : 
+                              site.status === 'scheduled' ? 'Scheduled' : 'Healthy'}
+                        </span>
+                    </td>
+                    <td>${formatDate(site.lastInspection)}</td>
+                    <td><strong>${formatDate(site.nextService)}</strong></td>
+                    <td>
+                        <button class="view-btn" onclick="viewSiteDetails('${site.location}')">
+                            View Details
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Format date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('en-GB', options);
+        }
+        
+        // Filter sites
+        function filterSites() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredSites = sites.filter(site => 
+                site.location.toLowerCase().includes(searchTerm) ||
+                site.address.toLowerCase().includes(searchTerm)
+            );
+            populateSitesTable(filteredSites);
+        }
+        
+        // Modal functions
+        function openReportModal() {
+            document.getElementById('reportModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('reportModal').classList.remove('active');
+        }
+        
+        function submitReport(event) {
+            event.preventDefault();
+            alert('Report submitted successfully! We will review and contact you within 24 hours.');
+            closeModal();
+            document.querySelector('.report-form').reset();
+        }
+        
+        // Other action functions
+        function scheduleInspection() {
+            alert('Opening scheduling system...');
+        }
+        
+        function viewInvoices() {
+            alert('Loading invoices...');
+        }
+        
+        function downloadReport() {
+            alert('Generating PDF report...');
+        }
+        
+        function viewSiteDetails(siteName) {
+            alert(`Loading details for ${siteName}...`);
+        }
+        
+        function toggleFilters() {
+            alert('Filter panel coming soon...');
+        }
+        
+        // Check for existing session on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize accounts
+            initAccounts();
+            
+            // Always require login for security
+            document.getElementById('loginScreen').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
