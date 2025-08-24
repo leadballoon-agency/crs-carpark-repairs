@@ -711,6 +711,16 @@
             <p>Help us understand your repair needs</p>
         </div>
 
+        <div style="background: rgba(255, 215, 0, 0.1); border: 2px solid #FFD700; border-radius: 12px; padding: 1.5rem; margin: 2rem 0; text-align: center;">
+            <h3 style="color: #FFD700; margin-bottom: 0.75rem;">🔒 Your Privacy is Protected</h3>
+            <p style="color: white; line-height: 1.6;">
+                <strong>✓ Photos stay on YOUR device</strong> - We don't automatically upload anything<br>
+                <strong>✓ Local processing only</strong> - Analysis happens in your browser<br>
+                <strong>✓ YOU control sharing</strong> - Choose if/when to send to CRS via WhatsApp/Email<br>
+                <strong>✓ No data sent without your action</strong> - CRS only sees what you explicitly share
+            </p>
+        </div>
+
         <div class="workflow-container">
             <div class="upload-section">
                 <div class="section-header">
@@ -721,7 +731,7 @@
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📸</div>
                     <h3>Tap to take photo or upload</h3>
-                    <p>Capture damage directly with your camera</p>
+                    <p>Photo stays private on your device</p>
                     <input type="file" id="fileInput" class="file-input" accept="image/*" capture="environment">
                 </div>
             </div>
@@ -831,7 +841,7 @@
             </div>
             
             <button class="submit-btn" id="submitBtn" disabled style="background: #25D366;">
-                📱 Send via WhatsApp
+                📱 Ready? Share via WhatsApp
             </button>
             
             <div style="margin-top: 1rem; text-align: center;">
@@ -932,7 +942,7 @@
                     uploadArea.innerHTML = `
                         <div class="upload-icon">📸</div>
                         <h3>Tap to take photo or upload</h3>
-                        <p>Capture damage directly with your camera</p>
+                        <p>Photo stays private on your device</p>
                     `;
                 };
                 
@@ -1137,7 +1147,7 @@
                                 window.open(whatsappUrl, '_blank');
                                 // Reset button
                                 submitBtn.disabled = false;
-                                submitBtn.textContent = '📱 Send via WhatsApp';
+                                submitBtn.textContent = '📱 Ready? Share via WhatsApp';
                                 
                                 // Show success message
                                 successMessage.classList.add('show');
