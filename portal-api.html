@@ -136,6 +136,30 @@
             font-weight: 600;
         }
         
+        .back-home-btn {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: var(--yellow);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .back-home-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: translateX(-5px);
+        }
+        
         .msg {
             padding: 0.75rem;
             border-radius: 8px;
@@ -514,6 +538,13 @@
                 left: 0;
                 right: 0;
             }
+            
+            .back-home-btn {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
         }
         
         /* Touch-friendly enhancements */
@@ -542,6 +573,7 @@
 <body>
     <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
+        <a href="index.html" class="back-home-btn">← Back to Home</a>
         <div class="login-box">
             <div class="login-logo">
                 <img src="images/yellow-logo.png" alt="CRS">
