@@ -443,6 +443,49 @@
             color: var(--yellow);
         }
         
+        /* Quick Actions Bar */
+        .quick-actions-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .quick-actions-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quick-action-btn {
+            background: var(--black);
+            color: var(--yellow);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .quick-action-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+        
         /* Mobile Optimizations */
         @media (max-width: 768px) {
             .login-box {
@@ -666,6 +709,25 @@
                 <!-- Stats will be populated here -->
             </div>
             
+            <!-- Quick Actions -->
+            <div class="quick-actions-bar" id="quickActions" style="display: none;">
+                <h3 class="quick-actions-title">Quick Actions</h3>
+                <div class="quick-actions-grid">
+                    <button class="quick-action-btn" onclick="openDamageMapper()">
+                        📸 Report New Damage
+                    </button>
+                    <button class="quick-action-btn" onclick="addNewSite()">
+                        ➕ Add New Site
+                    </button>
+                    <button class="quick-action-btn" onclick="scheduleInspection()">
+                        🔍 Schedule Inspection
+                    </button>
+                    <button class="quick-action-btn" onclick="viewReports()">
+                        📄 View All Reports
+                    </button>
+                </div>
+            </div>
+            
             <!-- Sites Section -->
             <div class="sites-section" id="sitesSection" style="display: none;">
                 <h2 class="section-title">Your Sites</h2>
@@ -847,6 +909,7 @@
                 // Hide loading
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('statsGrid').style.display = 'grid';
+                document.getElementById('quickActions').style.display = 'block';
                 document.getElementById('sitesSection').style.display = 'block';
                 
             } catch (error) {
@@ -892,6 +955,14 @@
                     <div class="site-name">${site.location}</div>
                     <div class="site-address">${site.address}</div>
                     <span class="site-status status-${site.status}">${site.status.toUpperCase()}</span>
+                    <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                        <button onclick="reportDamage('${site.location}', '${site.address}')" style="background: #FFD700; color: black; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                            📸 Report Damage
+                        </button>
+                        <button onclick="viewHistory('${site.id}')" style="background: #333; color: #FFD700; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                            📄 History
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -916,7 +987,39 @@
             
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('statsGrid').style.display = 'grid';
+            document.getElementById('quickActions').style.display = 'block';
             document.getElementById('sitesSection').style.display = 'block';
+        }
+        
+        // Report damage for a site
+        function reportDamage(siteName, siteAddress) {
+            // Store site info in sessionStorage
+            sessionStorage.setItem('reportingSite', JSON.stringify({
+                name: siteName,
+                address: siteAddress
+            }));
+            // Open damage mapper with site pre-filled
+            window.open('damage-mapper.html?from=portal', '_blank');
+        }
+        
+        // View site history
+        function viewHistory(siteId) {
+            alert('Site history coming soon! This will show all past repairs and reports.');
+        }
+        
+        // Open damage mapper for new damage
+        function openDamageMapper() {
+            window.open('damage-mapper.html?from=portal', '_blank');
+        }
+        
+        // Schedule inspection
+        function scheduleInspection() {
+            alert('Schedule inspection feature coming soon!');
+        }
+        
+        // View all reports
+        function viewReports() {
+            alert('Reports dashboard coming soon!');
         }
         
         // Add new site

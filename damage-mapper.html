@@ -862,6 +862,44 @@
         let damageMarkers = [];
         let currentSeverity = 'low';
         let markerCount = 0;
+        
+        // Check if opened from portal
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromPortal = urlParams.get('from') === 'portal';
+            
+            if (fromPortal) {
+                // Check for pre-selected site
+                const reportingSite = sessionStorage.getItem('reportingSite');
+                if (reportingSite) {
+                    const site = JSON.parse(reportingSite);
+                    const locationInput = document.getElementById('location');
+                    if (locationInput && site.address) {
+                        // Pre-fill with site address
+                        const addressParts = site.address.split(',');
+                        locationInput.value = addressParts[addressParts.length - 1].trim(); // Use last part (postcode)
+                    }
+                    // Clear the session storage
+                    sessionStorage.removeItem('reportingSite');
+                    
+                    // Add a notice that this is for a specific site
+                    const toolTitle = document.querySelector('.tool-title');
+                    if (toolTitle && site.name) {
+                        const notice = document.createElement('div');
+                        notice.style.cssText = 'background: #FFD700; color: black; padding: 0.75rem; border-radius: 8px; margin-top: 1rem; text-align: center; font-weight: 600;';
+                        notice.innerHTML = `📍 Reporting damage for: <strong>${site.name}</strong>`;
+                        toolTitle.appendChild(notice);
+                    }
+                }
+                
+                // Update header for portal users
+                const closeBtn = document.querySelector('.close-btn');
+                if (closeBtn) {
+                    closeBtn.textContent = '← Back to Portal';
+                    closeBtn.href = 'portal-api.html';
+                }
+            }
+        });
 
         const fileInput = document.getElementById('fileInput');
         const uploadArea = document.getElementById('uploadArea');
