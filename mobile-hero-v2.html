@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS Mobile Hero - Premium Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* HERO VERSION 1 - DRAMATIC SPLIT */
+        .hero-v1 {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        /* Animated road texture */
+        .hero-v1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(255, 215, 0, 0.03) 100px,
+                    rgba(255, 215, 0, 0.03) 200px
+                );
+            animation: road-move 10s linear infinite;
+        }
+        
+        @keyframes road-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(200px); }
+        }
+        
+        .hero-v1 .emergency-badge {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF0000;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: pulse-red 2s infinite;
+            z-index: 10;
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            50% { box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0); }
+        }
+        
+        .hero-v1 .main-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .hero-v1 .big-number {
+            font-size: 120px;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: number-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes number-glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2) drop-shadow(0 0 30px rgba(255, 215, 0, 0.5)); }
+        }
+        
+        .hero-v1 .headline {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+        
+        .hero-v1 .subheadline {
+            font-size: 18px;
+            opacity: 0.8;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        
+        .hero-v1 .cta-button {
+            display: inline-block;
+            background: #FFD700;
+            color: #000;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 60px;
+            text-decoration: none;
+            transform: scale(1);
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .hero-v1 .cta-button:active {
+            transform: scale(0.95);
+        }
+        
+        .hero-v1 .trust-strip {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 0 20px;
+        }
+        
+        .hero-v1 .trust-item {
+            text-align: center;
+        }
+        
+        .hero-v1 .trust-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        
+        .hero-v1 .trust-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+        
+        /* HERO VERSION 2 - BEFORE/AFTER */
+        .hero-v2 {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-v2 .before-after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40vh;
+            display: flex;
+        }
+        
+        .hero-v2 .before,
+        .hero-v2 .after {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-v2 .before {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23222"/><circle cx="25" cy="25" r="15" fill="%23111"/><circle cx="75" cy="60" r="20" fill="%23111"/><circle cx="40" cy="80" r="12" fill="%23111"/></svg>');
+            background-size: 200px;
+            filter: contrast(1.2);
+        }
+        
+        .hero-v2 .after {
+            background: linear-gradient(135deg, #333 0%, #222 100%);
+        }
+        
+        .hero-v2 .divider {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #FFD700;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .hero-v2 .labels {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .hero-v2 .before-label {
+            color: #FF4444;
+        }
+        
+        .hero-v2 .after-label {
+            color: #44FF44;
+        }
+        
+        .hero-v2 .content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.9) 50%);
+        }
+        
+        .hero-v2 h1 {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #FFF 0%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-v2 .price {
+            font-size: 48px;
+            font-weight: 900;
+            color: #FFD700;
+            margin: 20px 0;
+        }
+        
+        .hero-v2 .cta {
+            background: #FFD700;
+            color: #000;
+            padding: 16px 35px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        /* HERO VERSION 3 - COUNTDOWN URGENCY */
+        .hero-v3 {
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .hero-v3 .urgency-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #FF0000, #FF4444);
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            animation: flash 1s ease-in-out infinite;
+        }
+        
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .hero-v3 .countdown {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #FFD700;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .hero-v3 .countdown-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .hero-v3 .countdown-timer {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .hero-v3 .time-block {
+            text-align: center;
+        }
+        
+        .hero-v3 .time-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFD700;
+            line-height: 1;
+        }
+        
+        .hero-v3 .time-unit {
+            font-size: 10px;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+        
+        .hero-v3 h1 {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .hero-v3 .savings {
+            font-size: 24px;
+            color: #44FF44;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        .hero-v3 .cta-urgent {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 20px 50px;
+            font-size: 18px;
+            font-weight: 800;
+            border: none;
+            border-radius: 60px;
+            text-decoration: none;
+            display: inline-block;
+            animation: pulse-cta 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-cta {
+            0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5); }
+        }
+        
+        /* Navigation */
+        .version-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 30px;
+        }
+        
+        .version-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .version-btn.active {
+            background: #FFD700;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Version 1: Big Number Impact -->
+    <div class="hero-v1" id="v1">
+        <div class="emergency-badge">🔴 EMERGENCY REPAIRS 24/7</div>
+        
+        <div class="main-content">
+            <div class="big-number">£2K</div>
+            <h1 class="headline">Fixes Your Entire Zone</h1>
+            <p class="subheadline">Every. Single. Pothole.</p>
+            <a href="#" class="cta-button">Get Instant Quote →</a>
+        </div>
+        
+        <div class="trust-strip">
+            <div class="trust-item">
+                <div class="trust-number">500+</div>
+                <div class="trust-label">Car Parks</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-number">24HR</div>
+                <div class="trust-label">Response</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-number">5YR</div>
+                <div class="trust-label">Warranty</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Version 2: Before/After Visual -->
+    <div class="hero-v2" id="v2" style="display: none;">
+        <div class="before-after">
+            <div class="before"></div>
+            <div class="after"></div>
+            <div class="divider"></div>
+            <div class="labels">
+                <span class="before-label">BEFORE</span>
+                <span class="after-label">AFTER</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <h1>Transform Your Car Park</h1>
+            <div class="price">£2,000</div>
+            <p>Minimum zone price • All damage fixed</p>
+            <a href="#" class="cta">Start Your Transformation</a>
+        </div>
+    </div>
+    
+    <!-- Version 3: Urgency/Countdown -->
+    <div class="hero-v3" id="v3" style="display: none;">
+        <div class="urgency-banner">
+            ⚠️ WINTER DAMAGE SEASON - BOOK NOW
+        </div>
+        
+        <div class="countdown">
+            <div class="countdown-label">Special Pricing Ends In:</div>
+            <div class="countdown-timer">
+                <div class="time-block">
+                    <div class="time-number">02</div>
+                    <div class="time-unit">Days</div>
+                </div>
+                <div class="time-block">
+                    <div class="time-number">14</div>
+                    <div class="time-unit">Hours</div>
+                </div>
+                <div class="time-block">
+                    <div class="time-number">37</div>
+                    <div class="time-unit">Mins</div>
+                </div>
+            </div>
+        </div>
+        
+        <h1>Emergency Pothole<br>Repair Service</h1>
+        <div class="savings">Save £500 Today Only</div>
+        <a href="#" class="cta-urgent">CLAIM OFFER NOW</a>
+    </div>
+    
+    <!-- Version Switcher -->
+    <div class="version-nav">
+        <button class="version-btn active" onclick="showVersion('v1')">Impact</button>
+        <button class="version-btn" onclick="showVersion('v2')">Visual</button>
+        <button class="version-btn" onclick="showVersion('v3')">Urgency</button>
+    </div>
+    
+    <script>
+        function showVersion(version) {
+            document.querySelectorAll('[id^="v"]').forEach(v => v.style.display = 'none');
+            document.getElementById(version).style.display = 'block';
+            
+            document.querySelectorAll('.version-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        // Animate countdown
+        setInterval(() => {
+            const mins = document.querySelector('.time-block:last-child .time-number');
+            if (mins) {
+                let current = parseInt(mins.textContent);
+                if (current > 0) {
+                    mins.textContent = String(current - 1).padStart(2, '0');
+                }
+            }
+        }, 60000);
+    </script>
+</body>
+</html>

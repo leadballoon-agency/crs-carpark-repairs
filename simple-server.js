@@ -356,9 +356,6 @@ server.listen(PORT, () => {
     📍 API Health: http://localhost:${PORT}/api/health
     📍 Portal: http://localhost:${PORT}/portal-api.html
     
-    Test accounts:
-    - admin@crs.com / admin123
-    - mcdonalds@franchise.com / demo123
     
     Press Ctrl+C to stop the server
     `);

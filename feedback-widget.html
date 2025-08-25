@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Widget - CRS</title>
+    <style>
+        /* Feedback Widget Button */
+        .feedback-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #FFD700;
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 998;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feedback-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .feedback-btn.pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4); }
+            50% { box-shadow: 0 4px 20px rgba(255, 215, 0, 0.8); }
+            100% { box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4); }
+        }
+        
+        /* Feedback Modal */
+        .feedback-modal {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 400px;
+            max-width: 90vw;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 999;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .feedback-modal.active {
+            display: block;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .feedback-header {
+            background: linear-gradient(135deg, #FFD700, #FFC700);
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            color: #000;
+        }
+        
+        .feedback-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .feedback-subtitle {
+            font-size: 12px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+        
+        .feedback-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.1);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .feedback-body {
+            padding: 20px;
+        }
+        
+        .feedback-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .feedback-tab {
+            flex: 1;
+            padding: 8px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .feedback-tab.active {
+            background: #FFD700;
+            font-weight: 600;
+        }
+        
+        .feedback-type {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .type-btn {
+            padding: 10px;
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .type-btn:hover {
+            border-color: #FFD700;
+        }
+        
+        .type-btn.selected {
+            background: #FFF9E6;
+            border-color: #FFD700;
+            font-weight: 600;
+        }
+        
+        .feedback-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .feedback-input:focus {
+            outline: none;
+            border-color: #FFD700;
+        }
+        
+        .feedback-priority {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .priority-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .priority-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .priority-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .priority-btn.low { border-color: #4CAF50; }
+        .priority-btn.medium { border-color: #FFA500; }
+        .priority-btn.high { border-color: #FF4444; }
+        .priority-btn.selected { background: #f0f0f0; font-weight: 600; }
+        
+        .feedback-submit {
+            width: 100%;
+            padding: 12px;
+            background: #FFD700;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .feedback-submit:hover {
+            background: #FFC700;
+        }
+        
+        /* Suggestions List */
+        .suggestions-list {
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .suggestions-list.active {
+            display: block;
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .suggestion-type {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: #FFD700;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .suggestion-votes {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .vote-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .vote-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .vote-btn.voted {
+            background: #FFD700;
+            border-color: #FFD700;
+        }
+        
+        .suggestion-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .suggestion-meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        /* Success Message */
+        .feedback-success {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .feedback-success.active {
+            display: block;
+        }
+        
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .success-message {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .success-submessage {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .feedback-modal {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                bottom: 80px;
+            }
+            
+            .feedback-btn {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .feedback-type {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Admin View Styles */
+        .admin-feedback-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .feedback-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background: #FFD700;
+            font-weight: 600;
+        }
+        
+        .feedback-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Feedback Button (Always Visible) -->
+    <button class="feedback-btn" onclick="toggleFeedback()">
+        <span>💡</span>
+        <span>Feedback</span>
+    </button>
+    
+    <!-- Feedback Modal -->
+    <div class="feedback-modal" id="feedbackModal">
+        <div class="feedback-header">
+            <h3 class="feedback-title">Help Us Improve</h3>
+            <p class="feedback-subtitle">Your feedback shapes our platform</p>
+            <button class="feedback-close" onclick="toggleFeedback()">×</button>
+        </div>
+        
+        <div class="feedback-body">
+            <!-- Tabs -->
+            <div class="feedback-tabs">
+                <button class="feedback-tab active" onclick="switchTab('submit')">Submit</button>
+                <button class="feedback-tab" onclick="switchTab('view')">View All</button>
+            </div>
+            
+            <!-- Submit Form -->
+            <div id="submitForm" class="submit-form">
+                <div class="feedback-type">
+                    <button class="type-btn" onclick="selectType('bug')">🐛 Bug</button>
+                    <button class="type-btn" onclick="selectType('feature')">✨ Feature</button>
+                    <button class="type-btn" onclick="selectType('improvement')">🔧 Improvement</button>
+                    <button class="type-btn" onclick="selectType('other')">💭 Other</button>
+                </div>
+                
+                <textarea class="feedback-input" placeholder="Tell us what's on your mind..." id="feedbackText"></textarea>
+                
+                <div class="feedback-priority">
+                    <span class="priority-label">Priority:</span>
+                    <div class="priority-options">
+                        <button class="priority-btn low" onclick="selectPriority('low')">Low</button>
+                        <button class="priority-btn medium" onclick="selectPriority('medium')">Medium</button>
+                        <button class="priority-btn high" onclick="selectPriority('high')">High</button>
+                    </div>
+                </div>
+                
+                <button class="feedback-submit" onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+            
+            <!-- View Suggestions -->
+            <div id="suggestionsList" class="suggestions-list">
+                <!-- Populated dynamically -->
+            </div>
+            
+            <!-- Success Message -->
+            <div id="successMessage" class="feedback-success">
+                <div class="success-icon">✅</div>
+                <div class="success-message">Thank you!</div>
+                <div class="success-submessage">Your feedback has been submitted</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // State management
+        let feedbackState = {
+            type: '',
+            priority: '',
+            isOpen: false,
+            currentTab: 'submit'
+        };
+        
+        // Sample suggestions data (would come from database)
+        const suggestions = [
+            {
+                id: 1,
+                type: 'feature',
+                text: 'Add email notifications when quotes are approved',
+                votes: 12,
+                user: 'Paul',
+                date: '2 days ago',
+                priority: 'high'
+            },
+            {
+                id: 2,
+                type: 'improvement',
+                text: 'Make damage mapper work better on tablets',
+                votes: 8,
+                user: 'Kelsey',
+                date: '1 week ago',
+                priority: 'medium'
+            },
+            {
+                id: 3,
+                type: 'bug',
+                text: 'Export button sometimes doesn\'t work on reports',
+                votes: 3,
+                user: 'Admin',
+                date: '3 days ago',
+                priority: 'high'
+            }
+        ];
+        
+        // Toggle feedback modal
+        function toggleFeedback() {
+            const modal = document.getElementById('feedbackModal');
+            feedbackState.isOpen = !feedbackState.isOpen;
+            modal.classList.toggle('active');
+        }
+        
+        // Switch tabs
+        function switchTab(tab) {
+            feedbackState.currentTab = tab;
+            document.querySelectorAll('.feedback-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'submit') {
+                document.getElementById('submitForm').style.display = 'block';
+                document.getElementById('suggestionsList').classList.remove('active');
+                document.getElementById('successMessage').classList.remove('active');
+            } else {
+                document.getElementById('submitForm').style.display = 'none';
+                document.getElementById('suggestionsList').classList.add('active');
+                loadSuggestions();
+            }
+        }
+        
+        // Select feedback type
+        function selectType(type) {
+            feedbackState.type = type;
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+        
+        // Select priority
+        function selectPriority(priority) {
+            feedbackState.priority = priority;
+            document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+        
+        // Submit feedback
+        function submitFeedback() {
+            const text = document.getElementById('feedbackText').value;
+            
+            if (!feedbackState.type || !text || !feedbackState.priority) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // In production, this would send to backend
+            const feedback = {
+                type: feedbackState.type,
+                text: text,
+                priority: feedbackState.priority,
+                user: localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).name : 'Anonymous',
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('Submitting feedback:', feedback);
+            
+            // Show success message
+            document.getElementById('submitForm').style.display = 'none';
+            document.getElementById('successMessage').classList.add('active');
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                document.getElementById('feedbackText').value = '';
+                document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('selected'));
+                document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('selected'));
+                feedbackState.type = '';
+                feedbackState.priority = '';
+                document.getElementById('submitForm').style.display = 'block';
+                document.getElementById('successMessage').classList.remove('active');
+                toggleFeedback();
+            }, 2000);
+        }
+        
+        // Load suggestions
+        function loadSuggestions() {
+            const list = document.getElementById('suggestionsList');
+            list.innerHTML = suggestions.map(s => `
+                <div class="suggestion-item">
+                    <div class="suggestion-header">
+                        <span class="suggestion-type">${s.type}</span>
+                        <div class="suggestion-votes">
+                            <button class="vote-btn" onclick="vote(${s.id})">👍 ${s.votes}</button>
+                        </div>
+                    </div>
+                    <div class="suggestion-text">${s.text}</div>
+                    <div class="suggestion-meta">${s.user} • ${s.date}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Vote on suggestion
+        function vote(id) {
+            event.target.classList.toggle('voted');
+            // In production, this would update the database
+        }
+        
+        // Check for first-time user
+        window.addEventListener('load', () => {
+            const hasSeenFeedback = localStorage.getItem('hasSeenFeedback');
+            if (!hasSeenFeedback) {
+                document.querySelector('.feedback-btn').classList.add('pulse');
+                localStorage.setItem('hasSeenFeedback', 'true');
+            }
+        });
+    </script>
+</body>
+</html>

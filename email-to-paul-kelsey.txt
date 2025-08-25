@@ -1,0 +1,61 @@
+Subject: CRS Digital Platform - Ready for Testing
+
+Hi Paul & Kelsey,
+
+Hope you're both well. The new CRS platform is ready for initial testing at localhost:3002
+
+What's Live:
+
+Main Website & Tools
+- Updated landing page with cleaner design
+- Interactive damage mapping tool (quite pleased with how this turned out - clients can mark damage on photos)
+- Zone-based pricing calculator built in (£2k minimum as discussed)
+
+Client Portal
+- Login system for existing clients
+- Dashboard showing their sites and service history
+- Direct link to damage reporting tool
+- Simple onboarding flow for new clients
+
+Admin Dashboard
+- Overview of all client activity
+- Damage reports management
+- Track onboarding leads
+- Add existing clients and their sites (yellow "+ Add Client" button)
+- Mobile version for checking things on the go
+
+Testing Access:
+Portal: http://localhost:3002/portal-api.html
+Admin: admin@crs.com / admin123
+Test Client: mcdonalds@franchise.com / demo123
+
+The damage mapper is probably worth having a look at - clients can upload a photo, mark problem areas, and WhatsApp it straight through. Keeps everything documented.
+
+Also researched subscription models (Priority Plans) which could be interesting for regular clients. It's built but not prominently featured - just accessible via footer link if you want to explore the concept.
+
+Added a feedback widget (yellow button, bottom right) so you can leave notes as you test. This will help us prioritize what to build next based on your actual needs.
+
+Everything integrates with your existing GHL setup (£95/month location stays as is). Once you're happy with the platform, we can connect the webhooks to trigger your automations.
+
+The whole system runs on a simple Node server - no monthly hosting costs or licenses to worry about.
+
+Let me know when you've had a chance to test. Happy to adjust anything.
+
+Best,
+[Your name]
+
+---
+
+Quick Start:
+1. Run: node simple-server.js
+2. Visit: http://localhost:3002
+3. Admin dashboard: Use admin@crs.com / admin123
+
+Main Features to Test:
+- Damage mapper (try uploading a car park photo)
+- Client portal flow
+- Admin dashboard stats
+- Mobile view on your phone
+
+Technical Note:
+Currently using file-based database for testing. Can move to proper database when ready for production.
