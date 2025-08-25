@@ -427,7 +427,7 @@
             </div>
             
             <!-- Priority Plans Section -->
-            <div class="settings-section">
+            <div class="settings-section" id="priority-plans">
                 <div class="section-header">
                     <h2 class="section-title">🌟 Priority Plans</h2>
                 </div>
@@ -563,7 +563,7 @@ Custom reporting dashboard"></textarea>
                     features: [
                         "Priority scheduling",
                         "48-hour response time",
-                        "Quarterly inspections",
+                        "Annual inspection",
                         "10% repair discount"
                     ]
                 },
@@ -572,7 +572,7 @@ Custom reporting dashboard"></textarea>
                     price: 399,
                     features: [
                         "Next-day response",
-                        "Monthly inspections",
+                        "Bi-annual inspection",
                         "20% repair discount",
                         "Emergency hotline",
                         "Detailed reporting"
@@ -583,7 +583,7 @@ Custom reporting dashboard"></textarea>
                     price: 799,
                     features: [
                         "Same-day response",
-                        "Bi-weekly inspections",
+                        "Quarterly inspection",
                         "30% repair discount",
                         "24/7 emergency support",
                         "Dedicated account manager",
@@ -686,7 +686,7 @@ Custom reporting dashboard"></textarea>
             document.getElementById('feature-response').value = settings.features.response;
             document.getElementById('feature-warranty').value = settings.features.warranty;
             
-            // Priority Plans defaults
+            // Priority Plans defaults with realistic features
             document.getElementById('silver-name').value = settings.priorityPlans.silver.name;
             document.getElementById('silver-price').value = settings.priorityPlans.silver.price;
             document.getElementById('silver-features').value = settings.priorityPlans.silver.features.join('\n');
