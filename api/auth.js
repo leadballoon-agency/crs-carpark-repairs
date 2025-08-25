@@ -29,7 +29,7 @@ function generateToken() {
     return crypto.randomBytes(32).toString('hex');
 }
 
-module.exports = (req, res) => {
+export default function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
