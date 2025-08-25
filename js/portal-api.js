@@ -35,8 +35,8 @@ class PortalAPI {
     
     // Authentication
     async login(email, password) {
-        // Use direct login endpoint instead of main router
-        const response = await fetch('/api/login', {
+        // Try new auth endpoint first
+        const response = await fetch('/api/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
