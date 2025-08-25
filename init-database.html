@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize CRS Database</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 1rem;
+        }
+        
+        .container {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            color: #FFD700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .warning {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .warning h3 {
+            color: #FFD700;
+            margin-top: 0;
+        }
+        
+        button {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #FFC700;
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            display: block;
+        }
+        
+        .result.error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid #f44336;
+            display: block;
+        }
+        
+        .table-list {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .table-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #FFD700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Initialize CRS Database</h1>
+        
+        <div class="warning">
+            <h3>⚠️ Important</h3>
+            <p>This will create all necessary tables in your Neon PostgreSQL database:</p>
+            <ul>
+                <li>Users table with authentication</li>
+                <li>Sites and damage reports</li>
+                <li>Sessions and feedback</li>
+                <li>Settings and documentation</li>
+                <li>Audit logging</li>
+            </ul>
+            <p><strong>It will also create your super admin account:</strong></p>
+            <p>Email: mark@leadballoon.co.uk<br>Password: admin123!!</p>
+        </div>
+        
+        <button id="initBtn" onclick="initializeDatabase()">
+            Initialize Database
+        </button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Initializing database...</p>
+        </div>
+        
+        <div class="result" id="result"></div>
+    </div>
+    
+    <script>
+        async function initializeDatabase() {
+            const btn = document.getElementById('initBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            
+            btn.disabled = true;
+            loading.classList.add('active');
+            result.className = 'result';
+            
+            try {
+                const response = await fetch('/api/init-db', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        confirmInit: 'INITIALIZE_DATABASE'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        <h3>✅ Database Initialized Successfully!</h3>
+                        <p><strong>${data.tables.length} tables created:</strong></p>
+                        <div class="table-list">
+                            ${data.tables.map(t => `<div class="table-item">📋 ${t}</div>`).join('')}
+                        </div>
+                        <p><strong>Users created: ${data.users}</strong></p>
+                        <ul>
+                            <li>Super Admin: ${data.admins.superAdmin}</li>
+                            <li>Admin: ${data.admins.admin}</li>
+                            <li>Demo Client: ${data.admins.demoClient}</li>
+                        </ul>
+                        <p style="margin-top: 1rem;">
+                            <a href="/client-portal.html" style="color: #FFD700;">
+                                → Go to Client Portal to login
+                            </a>
+                        </p>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Failed to initialize database');
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `
+                    <h3>❌ Initialization Failed</h3>
+                    <p>${error.message}</p>
+                    ${error.details ? `<pre>${JSON.stringify(error, null, 2)}</pre>` : ''}
+                    <p style="margin-top: 1rem;">Make sure DATABASE_URL is set in Vercel environment variables.</p>
+                `;
+                btn.disabled = false;
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+        
+        // Check if we're on localhost
+        if (window.location.hostname === 'localhost') {
+            document.querySelector('.warning').innerHTML += `
+                <p style="color: #f44336; margin-top: 1rem;">
+                    ⚠️ You're on localhost. This won't work unless you're running a local server with DATABASE_URL configured.
+                </p>
+            `;
+        }
+    </script>
+</body>
+</html>
