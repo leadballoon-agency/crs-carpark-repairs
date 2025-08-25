@@ -540,11 +540,14 @@
                     zones: 3,
                     estimatedCost: 6000,
                     status: 'pending',
-                    contactName: 'John Smith',
-                    contactEmail: 'john@example.com',
+                    contactName: 'John Richardson',
+                    contactEmail: 'john@mcdonalds-birmingham.com',
                     contactPhone: '07700 900000',
                     hasImage: true,
-                    notes: 'Multiple potholes near main entrance'
+                    notes: 'Multiple potholes near main entrance',
+                    isPriority: true,
+                    priorityPlan: 'platinum',
+                    clientName: "McDonald's Birmingham"
                 },
                 {
                     id: 2,
@@ -599,11 +602,23 @@
                 <div class="report-card">
                     <div class="report-header">
                         <div class="report-info">
-                            <h3>Report #${report.id}</h3>
+                            <h3>
+                                ${report.isPriority ? `<span style="color: var(--yellow);">👑</span> ` : ''}
+                                Report #${report.id}
+                                ${report.isPriority ? `
+                                    <span style="background: ${
+                                        report.priorityPlan === 'platinum' ? 'linear-gradient(135deg, #667eea, #764ba2)' :
+                                        report.priorityPlan === 'gold' ? 'var(--yellow)' : '#718096'
+                                    }; color: ${report.priorityPlan === 'gold' ? 'var(--black)' : 'white'}; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem; margin-left: 0.5rem; font-weight: 600;">
+                                        ${report.priorityPlan?.toUpperCase()} PRIORITY
+                                    </span>
+                                ` : ''}
+                            </h3>
                             <div class="report-meta">
                                 <span>📍 ${report.location}</span>
                                 <span>📅 ${new Date(report.date).toLocaleDateString()}</span>
                                 <span>${report.contactPhone ? `<a href="tel:${report.contactPhone}" style="color: inherit; text-decoration: none;">☎️ ${report.contactPhone}</a>` : '☎️ No phone'}</span>
+                                ${report.clientName ? `<span style="color: var(--yellow);">🏢 ${report.clientName}</span>` : ''}
                             </div>
                         </div>
                         <span class="status-badge status-${report.status}">
