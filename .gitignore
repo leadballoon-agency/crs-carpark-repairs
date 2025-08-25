@@ -35,4 +35,4 @@ coverage/
 
 # Misc
 *.log
-.cache/
+.cache/DATABASE_URL
