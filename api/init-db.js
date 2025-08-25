@@ -33,7 +33,24 @@ module.exports = async function handler(req, res) {
             });
         }
         
-        const sql = neon(process.env.DATABASE_URL);
+        // Clean up the DATABASE_URL in case it has extra formatting
+        let dbUrl = process.env.DATABASE_URL;
+        
+        // Remove 'psql ' prefix if present
+        if (dbUrl.startsWith('psql ')) {
+            dbUrl = dbUrl.substring(5);
+        }
+        
+        // Remove surrounding quotes if present
+        if ((dbUrl.startsWith("'") && dbUrl.endsWith("'")) || 
+            (dbUrl.startsWith('"') && dbUrl.endsWith('"'))) {
+            dbUrl = dbUrl.substring(1, dbUrl.length - 1);
+        }
+        
+        // Remove channel_binding parameter if present (can cause issues)
+        dbUrl = dbUrl.replace('&channel_binding=require', '');
+        
+        const sql = neon(dbUrl);
         
         // Create users table
         await sql`

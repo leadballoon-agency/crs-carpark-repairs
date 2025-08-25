@@ -2,7 +2,28 @@
 const { neon } = require('@neondatabase/serverless');
 const crypto = require('crypto');
 
-const sql = neon(process.env.DATABASE_URL || '');
+// Clean up the DATABASE_URL in case it has extra formatting
+function cleanDbUrl(url) {
+    if (!url) return '';
+    
+    // Remove 'psql ' prefix if present
+    if (url.startsWith('psql ')) {
+        url = url.substring(5);
+    }
+    
+    // Remove surrounding quotes if present
+    if ((url.startsWith("'") && url.endsWith("'")) || 
+        (url.startsWith('"') && url.endsWith('"'))) {
+        url = url.substring(1, url.length - 1);
+    }
+    
+    // Remove channel_binding parameter if present (can cause issues)
+    url = url.replace('&channel_binding=require', '');
+    
+    return url;
+}
+
+const sql = neon(cleanDbUrl(process.env.DATABASE_URL));
 
 function hashPassword(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
