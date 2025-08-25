@@ -35,10 +35,20 @@ class PortalAPI {
     
     // Authentication
     async login(email, password) {
-        const data = await this.request('/auth/login', {
+        // Use direct login endpoint instead of main router
+        const response = await fetch('/api/login', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ email, password })
         });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Login failed');
+        }
         
         this.token = data.token;
         this.user = data.user;
