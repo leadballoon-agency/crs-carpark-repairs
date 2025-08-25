@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Hub - CRS Super Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #1a1a1a;
+            --dark-gray: #2a2a2a;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: var(--white);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--black);
+            border-bottom: 3px solid var(--yellow);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            height: 40px;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--yellow);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            color: var(--yellow);
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 0.875rem;
+            color: #999;
+        }
+        
+        .logout-btn {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, var(--yellow) 0%, #FFC700 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: var(--black);
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.2);
+        }
+        
+        .welcome-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.8;
+        }
+        
+        /* Quick Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--dark-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--yellow);
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--yellow);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Main Sections Grid */
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-card {
+            background: var(--dark-gray);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .section-card:hover {
+            border-color: var(--yellow);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+            padding: 1.5rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .section-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--yellow);
+            margin-bottom: 0.25rem;
+        }
+        
+        .section-description {
+            color: #999;
+            font-size: 0.875rem;
+        }
+        
+        .section-links {
+            padding: 1.5rem;
+        }
+        
+        .section-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+        
+        .section-link:hover {
+            background: rgba(255, 215, 0, 0.1);
+            padding-left: 1.25rem;
+        }
+        
+        .link-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .link-arrow {
+            color: var(--yellow);
+            transition: transform 0.3s;
+        }
+        
+        .section-link:hover .link-arrow {
+            transform: translateX(5px);
+        }
+        
+        /* Documentation Section */
+        .docs-section {
+            background: var(--dark-gray);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .docs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .docs-title {
+            font-size: 1.5rem;
+            color: var(--yellow);
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .doc-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .doc-card:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--yellow);
+            transform: translateY(-3px);
+        }
+        
+        .doc-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .doc-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .doc-desc {
+            font-size: 0.875rem;
+            color: #999;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .quick-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--yellow);
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .quick-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sections-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .user-section {
+                flex-direction: column;
+            }
+            
+            .quick-actions {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="images/yellow-logo.png" alt="CRS" class="logo">
+                <div class="title">Admin Hub</div>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-name" id="userName">Mark Taylor</div>
+                    <div class="user-role">Super Administrator</div>
+                </div>
+                <a href="index.html" class="logout-btn">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome to Your Admin Hub</h1>
+            <p class="welcome-subtitle">Complete control center for CRS Car Park Repairs</p>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">47</div>
+                <div class="stat-label">Active Clients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">156</div>
+                <div class="stat-label">Sites Managed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">£45.6k</div>
+                <div class="stat-label">Monthly Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Pending Reports</div>
+            </div>
+        </div>
+        
+        <!-- Main Sections -->
+        <div class="sections-grid">
+            <!-- Content Management -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">🎨</div>
+                    <h2 class="section-title">Content Management</h2>
+                    <p class="section-description">Control your website content and pricing</p>
+                </div>
+                <div class="section-links">
+                    <a href="admin-settings.html" class="section-link">
+                        <span class="link-text">
+                            <span>⚙️</span>
+                            <span>Settings & Pricing</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-settings.html" class="section-link">
+                        <span class="link-text">
+                            <span>📝</span>
+                            <span>Edit Headlines</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-settings.html" class="section-link">
+                        <span class="link-text">
+                            <span>💰</span>
+                            <span>Zone Pricing</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-settings.html" class="section-link">
+                        <span class="link-text">
+                            <span>⭐</span>
+                            <span>Priority Plans</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Client Management -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">👥</div>
+                    <h2 class="section-title">Client Management</h2>
+                    <p class="section-description">Manage clients and their sites</p>
+                </div>
+                <div class="section-links">
+                    <a href="admin-management.html" class="section-link">
+                        <span class="link-text">
+                            <span>📋</span>
+                            <span>All Clients</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-management.html" class="section-link">
+                        <span class="link-text">
+                            <span>➕</span>
+                            <span>Add New Client</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-management.html" class="section-link">
+                        <span class="link-text">
+                            <span>🏢</span>
+                            <span>Site Management</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="client-portal.html" class="section-link">
+                        <span class="link-text">
+                            <span>👁️</span>
+                            <span>View as Client</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Operations -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">🔧</div>
+                    <h2 class="section-title">Operations</h2>
+                    <p class="section-description">Manage repairs and reports</p>
+                </div>
+                <div class="section-links">
+                    <a href="admin-dashboard.html" class="section-link">
+                        <span class="link-text">
+                            <span>📊</span>
+                            <span>Dashboard Overview</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="damage-mapper.html" class="section-link">
+                        <span class="link-text">
+                            <span>🗺️</span>
+                            <span>Damage Mapper Tool</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-dashboard.html" class="section-link">
+                        <span class="link-text">
+                            <span>📈</span>
+                            <span>Reports & Analytics</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="admin-dashboard.html" class="section-link">
+                        <span class="link-text">
+                            <span>📅</span>
+                            <span>Schedule Manager</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- System Tools -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">🛠️</div>
+                    <h2 class="section-title">System Tools</h2>
+                    <p class="section-description">Technical administration</p>
+                </div>
+                <div class="section-links">
+                    <a href="init-database.html" class="section-link">
+                        <span class="link-text">
+                            <span>🗄️</span>
+                            <span>Database Manager</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="test-login.html" class="section-link">
+                        <span class="link-text">
+                            <span>🔐</span>
+                            <span>Auth Testing</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="test-apis.html" class="section-link">
+                        <span class="link-text">
+                            <span>🔌</span>
+                            <span>API Testing</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                    <a href="feedback-widget.html" class="section-link">
+                        <span class="link-text">
+                            <span>💬</span>
+                            <span>Feedback System</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Documentation Section -->
+        <div class="docs-section">
+            <div class="docs-header">
+                <h2 class="docs-title">📚 Documentation & Help</h2>
+                <a href="admin-docs.html" style="color: var(--yellow); text-decoration: none;">
+                    Edit Docs →
+                </a>
+            </div>
+            <div class="docs-grid">
+                <a href="docs.html" class="doc-card">
+                    <div class="doc-icon">🚀</div>
+                    <div class="doc-title">Getting Started</div>
+                    <div class="doc-desc">Quick setup guide for new features</div>
+                </a>
+                <a href="docs.html" class="doc-card">
+                    <div class="doc-icon">📖</div>
+                    <div class="doc-title">User Guide</div>
+                    <div class="doc-desc">Complete system documentation</div>
+                </a>
+                <a href="docs.html" class="doc-card">
+                    <div class="doc-icon">🔑</div>
+                    <div class="doc-title">API Reference</div>
+                    <div class="doc-desc">Technical API documentation</div>
+                </a>
+                <a href="docs.html" class="doc-card">
+                    <div class="doc-icon">🎨</div>
+                    <div class="doc-title">Brand Guidelines</div>
+                    <div class="doc-desc">Colors, fonts, and design system</div>
+                </a>
+                <a href="docs.html" class="doc-card">
+                    <div class="doc-icon">💡</div>
+                    <div class="doc-title">Best Practices</div>
+                    <div class="doc-desc">Tips for managing car parks</div>
+                </a>
+                <a href="admin-docs.html" class="doc-card">
+                    <div class="doc-icon">✏️</div>
+                    <div class="doc-title">Edit Documentation</div>
+                    <div class="doc-desc">Update and manage docs</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions (Floating) -->
+    <div class="quick-actions">
+        <a href="admin-settings.html" class="quick-action-btn" title="Settings">⚙️</a>
+        <a href="damage-mapper.html" class="quick-action-btn" title="Damage Mapper">🗺️</a>
+        <a href="admin-management.html" class="quick-action-btn" title="Add Client">➕</a>
+    </div>
+    
+    <script>
+        // Load user data
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                const userData = JSON.parse(user);
+                const userNameElement = document.getElementById('userName');
+                if (userNameElement) {
+                    userNameElement.textContent = userData.name || userData.email;
+                }
+                
+                // Check if user is super admin
+                if (userData.role !== 'super_admin' && userData.role !== 'admin') {
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = '/client-portal.html';
+                }
+            } else {
+                // Not logged in
+                window.location.href = '/client-portal.html';
+            }
+        });
+        
+        // Handle logout
+        document.querySelector('.logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('crs_logged_in');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

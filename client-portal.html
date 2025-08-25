@@ -687,7 +687,7 @@
             <div class="welcome-text">
                 Welcome back, <span class="client-name" id="userName">User</span>
                 <span id="adminLink" style="display: none; margin-left: 20px;">
-                    <a href="/admin-dashboard.html" style="color: #FFD700; font-weight: bold;">→ Go to Admin Dashboard</a>
+                    <a href="/admin-hub.html" style="color: #FFD700; font-weight: bold;">→ Go to Admin Hub</a>
                 </span>
             </div>
             <a href="index.html" class="logout-btn">Logout</a>
@@ -959,7 +959,7 @@
                     
                     // Check if user is admin/super_admin and redirect
                     if (data.user.role === 'admin' || data.user.role === 'super_admin') {
-                        window.location.href = '/admin-dashboard.html';
+                        window.location.href = '/admin-hub.html';
                     } else {
                         // Hide login overlay for regular clients
                         loginOverlay.classList.add('hidden');
