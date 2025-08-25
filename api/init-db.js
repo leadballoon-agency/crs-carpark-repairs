@@ -26,6 +26,13 @@ module.exports = async function handler(req, res) {
     }
     
     try {
+        if (!process.env.DATABASE_URL) {
+            return res.status(500).json({
+                error: 'Database not configured',
+                message: 'DATABASE_URL environment variable is not set'
+            });
+        }
+        
         const sql = neon(process.env.DATABASE_URL);
         
         // Create users table
@@ -279,7 +286,9 @@ module.exports = async function handler(req, res) {
         return res.status(500).json({
             error: 'Failed to initialize database',
             message: error.message,
-            details: error.detail || error.hint
+            details: error.detail || error.hint,
+            code: error.code,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
 }
