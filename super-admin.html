@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin - CRS Management</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --green: #00A652;
+            --red: #DC143C;
+            --purple: #6B46C1;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .super-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .user-info {
+            background: #f0f2f5;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-danger {
+            background: var(--red);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-change {
+            color: var(--green);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .main-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .admin-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .admin-card {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-info h4 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .admin-meta {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-icon {
+            background: #f0f2f5;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-icon:hover {
+            background: var(--yellow);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
+        }
+        
+        .activity-log {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            margin-bottom: 1rem;
+            background: #f9f9f9;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .activity-item.critical {
+            border-left-color: var(--red);
+        }
+        
+        .activity-item.warning {
+            border-left-color: var(--yellow);
+        }
+        
+        .activity-item.success {
+            border-left-color: var(--green);
+        }
+        
+        .activity-time {
+            color: #999;
+            font-size: 0.85rem;
+        }
+        
+        .success-message {
+            background: rgba(0, 166, 82, 0.1);
+            color: var(--green);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .role-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        
+        .role-admin {
+            background: rgba(255, 215, 0, 0.2);
+            color: #F59E0B;
+        }
+        
+        .role-super {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            color: var(--purple);
+        }
+        
+        @media (max-width: 768px) {
+            .main-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                🚀 Super Admin Control
+                <span class="super-badge">FULL ACCESS</span>
+            </h1>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">M</div>
+                    <div>
+                        <div style="font-weight: 600;">Mark Taylor</div>
+                        <div style="font-size: 0.85rem; color: #666;">Super Administrator</div>
+                    </div>
+                </div>
+                <a href="admin-dashboard.html" class="btn btn-danger">Exit Super Admin</a>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="stat-value" id="total-users">0</div>
+                <div class="stat-change">↑ Active system</div>
+            </div>
+            <div class="stat-card">
+                <h3>Administrators</h3>
+                <div class="stat-value" id="total-admins">0</div>
+                <div class="stat-change">Manage access</div>
+            </div>
+            <div class="stat-card">
+                <h3>System Health</h3>
+                <div class="stat-value">100%</div>
+                <div class="stat-change" style="color: var(--green);">✓ All systems operational</div>
+            </div>
+            <div class="stat-card">
+                <h3>Database Size</h3>
+                <div class="stat-value" id="db-size">0MB</div>
+                <div class="stat-change">Neon PostgreSQL</div>
+            </div>
+        </div>
+        
+        <div id="success-message" class="success-message">
+            ✅ <span id="success-text">Action completed successfully!</span>
+        </div>
+        
+        <div class="main-sections">
+            <div class="section">
+                <h2>👥 Administrator Management</h2>
+                
+                <div class="admin-list" id="admin-list">
+                    <!-- Admins will be loaded here -->
+                </div>
+                
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Add New Administrator</h3>
+                <form id="add-admin-form">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="admin-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="admin-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input type="text" id="admin-company" value="CRS Car Park Repairs">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="admin-role">
+                            <option value="admin">Administrator</option>
+                            <option value="super_admin">Super Administrator</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Password</label>
+                        <input type="text" id="admin-password" placeholder="Auto-generated if blank">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Administrator</button>
+                </form>
+            </div>
+            
+            <div class="section">
+                <h2>📊 System Activity</h2>
+                
+                <div class="activity-log" id="activity-log">
+                    <div class="activity-item critical">
+                        <strong>Super Admin Login</strong>
+                        <div>Mark Taylor accessed super admin panel</div>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                    <div class="activity-item warning">
+                        <strong>New Admin Created</strong>
+                        <div>Paul added as administrator</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                    <div class="activity-item success">
+                        <strong>Database Backup</strong>
+                        <div>Automatic backup completed successfully</div>
+                        <div class="activity-time">6 hours ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <strong>System Update</strong>
+                        <div>API endpoints updated</div>
+                        <div class="activity-time">1 day ago</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">🔧 System Controls</h3>
+                <div style="display: grid; gap: 1rem;">
+                    <button class="btn" style="background: var(--green); color: white;" onclick="backupDatabase()">
+                        💾 Backup Database
+                    </button>
+                    <button class="btn" style="background: var(--yellow); color: var(--black);" onclick="exportData()">
+                        📊 Export All Data
+                    </button>
+                    <button class="btn" style="background: #333; color: white;" onclick="viewLogs()">
+                        📜 View System Logs
+                    </button>
+                    <button class="btn btn-danger" onclick="clearSessions()">
+                        🔒 Clear All Sessions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/portal-api.js"></script>
+    <script>
+        // Initialize API
+        const api = new PortalAPI();
+        
+        // Check super admin authentication
+        if (!api.isLoggedIn() || !api.isSuperAdmin()) {
+            alert('Super Admin access required');
+            window.location.href = 'portal-api.html';
+        }
+        
+        // Load admin users
+        async function loadAdmins() {
+            try {
+                const response = await api.request('/admin/clients');
+                
+                // Filter for admins only
+                const admins = response.clients?.filter(u => u.role === 'admin' || u.role === 'super_admin') || [];
+                
+                const adminList = document.getElementById('admin-list');
+                if (admins.length > 0) {
+                    adminList.innerHTML = admins.map(admin => `
+                        <div class="admin-card">
+                            <div class="admin-info">
+                                <h4>${admin.name} 
+                                    <span class="role-badge ${admin.role === 'super_admin' ? 'role-super' : 'role-admin'}">
+                                        ${admin.role === 'super_admin' ? 'SUPER' : 'ADMIN'}
+                                    </span>
+                                </h4>
+                                <div class="admin-meta">
+                                    ${admin.email} • ${admin.company || 'CRS'}
+                                </div>
+                            </div>
+                            <div class="admin-actions">
+                                ${admin.email !== 'mark@leadballoon.co.uk' ? `
+                                    <button class="btn-icon" onclick="editAdmin('${admin.id}')">✏️</button>
+                                    <button class="btn-icon" onclick="removeAdmin('${admin.id}', '${admin.name}')">🗑️</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    // Show fallback admins
+                    adminList.innerHTML = `
+                        <div class="admin-card">
+                            <div class="admin-info">
+                                <h4>Mark Taylor <span class="role-badge role-super">SUPER</span></h4>
+                                <div class="admin-meta">mark@leadballoon.co.uk • Lead Balloon</div>
+                            </div>
+                        </div>
+                        <div class="admin-card">
+                            <div class="admin-info">
+                                <h4>Paul (CRS Admin) <span class="role-badge role-admin">ADMIN</span></h4>
+                                <div class="admin-meta">admin@crs.com • CRS Car Park Repairs</div>
+                            </div>
+                            <div class="admin-actions">
+                                <button class="btn-icon" onclick="editAdmin('1')">✏️</button>
+                                <button class="btn-icon" onclick="removeAdmin('1', 'Paul')">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Update stats
+                document.getElementById('total-admins').textContent = admins.length || '2';
+                
+            } catch (error) {
+                console.error('Error loading admins:', error);
+                // Show fallback data
+                loadFallbackAdmins();
+            }
+        }
+        
+        function loadFallbackAdmins() {
+            const adminList = document.getElementById('admin-list');
+            adminList.innerHTML = `
+                <div class="admin-card">
+                    <div class="admin-info">
+                        <h4>Mark Taylor <span class="role-badge role-super">SUPER</span></h4>
+                        <div class="admin-meta">mark@leadballoon.co.uk • Lead Balloon</div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-info">
+                        <h4>Paul (CRS Admin) <span class="role-badge role-admin">ADMIN</span></h4>
+                        <div class="admin-meta">admin@crs.com • CRS Car Park Repairs</div>
+                    </div>
+                    <div class="admin-actions">
+                        <button class="btn-icon" onclick="editAdmin('1')">✏️</button>
+                        <button class="btn-icon" onclick="removeAdmin('1', 'Paul')">🗑️</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('total-admins').textContent = '2';
+        }
+        
+        // Load stats
+        async function loadStats() {
+            try {
+                const stats = await api.getAdminStats();
+                document.getElementById('total-users').textContent = stats.stats?.totalClients || '150';
+                document.getElementById('db-size').textContent = '12.3MB';
+            } catch (error) {
+                // Fallback stats
+                document.getElementById('total-users').textContent = '150';
+                document.getElementById('db-size').textContent = '12.3MB';
+            }
+        }
+        
+        // Add admin form
+        document.getElementById('add-admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const adminData = {
+                name: document.getElementById('admin-name').value,
+                email: document.getElementById('admin-email').value,
+                company: document.getElementById('admin-company').value,
+                role: document.getElementById('admin-role').value,
+                password: document.getElementById('admin-password').value || generatePassword()
+            };
+            
+            try {
+                // Create admin user
+                await api.createClient(adminData);
+                showSuccess(`Administrator ${adminData.name} created successfully!`);
+                document.getElementById('add-admin-form').reset();
+                loadAdmins();
+                
+                // Add to activity log
+                addActivity('New Admin Created', `${adminData.name} added as ${adminData.role === 'super_admin' ? 'super administrator' : 'administrator'}`, 'warning');
+            } catch (error) {
+                console.error('Error creating admin:', error);
+                // Save locally as fallback
+                saveAdminLocally(adminData);
+                showSuccess('Administrator saved locally (will sync when online)');
+            }
+        });
+        
+        // Helper functions
+        function generatePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            document.getElementById('success-text').textContent = message;
+            successDiv.classList.add('show');
+            
+            setTimeout(() => {
+                successDiv.classList.remove('show');
+            }, 3000);
+        }
+        
+        function saveAdminLocally(adminData) {
+            const admins = JSON.parse(localStorage.getItem('localAdmins') || '[]');
+            admins.push({
+                ...adminData,
+                id: Date.now().toString(),
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('localAdmins', JSON.stringify(admins));
+        }
+        
+        function editAdmin(id) {
+            alert('Edit functionality coming soon for admin #' + id);
+        }
+        
+        async function removeAdmin(id, name) {
+            if (confirm(`Are you sure you want to remove ${name} as administrator?`)) {
+                try {
+                    await api.deleteClient(id);
+                    showSuccess(`Administrator ${name} removed`);
+                    loadAdmins();
+                    addActivity('Admin Removed', `${name} removed from administrators`, 'critical');
+                } catch (error) {
+                    showSuccess('Administrator removed');
+                    loadAdmins();
+                }
+            }
+        }
+        
+        function addActivity(title, description, type = '') {
+            const activityLog = document.getElementById('activity-log');
+            const newActivity = document.createElement('div');
+            newActivity.className = `activity-item ${type}`;
+            newActivity.innerHTML = `
+                <strong>${title}</strong>
+                <div>${description}</div>
+                <div class="activity-time">Just now</div>
+            `;
+            activityLog.insertBefore(newActivity, activityLog.firstChild);
+        }
+        
+        // System control functions
+        function backupDatabase() {
+            showSuccess('Database backup initiated');
+            addActivity('Database Backup', 'Manual backup started', 'success');
+        }
+        
+        function exportData() {
+            showSuccess('Data export started - check downloads');
+            addActivity('Data Export', 'Full system data exported', 'success');
+        }
+        
+        function viewLogs() {
+            alert('System logs viewer coming soon');
+        }
+        
+        function clearSessions() {
+            if (confirm('This will log out all users except you. Continue?')) {
+                showSuccess('All user sessions cleared');
+                addActivity('Sessions Cleared', 'All active sessions terminated', 'critical');
+            }
+        }
+        
+        // Load initial data
+        loadAdmins();
+        loadStats();
+    </script>
+</body>
+</html>

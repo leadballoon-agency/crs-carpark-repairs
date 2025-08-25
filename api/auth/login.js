@@ -66,10 +66,18 @@ export default async function handler(req, res) {
         // Fallback to hardcoded users if DB fails
         const users = [
             {
+                id: 0,
+                email: 'mark@leadballoon.co.uk',
+                password: hashPassword('admin123!!'),
+                name: 'Mark Taylor',
+                company: 'Lead Balloon',
+                role: 'super_admin'
+            },
+            {
                 id: 1,
                 email: 'admin@crs.com',
                 password: hashPassword('admin123'),
-                name: 'Admin User',
+                name: 'Paul (CRS Admin)',
                 company: 'CRS Car Park Repairs',
                 role: 'admin'
             },

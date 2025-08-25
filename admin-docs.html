@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Management - CRS Admin</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --green: #00A652;
+            --red: #DC143C;
+            --blue: #1E90FF;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .version-badge {
+            background: var(--green);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .doc-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .doc-category {
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-title {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background: #f5f5f5;
+            border-radius: 6px;
+        }
+        
+        .doc-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .doc-item:hover {
+            background: #f0f2f5;
+        }
+        
+        .doc-item.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 3px solid #667eea;
+        }
+        
+        .doc-title {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .doc-status {
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-published {
+            background: rgba(0, 166, 82, 0.2);
+            color: var(--green);
+        }
+        
+        .status-draft {
+            background: rgba(255, 140, 0, 0.2);
+            color: #FF8C00;
+        }
+        
+        /* Editor */
+        .editor-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .editor-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .editor-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .editor-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-light {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-light:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .editor-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .editor-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar-btn {
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .toolbar-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        #content-editor {
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Version History */
+        .version-panel {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .version-title {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .version-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .version-item {
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .version-info {
+            font-size: 0.9rem;
+        }
+        
+        .version-number {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .version-date {
+            color: #999;
+            font-size: 0.85rem;
+        }
+        
+        .version-note {
+            color: #666;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+        
+        .btn-restore {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Preview */
+        .preview-container {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .preview-content {
+            line-height: 1.6;
+        }
+        
+        .preview-content h1 { font-size: 2rem; margin-bottom: 1rem; }
+        .preview-content h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; }
+        .preview-content h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+        .preview-content p { margin-bottom: 1rem; }
+        .preview-content ul, .preview-content ol { margin: 1rem 0 1rem 2rem; }
+        .preview-content code {
+            background: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .success-toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--green);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .success-toast.show {
+            display: flex;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 968px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                📚 Documentation Management
+                <span class="version-badge">v2.0</span>
+            </h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="createNewDoc()">
+                    <span>➕</span> New Document
+                </button>
+                <a href="admin-dashboard.html" class="btn btn-secondary">
+                    <span>←</span> Back to Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="search-box">
+                    <input type="text" id="searchDocs" placeholder="Search documents..." onkeyup="searchDocuments(event)">
+                </div>
+                
+                <div class="doc-list" id="docList">
+                    <!-- Documents will be loaded here -->
+                </div>
+            </aside>
+            
+            <!-- Editor Panel -->
+            <main class="editor-panel">
+                <div class="editor-header">
+                    <div class="editor-title" id="editorTitle">Select or create a document</div>
+                    <div class="editor-actions">
+                        <button class="btn btn-light" onclick="togglePreview()">
+                            <span>👁️</span> Preview
+                        </button>
+                        <button class="btn btn-light" onclick="saveDocument()">
+                            <span>💾</span> Save
+                        </button>
+                        <button class="btn btn-light" onclick="publishDocument()">
+                            <span>🚀</span> Publish
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="editor-body">
+                    <form id="docForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Document Title *</label>
+                                <input type="text" id="docTitle" placeholder="e.g., Getting Started Guide" required>
+                            </div>
+                            <div class="form-group">
+                                <label>URL Slug *</label>
+                                <input type="text" id="docSlug" placeholder="e.g., getting-started" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="docCategory">
+                                    <option value="getting-started">Getting Started</option>
+                                    <option value="client-portal">Client Portal</option>
+                                    <option value="damage-reporting">Damage Reporting</option>
+                                    <option value="priority-plans">Priority Plans</option>
+                                    <option value="services">Services</option>
+                                    <option value="faqs">FAQs</option>
+                                    <option value="api">API & Integration</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="docStatus">
+                                    <option value="draft">Draft</option>
+                                    <option value="published">Published</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Content Editor</label>
+                            <div class="editor-toolbar">
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('# ', '')">H1</button>
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('## ', '')">H2</button>
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('### ', '')">H3</button>
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('**', '**')">Bold</button>
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('*', '*')">Italic</button>
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('`', '`')">Code</button>
+                                <button type="button" class="toolbar-btn" onclick="insertMarkdown('[', '](url)')">Link</button>
+                                <button type="button" class="toolbar-btn" onclick="insertList()">List</button>
+                                <button type="button" class="toolbar-btn" onclick="insertCodeBlock()">Code Block</button>
+                                <button type="button" class="toolbar-btn" onclick="insertAlert('info')">ℹ️ Info</button>
+                                <button type="button" class="toolbar-btn" onclick="insertAlert('warning')">⚠️ Warning</button>
+                                <button type="button" class="toolbar-btn" onclick="insertAlert('success')">✅ Success</button>
+                            </div>
+                            <textarea id="content-editor" placeholder="Write your documentation in Markdown format..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Change Note (for version history)</label>
+                            <input type="text" id="changeNote" placeholder="e.g., Updated installation instructions">
+                        </div>
+                    </form>
+                    
+                    <!-- Preview Container -->
+                    <div class="preview-container" id="previewContainer" style="display: none;">
+                        <h3>Preview</h3>
+                        <div class="preview-content" id="previewContent"></div>
+                    </div>
+                    
+                    <!-- Version History -->
+                    <div class="version-panel" id="versionPanel" style="display: none;">
+                        <div class="version-header">
+                            <div class="version-title">Version History</div>
+                            <button class="btn btn-secondary" onclick="toggleVersions()">Hide</button>
+                        </div>
+                        <div class="version-list" id="versionList">
+                            <!-- Versions will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Success Toast -->
+    <div class="success-toast" id="successToast">
+        <span>✅</span>
+        <span id="toastMessage">Document saved successfully!</span>
+    </div>
+    
+    <script src="js/portal-api.js"></script>
+    <script>
+        // Initialize API
+        const api = new PortalAPI();
+        let currentDocId = null;
+        let allDocs = [];
+        
+        // Check admin authentication
+        if (!api.isLoggedIn() || !api.isAdmin()) {
+            alert('Admin access required');
+            window.location.href = 'portal-api.html';
+        }
+        
+        // Load all documents
+        async function loadDocuments() {
+            try {
+                const response = await api.request('/docs?all=true');
+                allDocs = response.docs || [];
+                displayDocuments(allDocs);
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                // Show demo docs
+                displayDemoDocuments();
+            }
+        }
+        
+        // Display documents in sidebar
+        function displayDocuments(docs) {
+            const docList = document.getElementById('docList');
+            const grouped = {};
+            
+            // Group by category
+            docs.forEach(doc => {
+                const category = doc.category || 'uncategorized';
+                if (!grouped[category]) {
+                    grouped[category] = [];
+                }
+                grouped[category].push(doc);
+            });
+            
+            // Build HTML
+            let html = '';
+            for (const [category, categoryDocs] of Object.entries(grouped)) {
+                html += `
+                    <div class="doc-category">
+                        <div class="category-title">${formatCategory(category)}</div>
+                        ${categoryDocs.map(doc => `
+                            <div class="doc-item ${currentDocId === doc.id ? 'active' : ''}" 
+                                 onclick="loadDocument(${doc.id})">
+                                <span class="doc-title">${doc.title}</span>
+                                <span class="doc-status status-${doc.status}">${doc.status}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            docList.innerHTML = html || '<p style="text-align: center; color: #999;">No documents yet</p>';
+        }
+        
+        // Format category name
+        function formatCategory(category) {
+            return category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+        
+        // Load document for editing
+        async function loadDocument(docId) {
+            currentDocId = docId;
+            
+            try {
+                const doc = allDocs.find(d => d.id === docId);
+                if (!doc) return;
+                
+                // Populate form
+                document.getElementById('docTitle').value = doc.title;
+                document.getElementById('docSlug').value = doc.slug;
+                document.getElementById('docCategory').value = doc.category;
+                document.getElementById('docStatus').value = doc.status;
+                document.getElementById('content-editor').value = doc.content;
+                document.getElementById('editorTitle').textContent = doc.title;
+                
+                // Load version history
+                const response = await api.request(`/docs?slug=${doc.slug}`);
+                if (response.versions) {
+                    displayVersions(response.versions);
+                }
+                
+                // Update active state
+                displayDocuments(allDocs);
+                
+            } catch (error) {
+                console.error('Error loading document:', error);
+            }
+        }
+        
+        // Display version history
+        function displayVersions(versions) {
+            const versionList = document.getElementById('versionList');
+            
+            if (versions && versions.length > 0) {
+                versionList.innerHTML = versions.map(v => `
+                    <div class="version-item">
+                        <div class="version-info">
+                            <div>
+                                <span class="version-number">v${v.version}</span>
+                                <span class="version-date">${new Date(v.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <div class="version-note">${v.change_note || 'No notes'}</div>
+                        </div>
+                        <button class="btn btn-secondary btn-restore" 
+                                onclick="restoreVersion(${v.version})">Restore</button>
+                    </div>
+                `).join('');
+                
+                document.getElementById('versionPanel').style.display = 'block';
+            }
+        }
+        
+        // Create new document
+        function createNewDoc() {
+            currentDocId = null;
+            document.getElementById('docForm').reset();
+            document.getElementById('editorTitle').textContent = 'New Document';
+            document.getElementById('versionPanel').style.display = 'none';
+            
+            // Remove active state
+            document.querySelectorAll('.doc-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+        
+        // Save document
+        async function saveDocument() {
+            const docData = {
+                title: document.getElementById('docTitle').value,
+                slug: document.getElementById('docSlug').value,
+                category: document.getElementById('docCategory').value,
+                status: document.getElementById('docStatus').value,
+                content: document.getElementById('content-editor').value,
+                changeNote: document.getElementById('changeNote').value
+            };
+            
+            if (!docData.title || !docData.slug) {
+                alert('Title and slug are required');
+                return;
+            }
+            
+            try {
+                if (currentDocId) {
+                    // Update existing
+                    docData.id = currentDocId;
+                    await api.request('/docs', {
+                        method: 'PUT',
+                        body: JSON.stringify(docData)
+                    });
+                    showToast('Document updated successfully!');
+                } else {
+                    // Create new
+                    const response = await api.request('/docs', {
+                        method: 'POST',
+                        body: JSON.stringify(docData)
+                    });
+                    currentDocId = response.doc.id;
+                    showToast('Document created successfully!');
+                }
+                
+                // Reload documents
+                loadDocuments();
+                
+            } catch (error) {
+                console.error('Error saving document:', error);
+                // Save to localStorage as fallback
+                const localDocs = JSON.parse(localStorage.getItem('localDocs') || '[]');
+                if (currentDocId) {
+                    const index = localDocs.findIndex(d => d.id === currentDocId);
+                    if (index >= 0) {
+                        localDocs[index] = { ...docData, id: currentDocId };
+                    }
+                } else {
+                    localDocs.push({ ...docData, id: Date.now() });
+                }
+                localStorage.setItem('localDocs', JSON.stringify(localDocs));
+                showToast('Document saved locally');
+                loadDocuments();
+            }
+        }
+        
+        // Publish document
+        async function publishDocument() {
+            document.getElementById('docStatus').value = 'published';
+            await saveDocument();
+        }
+        
+        // Toggle preview
+        function togglePreview() {
+            const preview = document.getElementById('previewContainer');
+            const content = document.getElementById('content-editor').value;
+            
+            if (preview.style.display === 'none') {
+                preview.style.display = 'block';
+                // Simple markdown to HTML conversion
+                let html = content
+                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                    .replace(/`(.+?)`/g, '<code>$1</code>')
+                    .replace(/\n\n/g, '</p><p>')
+                    .replace(/\n/g, '<br>');
+                
+                document.getElementById('previewContent').innerHTML = `<p>${html}</p>`;
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+        
+        // Markdown helpers
+        function insertMarkdown(before, after) {
+            const editor = document.getElementById('content-editor');
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const text = editor.value;
+            const selected = text.substring(start, end);
+            
+            editor.value = text.substring(0, start) + before + selected + after + text.substring(end);
+            editor.focus();
+            editor.selectionStart = start + before.length;
+            editor.selectionEnd = start + before.length + selected.length;
+        }
+        
+        function insertList() {
+            const editor = document.getElementById('content-editor');
+            const start = editor.selectionStart;
+            editor.value = editor.value.substring(0, start) + '\n- Item 1\n- Item 2\n- Item 3\n' + editor.value.substring(start);
+            editor.focus();
+        }
+        
+        function insertCodeBlock() {
+            const editor = document.getElementById('content-editor');
+            const start = editor.selectionStart;
+            editor.value = editor.value.substring(0, start) + '\n```\ncode here\n```\n' + editor.value.substring(start);
+            editor.focus();
+        }
+        
+        function insertAlert(type) {
+            const editor = document.getElementById('content-editor');
+            const start = editor.selectionStart;
+            const alerts = {
+                info: '> ℹ️ **Info:** Your message here',
+                warning: '> ⚠️ **Warning:** Your message here',
+                success: '> ✅ **Success:** Your message here'
+            };
+            editor.value = editor.value.substring(0, start) + '\n' + alerts[type] + '\n' + editor.value.substring(start);
+            editor.focus();
+        }
+        
+        // Search documents
+        function searchDocuments(event) {
+            const query = event.target.value.toLowerCase();
+            const filtered = allDocs.filter(doc => 
+                doc.title.toLowerCase().includes(query) ||
+                doc.content?.toLowerCase().includes(query)
+            );
+            displayDocuments(filtered);
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('successToast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Display demo documents
+        function displayDemoDocuments() {
+            const demoDocs = [
+                { id: 1, title: 'Welcome Guide', slug: 'welcome', category: 'getting-started', status: 'published' },
+                { id: 2, title: 'Quick Start', slug: 'quick-start', category: 'getting-started', status: 'published' },
+                { id: 3, title: 'Portal Overview', slug: 'portal-overview', category: 'client-portal', status: 'draft' }
+            ];
+            allDocs = demoDocs;
+            displayDocuments(demoDocs);
+        }
+        
+        // Load documents on page load
+        loadDocuments();
+    </script>
+</body>
+</html>

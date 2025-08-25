@@ -606,9 +606,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#settings" class="nav-link">
+                    <a href="admin-settings.html" class="nav-link">
                         <span class="nav-icon">⚙️</span>
-                        <span>Settings</span>
+                        <span>Site Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="admin-docs.html" class="nav-link">
+                        <span class="nav-icon">📚</span>
+                        <span>Documentation</span>
                     </a>
                 </li>
             </ul>
@@ -628,10 +634,14 @@
                     🔔
                     <span class="notification-dot"></span>
                 </button>
-                <div class="user-menu">
-                    <div class="user-avatar">P</div>
-                    <span>Paul (Admin)</span>
+                <div class="user-menu" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <span id="userName">Admin</span>
                     <span>▼</span>
+                </div>
+                <div id="userDropdown" style="display: none; position: absolute; top: 60px; right: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 0.5rem; z-index: 1000;">
+                    <a id="superAdminLink" href="super-admin.html" style="display: none; padding: 0.5rem 1rem; text-decoration: none; color: #6B46C1; font-weight: 600;">🚀 Super Admin Panel</a>
+                    <a href="#" onclick="api.logout()" style="display: block; padding: 0.5rem 1rem; text-decoration: none; color: #666;">🚪 Logout</a>
                 </div>
             </div>
         </header>
@@ -645,10 +655,10 @@
                         <div class="stat-title">TOTAL CLIENTS</div>
                         <div class="stat-icon yellow">👥</div>
                     </div>
-                    <div class="stat-value">147</div>
-                    <div class="stat-change positive">
+                    <div class="stat-value" id="total-clients">0</div>
+                    <div class="stat-change positive" id="clients-change">
                         <span>↑</span>
-                        <span>12 new this month</span>
+                        <span>Loading...</span>
                     </div>
                 </div>
                 
@@ -657,10 +667,10 @@
                         <div class="stat-title">ACTIVE SITES</div>
                         <div class="stat-icon green">🏢</div>
                     </div>
-                    <div class="stat-value">423</div>
-                    <div class="stat-change positive">
+                    <div class="stat-value" id="active-sites">0</div>
+                    <div class="stat-change positive" id="sites-change">
                         <span>↑</span>
-                        <span>+8.3% from last month</span>
+                        <span>Loading...</span>
                     </div>
                 </div>
                 
@@ -669,10 +679,10 @@
                         <div class="stat-title">PENDING QUOTES</div>
                         <div class="stat-icon red">📋</div>
                     </div>
-                    <div class="stat-value">18</div>
-                    <div class="stat-change negative">
+                    <div class="stat-value" id="pending-quotes">0</div>
+                    <div class="stat-change negative" id="quotes-change">
                         <span>⚠️</span>
-                        <span>4 urgent reviews</span>
+                        <span>Loading...</span>
                     </div>
                 </div>
                 
@@ -681,10 +691,10 @@
                         <div class="stat-title">MONTHLY REVENUE</div>
                         <div class="stat-icon blue">💰</div>
                     </div>
-                    <div class="stat-value">£127k</div>
-                    <div class="stat-change positive">
+                    <div class="stat-value" id="monthly-revenue">£0</div>
+                    <div class="stat-change positive" id="revenue-change">
                         <span>↑</span>
-                        <span>+22% vs target</span>
+                        <span>Loading...</span>
                     </div>
                 </div>
             </div>
@@ -711,52 +721,8 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#DR-2024-089</td>
-                            <td><strong>McDonald's</strong></td>
-                            <td>Birmingham City Centre</td>
-                            <td><span class="status-badge status-urgent">URGENT</span></td>
-                            <td>10 mins ago</td>
-                            <td><span class="status-badge status-new">NEW</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon" title="View">👁️</button>
-                                    <button class="btn-icon" title="Quote">💰</button>
-                                    <button class="btn-icon" title="Assign">👷</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#DR-2024-088</td>
-                            <td><strong>Tesco Express</strong></td>
-                            <td>Solihull Retail Park</td>
-                            <td><span class="status-badge status-pending">MEDIUM</span></td>
-                            <td>2 hours ago</td>
-                            <td><span class="status-badge status-pending">REVIEWING</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon" title="View">👁️</button>
-                                    <button class="btn-icon" title="Quote">💰</button>
-                                    <button class="btn-icon" title="Assign">👷</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#DR-2024-087</td>
-                            <td><strong>ASDA</strong></td>
-                            <td>Coventry Ring Road</td>
-                            <td><span class="status-badge status-active">LOW</span></td>
-                            <td>5 hours ago</td>
-                            <td><span class="status-badge status-active">QUOTED</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon" title="View">👁️</button>
-                                    <button class="btn-icon" title="Quote">💰</button>
-                                    <button class="btn-icon" title="Assign">👷</button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="damage-reports-table">
+                        <!-- Reports will be loaded here -->
                     </tbody>
                 </table>
             </div>
@@ -779,25 +745,8 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Premier Inn</strong></td>
-                                <td>12 sites</td>
-                                <td><span class="status-badge status-urgent">HOT</span></td>
-                                <td><button class="btn-icon">📞</button></td>
-                            </tr>
-                            <tr>
-                                <td><strong>B&Q Warehouse</strong></td>
-                                <td>3 sites</td>
-                                <td><span class="status-badge status-pending">WARM</span></td>
-                                <td><button class="btn-icon">📞</button></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Costa Coffee</strong></td>
-                                <td>8 sites</td>
-                                <td><span class="status-badge status-active">FOLLOW UP</span></td>
-                                <td><button class="btn-icon">📞</button></td>
-                            </tr>
+                        <tbody id="onboarding-leads-table">
+                            <!-- Leads will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -808,57 +757,48 @@
                         <h2 class="table-title">Recent Activity</h2>
                     </div>
                     
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(255, 215, 0, 0.2);">
-                            👤
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">New client registered: Premier Inn</div>
-                            <div class="activity-time">5 minutes ago</div>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(0, 166, 82, 0.2);">
-                            ✅
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Job completed: McDonald's Birmingham</div>
-                            <div class="activity-time">1 hour ago</div>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(30, 144, 255, 0.2);">
-                            📸
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Damage report submitted: Tesco Solihull</div>
-                            <div class="activity-time">2 hours ago</div>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(220, 20, 60, 0.2);">
-                            ⚠️
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Urgent repair requested: ASDA Coventry</div>
-                            <div class="activity-time">3 hours ago</div>
-                        </div>
+                    <div id="activity-feed">
+                        <!-- Activity items will be loaded here -->
                     </div>
                 </div>
             </div>
         </div>
     </main>
     
+    <script src="js/portal-api.js"></script>
+    <script src="js/feedback-widget.js"></script>
     <script>
+        // Initialize API
+        const api = new PortalAPI();
+        
         // Check admin authentication
-        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (!currentUser.role || currentUser.role !== 'admin') {
+        if (!api.isLoggedIn() || !api.isAdmin()) {
             alert('Admin access required');
             window.location.href = 'portal-api.html';
         }
+        
+        // Update user info in header
+        const user = api.user;
+        document.getElementById('userAvatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
+        document.getElementById('userName').textContent = user.name || 'Admin';
+        
+        // Show super admin link if user is super admin
+        if (api.isSuperAdmin()) {
+            document.getElementById('superAdminLink').style.display = 'block';
+        }
+        
+        // Toggle user menu
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-menu') && !e.target.closest('#userDropdown')) {
+                document.getElementById('userDropdown').style.display = 'none';
+            }
+        });
         
         // Redirect mobile users to mobile-optimized version
         if (window.innerWidth <= 768 && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
@@ -895,17 +835,153 @@
             });
         });
         
-        // Simulate real-time updates
-        setInterval(() => {
-            // Update notification badge
-            const badges = document.querySelectorAll('.nav-badge');
-            badges.forEach(badge => {
-                const current = parseInt(badge.textContent);
-                if (Math.random() > 0.8) {
-                    badge.textContent = current + 1;
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load stats
+                const stats = await api.getAdminStats();
+                
+                // Update stat values
+                document.getElementById('total-clients').textContent = stats.stats.totalClients || '0';
+                document.getElementById('active-sites').textContent = stats.stats.activeSites || '0';
+                document.getElementById('pending-quotes').textContent = stats.stats.pendingReports || '0';
+                document.getElementById('monthly-revenue').textContent = `£${(stats.stats.monthlyRevenue || 0).toFixed(0)}k`;
+                
+                // Update change indicators
+                document.getElementById('clients-change').innerHTML = `
+                    <span>↑</span>
+                    <span>${stats.stats.newClients || 0} new this month</span>
+                `;
+                document.getElementById('sites-change').innerHTML = `
+                    <span>↑</span>
+                    <span>+${stats.stats.siteGrowth || '0'}% from last month</span>
+                `;
+                document.getElementById('quotes-change').innerHTML = `
+                    <span>⚠️</span>
+                    <span>${stats.stats.urgentReports || 0} urgent reviews</span>
+                `;
+                document.getElementById('revenue-change').innerHTML = `
+                    <span>↑</span>
+                    <span>+${stats.stats.revenueGrowth || '0'}% vs target</span>
+                `;
+                
+                // Load damage reports
+                const reports = await api.getDamageReports();
+                const reportsTable = document.getElementById('damage-reports-table');
+                reportsTable.innerHTML = reports.reports.slice(0, 5).map(report => `
+                    <tr>
+                        <td>#DR-${report.id}</td>
+                        <td><strong>${report.client_name || 'Unknown'}</strong></td>
+                        <td>${report.site_name}</td>
+                        <td><span class="status-badge ${getSeverityClass(report.severity)}">${report.severity.toUpperCase()}</span></td>
+                        <td>${getTimeAgo(report.created_at)}</td>
+                        <td><span class="status-badge ${getStatusClass(report.status)}">${report.status.toUpperCase()}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" title="View" data-id="${report.id}">👁️</button>
+                                <button class="btn-icon" title="Quote" data-id="${report.id}">💰</button>
+                                <button class="btn-icon" title="Assign" data-id="${report.id}">👷</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7">No damage reports yet</td></tr>';
+                
+                // Load recent activity
+                const activityFeed = document.getElementById('activity-feed');
+                if (stats.recentActivity && stats.recentActivity.length > 0) {
+                    activityFeed.innerHTML = stats.recentActivity.map(activity => `
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: ${getActivityColor(activity.type)};">
+                                ${getActivityIcon(activity.type)}
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">${activity.description}</div>
+                                <div class="activity-time">${getTimeAgo(activity.timestamp)}</div>
+                            </div>
+                        </div>
+                    `).join('');
                 }
-            });
-        }, 10000);
+                
+                // Update navigation badges
+                const clientBadge = document.querySelector('.nav-link[href="#clients"] .nav-badge');
+                const reportBadge = document.querySelector('.nav-link[href="#damage-reports"] .nav-badge');
+                if (clientBadge) clientBadge.textContent = stats.stats.totalClients || '0';
+                if (reportBadge) reportBadge.textContent = stats.stats.pendingReports || '0';
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                // Show demo data if API fails
+                showDemoData();
+            }
+        }
+        
+        // Helper functions
+        function getSeverityClass(severity) {
+            const map = {
+                'urgent': 'status-urgent',
+                'high': 'status-urgent',
+                'medium': 'status-pending',
+                'low': 'status-active'
+            };
+            return map[severity.toLowerCase()] || 'status-pending';
+        }
+        
+        function getStatusClass(status) {
+            const map = {
+                'new': 'status-new',
+                'pending': 'status-pending',
+                'reviewing': 'status-pending',
+                'quoted': 'status-active',
+                'approved': 'status-active',
+                'completed': 'status-active'
+            };
+            return map[status.toLowerCase()] || 'status-new';
+        }
+        
+        function getActivityColor(type) {
+            const colors = {
+                'client': 'rgba(255, 215, 0, 0.2)',
+                'report': 'rgba(30, 144, 255, 0.2)',
+                'job': 'rgba(0, 166, 82, 0.2)',
+                'urgent': 'rgba(220, 20, 60, 0.2)'
+            };
+            return colors[type] || 'rgba(128, 128, 128, 0.2)';
+        }
+        
+        function getActivityIcon(type) {
+            const icons = {
+                'client': '👤',
+                'report': '📸',
+                'job': '✅',
+                'urgent': '⚠️'
+            };
+            return icons[type] || '📋';
+        }
+        
+        function getTimeAgo(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+            return `${Math.floor(diff / 86400)} days ago`;
+        }
+        
+        function showDemoData() {
+            // Fallback demo data
+            document.getElementById('total-clients').textContent = '147';
+            document.getElementById('active-sites').textContent = '423';
+            document.getElementById('pending-quotes').textContent = '18';
+            document.getElementById('monthly-revenue').textContent = '£127k';
+        }
+        
+        // Load data on page load
+        loadDashboardData();
+        
+        // Refresh data every 30 seconds
+        setInterval(loadDashboardData, 30000);
         
         // Action buttons
         document.querySelectorAll('.btn-icon').forEach(btn => {

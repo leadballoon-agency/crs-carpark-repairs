@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Settings - CRS Admin</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --green: #00A652;
+            --red: #DC143C;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #555;
+        }
+        
+        .btn-primary {
+            background: var(--yellow);
+            color: var(--black);
+        }
+        
+        .btn-primary:hover {
+            background: #FFC700;
+        }
+        
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+        
+        .settings-grid {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .settings-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .price-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .price-card h3 {
+            margin-bottom: 1rem;
+            color: var(--yellow);
+        }
+        
+        .help-text {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+        
+        .preview-section {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        
+        .headline-preview {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #333;
+        }
+        
+        .headline-preview .highlight {
+            color: var(--yellow);
+        }
+        
+        .success-message {
+            background: rgba(0, 166, 82, 0.1);
+            color: var(--green);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .success-message.show {
+            display: flex;
+        }
+        
+        .error-message {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--red);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f2f5;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .headline-preview {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Site Settings</h1>
+            <a href="admin-dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+        
+        <div id="success-message" class="success-message">
+            ✅ <span id="success-text">Settings saved successfully!</span>
+        </div>
+        
+        <div id="error-message" class="error-message">
+            ⚠️ <span id="error-text">Error saving settings</span>
+        </div>
+        
+        <div class="settings-grid">
+            <!-- Headlines Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">📝 Headlines & Copy</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label>Main Headline (First Part)</label>
+                    <input type="text" id="headline-main" placeholder="e.g., Fix Your">
+                    <span class="help-text">The first part of your main headline</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Highlighted Text</label>
+                    <input type="text" id="headline-highlight" placeholder="e.g., Entire Car Park">
+                    <span class="help-text">This will be shown in yellow</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sub Headline</label>
+                    <input type="text" id="headline-sub" placeholder="e.g., One Zone. One Price.">
+                    <span class="help-text">Appears below the main headline</span>
+                </div>
+                
+                <div class="preview-section">
+                    <div class="preview-title">Preview:</div>
+                    <div class="headline-preview">
+                        <span id="preview-main">Fix Your</span>
+                        <span class="highlight" id="preview-highlight">Entire Car Park</span>
+                        <br>
+                        <span style="font-size: 1.5rem; color: #666;" id="preview-sub">One Zone. One Price.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pricing Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">💰 Zone Pricing</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label>Minimum Zone Price (£)</label>
+                    <input type="number" id="price-minimum" min="0" step="100">
+                    <span class="help-text">The minimum price for any zone repair</span>
+                </div>
+                
+                <div class="price-grid">
+                    <div class="price-card">
+                        <h3>Small Zone</h3>
+                        <div class="form-group">
+                            <label>Zone Name</label>
+                            <input type="text" id="small-name" placeholder="e.g., Small Zone">
+                        </div>
+                        <div class="form-group">
+                            <label>Size Range</label>
+                            <input type="text" id="small-size" placeholder="e.g., Up to 50m²">
+                        </div>
+                        <div class="form-group">
+                            <label>Price (£)</label>
+                            <input type="number" id="small-price" min="0" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" id="small-description" placeholder="e.g., Perfect for small parking areas">
+                        </div>
+                    </div>
+                    
+                    <div class="price-card">
+                        <h3>Medium Zone</h3>
+                        <div class="form-group">
+                            <label>Zone Name</label>
+                            <input type="text" id="medium-name" placeholder="e.g., Medium Zone">
+                        </div>
+                        <div class="form-group">
+                            <label>Size Range</label>
+                            <input type="text" id="medium-size" placeholder="e.g., 50-150m²">
+                        </div>
+                        <div class="form-group">
+                            <label>Price (£)</label>
+                            <input type="number" id="medium-price" min="0" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" id="medium-description" placeholder="e.g., Ideal for medium-sized car parks">
+                        </div>
+                    </div>
+                    
+                    <div class="price-card">
+                        <h3>Large Zone</h3>
+                        <div class="form-group">
+                            <label>Zone Name</label>
+                            <input type="text" id="large-name" placeholder="e.g., Large Zone">
+                        </div>
+                        <div class="form-group">
+                            <label>Size Range</label>
+                            <input type="text" id="large-size" placeholder="e.g., 150m²+">
+                        </div>
+                        <div class="form-group">
+                            <label>Price (£)</label>
+                            <input type="number" id="large-price" min="0" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" id="large-description" placeholder="e.g., Complete solution for large areas">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">⭐ Key Features</h2>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Guarantee Text</label>
+                        <input type="text" id="feature-guarantee" placeholder="e.g., 5 Year Guarantee">
+                    </div>
+                    <div class="form-group">
+                        <label>Response Time</label>
+                        <input type="text" id="feature-response" placeholder="e.g., 24 Hour Response">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Warranty Text</label>
+                    <input type="text" id="feature-warranty" placeholder="e.g., Full Warranty Coverage">
+                </div>
+            </div>
+            
+            <!-- Priority Plans Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">🌟 Priority Plans</h2>
+                </div>
+                
+                <div class="price-grid">
+                    <!-- Silver Plan -->
+                    <div class="price-card">
+                        <h3 style="color: #718096;">Silver Plan</h3>
+                        <div class="form-group">
+                            <label>Plan Name</label>
+                            <input type="text" id="silver-name" placeholder="e.g., Silver">
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Price (£)</label>
+                            <input type="number" id="silver-price" min="0" step="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Features (one per line)</label>
+                            <textarea id="silver-features" rows="5" placeholder="Priority scheduling
+48-hour response time
+Quarterly inspections
+10% repair discount"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Gold Plan -->
+                    <div class="price-card">
+                        <h3 style="color: #FFD700;">Gold Plan (Popular)</h3>
+                        <div class="form-group">
+                            <label>Plan Name</label>
+                            <input type="text" id="gold-name" placeholder="e.g., Gold">
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Price (£)</label>
+                            <input type="number" id="gold-price" min="0" step="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Features (one per line)</label>
+                            <textarea id="gold-features" rows="5" placeholder="Next-day response
+Monthly inspections
+20% repair discount
+Emergency hotline
+Detailed reporting"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Platinum Plan -->
+                    <div class="price-card">
+                        <h3 style="color: #6B46C1;">Platinum Plan</h3>
+                        <div class="form-group">
+                            <label>Plan Name</label>
+                            <input type="text" id="platinum-name" placeholder="e.g., Platinum">
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Price (£)</label>
+                            <input type="number" id="platinum-price" min="0" step="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Features (one per line)</label>
+                            <textarea id="platinum-features" rows="6" placeholder="Same-day response
+Bi-weekly inspections
+30% repair discount
+24/7 emergency support
+Dedicated account manager
+Custom reporting dashboard"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="saveSettings()" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                💾 Save All Settings
+            </button>
+            <button class="btn btn-secondary" onclick="resetSettings()">
+                ↺ Reset to Defaults
+            </button>
+            <button class="btn btn-success" onclick="previewChanges()">
+                👁️ Preview on Site
+            </button>
+        </div>
+    </div>
+    
+    <script src="js/portal-api.js"></script>
+    <script>
+        // Initialize API
+        const api = new PortalAPI();
+        
+        // Check admin authentication
+        if (!api.isLoggedIn() || !api.isAdmin()) {
+            alert('Admin access required');
+            window.location.href = 'portal-api.html';
+        }
+        
+        // Default settings
+        const defaultSettings = {
+            headline: {
+                main: "Fix Your",
+                highlight: "Entire Car Park",
+                sub: "One Zone. One Price."
+            },
+            pricing: {
+                small: {
+                    name: "Small Zone",
+                    size: "Up to 50m²",
+                    price: 2000,
+                    description: "Perfect for small parking areas"
+                },
+                medium: {
+                    name: "Medium Zone",
+                    size: "50-150m²",
+                    price: 4000,
+                    description: "Ideal for medium-sized car parks"
+                },
+                large: {
+                    name: "Large Zone",
+                    size: "150m²+",
+                    price: 6000,
+                    description: "Complete solution for large areas"
+                },
+                minimum: 2000
+            },
+            features: {
+                guarantee: "5 Year Guarantee",
+                response: "24 Hour Response",
+                warranty: "Full Warranty Coverage"
+            },
+            priorityPlans: {
+                silver: {
+                    name: "Silver",
+                    price: 199,
+                    features: [
+                        "Priority scheduling",
+                        "48-hour response time",
+                        "Quarterly inspections",
+                        "10% repair discount"
+                    ]
+                },
+                gold: {
+                    name: "Gold",
+                    price: 399,
+                    features: [
+                        "Next-day response",
+                        "Monthly inspections",
+                        "20% repair discount",
+                        "Emergency hotline",
+                        "Detailed reporting"
+                    ]
+                },
+                platinum: {
+                    name: "Platinum",
+                    price: 799,
+                    features: [
+                        "Same-day response",
+                        "Bi-weekly inspections",
+                        "30% repair discount",
+                        "24/7 emergency support",
+                        "Dedicated account manager",
+                        "Custom reporting dashboard"
+                    ]
+                }
+            }
+        };
+        
+        // Load current settings
+        async function loadSettings() {
+            try {
+                const response = await api.getSettings();
+                const settings = response.settings || defaultSettings;
+                
+                // Populate headlines
+                document.getElementById('headline-main').value = settings.headline.main;
+                document.getElementById('headline-highlight').value = settings.headline.highlight;
+                document.getElementById('headline-sub').value = settings.headline.sub;
+                
+                // Populate pricing
+                document.getElementById('price-minimum').value = settings.pricing.minimum;
+                
+                // Small zone
+                document.getElementById('small-name').value = settings.pricing.small.name;
+                document.getElementById('small-size').value = settings.pricing.small.size;
+                document.getElementById('small-price').value = settings.pricing.small.price;
+                document.getElementById('small-description').value = settings.pricing.small.description;
+                
+                // Medium zone
+                document.getElementById('medium-name').value = settings.pricing.medium.name;
+                document.getElementById('medium-size').value = settings.pricing.medium.size;
+                document.getElementById('medium-price').value = settings.pricing.medium.price;
+                document.getElementById('medium-description').value = settings.pricing.medium.description;
+                
+                // Large zone
+                document.getElementById('large-name').value = settings.pricing.large.name;
+                document.getElementById('large-size').value = settings.pricing.large.size;
+                document.getElementById('large-price').value = settings.pricing.large.price;
+                document.getElementById('large-description').value = settings.pricing.large.description;
+                
+                // Features
+                document.getElementById('feature-guarantee').value = settings.features.guarantee;
+                document.getElementById('feature-response').value = settings.features.response;
+                document.getElementById('feature-warranty').value = settings.features.warranty;
+                
+                // Priority Plans
+                if (settings.priorityPlans) {
+                    // Silver
+                    document.getElementById('silver-name').value = settings.priorityPlans.silver.name;
+                    document.getElementById('silver-price').value = settings.priorityPlans.silver.price;
+                    document.getElementById('silver-features').value = settings.priorityPlans.silver.features.join('\n');
+                    
+                    // Gold
+                    document.getElementById('gold-name').value = settings.priorityPlans.gold.name;
+                    document.getElementById('gold-price').value = settings.priorityPlans.gold.price;
+                    document.getElementById('gold-features').value = settings.priorityPlans.gold.features.join('\n');
+                    
+                    // Platinum
+                    document.getElementById('platinum-name').value = settings.priorityPlans.platinum.name;
+                    document.getElementById('platinum-price').value = settings.priorityPlans.platinum.price;
+                    document.getElementById('platinum-features').value = settings.priorityPlans.platinum.features.join('\n');
+                }
+                
+                updatePreview();
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showError('Error loading settings. Using defaults.');
+                loadDefaultSettings();
+            }
+        }
+        
+        // Load default settings into form
+        function loadDefaultSettings() {
+            const settings = defaultSettings;
+            
+            // Populate all fields with defaults
+            document.getElementById('headline-main').value = settings.headline.main;
+            document.getElementById('headline-highlight').value = settings.headline.highlight;
+            document.getElementById('headline-sub').value = settings.headline.sub;
+            
+            document.getElementById('price-minimum').value = settings.pricing.minimum;
+            
+            document.getElementById('small-name').value = settings.pricing.small.name;
+            document.getElementById('small-size').value = settings.pricing.small.size;
+            document.getElementById('small-price').value = settings.pricing.small.price;
+            document.getElementById('small-description').value = settings.pricing.small.description;
+            
+            document.getElementById('medium-name').value = settings.pricing.medium.name;
+            document.getElementById('medium-size').value = settings.pricing.medium.size;
+            document.getElementById('medium-price').value = settings.pricing.medium.price;
+            document.getElementById('medium-description').value = settings.pricing.medium.description;
+            
+            document.getElementById('large-name').value = settings.pricing.large.name;
+            document.getElementById('large-size').value = settings.pricing.large.size;
+            document.getElementById('large-price').value = settings.pricing.large.price;
+            document.getElementById('large-description').value = settings.pricing.large.description;
+            
+            document.getElementById('feature-guarantee').value = settings.features.guarantee;
+            document.getElementById('feature-response').value = settings.features.response;
+            document.getElementById('feature-warranty').value = settings.features.warranty;
+            
+            // Priority Plans defaults
+            document.getElementById('silver-name').value = settings.priorityPlans.silver.name;
+            document.getElementById('silver-price').value = settings.priorityPlans.silver.price;
+            document.getElementById('silver-features').value = settings.priorityPlans.silver.features.join('\n');
+            
+            document.getElementById('gold-name').value = settings.priorityPlans.gold.name;
+            document.getElementById('gold-price').value = settings.priorityPlans.gold.price;
+            document.getElementById('gold-features').value = settings.priorityPlans.gold.features.join('\n');
+            
+            document.getElementById('platinum-name').value = settings.priorityPlans.platinum.name;
+            document.getElementById('platinum-price').value = settings.priorityPlans.platinum.price;
+            document.getElementById('platinum-features').value = settings.priorityPlans.platinum.features.join('\n');
+            
+            updatePreview();
+        }
+        
+        // Save settings
+        async function saveSettings() {
+            const settings = {
+                headline: {
+                    main: document.getElementById('headline-main').value,
+                    highlight: document.getElementById('headline-highlight').value,
+                    sub: document.getElementById('headline-sub').value
+                },
+                pricing: {
+                    small: {
+                        name: document.getElementById('small-name').value,
+                        size: document.getElementById('small-size').value,
+                        price: parseInt(document.getElementById('small-price').value),
+                        description: document.getElementById('small-description').value
+                    },
+                    medium: {
+                        name: document.getElementById('medium-name').value,
+                        size: document.getElementById('medium-size').value,
+                        price: parseInt(document.getElementById('medium-price').value),
+                        description: document.getElementById('medium-description').value
+                    },
+                    large: {
+                        name: document.getElementById('large-name').value,
+                        size: document.getElementById('large-size').value,
+                        price: parseInt(document.getElementById('large-price').value),
+                        description: document.getElementById('large-description').value
+                    },
+                    minimum: parseInt(document.getElementById('price-minimum').value)
+                },
+                features: {
+                    guarantee: document.getElementById('feature-guarantee').value,
+                    response: document.getElementById('feature-response').value,
+                    warranty: document.getElementById('feature-warranty').value
+                },
+                priorityPlans: {
+                    silver: {
+                        name: document.getElementById('silver-name').value,
+                        price: parseInt(document.getElementById('silver-price').value),
+                        features: document.getElementById('silver-features').value.split('\n').filter(f => f.trim())
+                    },
+                    gold: {
+                        name: document.getElementById('gold-name').value,
+                        price: parseInt(document.getElementById('gold-price').value),
+                        features: document.getElementById('gold-features').value.split('\n').filter(f => f.trim())
+                    },
+                    platinum: {
+                        name: document.getElementById('platinum-name').value,
+                        price: parseInt(document.getElementById('platinum-price').value),
+                        features: document.getElementById('platinum-features').value.split('\n').filter(f => f.trim())
+                    }
+                }
+            };
+            
+            try {
+                document.body.classList.add('loading');
+                await api.updateSettings(settings);
+                
+                // Also save to localStorage for immediate updates
+                localStorage.setItem('siteSettings', JSON.stringify(settings));
+                
+                showSuccess('Settings saved successfully! The website will update immediately.');
+                document.body.classList.remove('loading');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                // Save to localStorage as fallback
+                localStorage.setItem('siteSettings', JSON.stringify(settings));
+                showSuccess('Settings saved locally. They will sync when the server is available.');
+                document.body.classList.remove('loading');
+            }
+        }
+        
+        // Reset to defaults
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to defaults?')) {
+                loadDefaultSettings();
+                showSuccess('Settings reset to defaults. Remember to save to apply changes.');
+            }
+        }
+        
+        // Preview changes
+        function previewChanges() {
+            // Save current settings to sessionStorage for preview
+            const settings = {
+                headline: {
+                    main: document.getElementById('headline-main').value,
+                    highlight: document.getElementById('headline-highlight').value,
+                    sub: document.getElementById('headline-sub').value
+                }
+            };
+            sessionStorage.setItem('previewSettings', JSON.stringify(settings));
+            
+            // Open main site in new tab
+            window.open('/', '_blank');
+        }
+        
+        // Update live preview
+        function updatePreview() {
+            document.getElementById('preview-main').textContent = document.getElementById('headline-main').value;
+            document.getElementById('preview-highlight').textContent = document.getElementById('headline-highlight').value;
+            document.getElementById('preview-sub').textContent = document.getElementById('headline-sub').value;
+        }
+        
+        // Show success message
+        function showSuccess(message) {
+            const successEl = document.getElementById('success-message');
+            document.getElementById('success-text').textContent = message;
+            successEl.classList.add('show');
+            
+            setTimeout(() => {
+                successEl.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Show error message
+        function showError(message) {
+            const errorEl = document.getElementById('error-message');
+            document.getElementById('error-text').textContent = message;
+            errorEl.classList.add('show');
+            
+            setTimeout(() => {
+                errorEl.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Add live preview updates
+        document.getElementById('headline-main').addEventListener('input', updatePreview);
+        document.getElementById('headline-highlight').addEventListener('input', updatePreview);
+        document.getElementById('headline-sub').addEventListener('input', updatePreview);
+        
+        // Load settings on page load
+        loadSettings();
+    </script>
+</body>
+</html>

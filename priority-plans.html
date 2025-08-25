@@ -1403,7 +1403,79 @@
         </div>
     </div>
 
+    <script src="js/portal-api.js"></script>
+    <script src="js/feedback-widget.js"></script>
     <script>
+        // Load dynamic settings for Priority Plans
+        async function loadPriorityPlansSettings() {
+            try {
+                // Try to fetch from API
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.settings && data.settings.priorityPlans) {
+                        updatePriorityPlans(data.settings.priorityPlans);
+                    }
+                    return;
+                }
+            } catch (error) {
+                console.log('Using local or default settings');
+            }
+            
+            // Check localStorage
+            const localSettings = localStorage.getItem('siteSettings');
+            if (localSettings) {
+                const settings = JSON.parse(localSettings);
+                if (settings.priorityPlans) {
+                    updatePriorityPlans(settings.priorityPlans);
+                }
+            }
+        }
+        
+        function updatePriorityPlans(plans) {
+            // Update plan names and prices dynamically
+            const planElements = document.querySelectorAll('.plan');
+            
+            if (planElements[0] && plans.silver) {
+                // Silver Plan (first plan)
+                planElements[0].querySelector('.plan-name').textContent = plans.silver.name;
+                planElements[0].querySelector('.plan-price').innerHTML = `£${plans.silver.price}<span>/month</span>`;
+                const silverFeatures = planElements[0].querySelector('.plan-features');
+                if (silverFeatures && plans.silver.features) {
+                    silverFeatures.innerHTML = plans.silver.features.map(f => 
+                        `<li><span class="check">✓</span> ${f}</li>`
+                    ).join('');
+                }
+            }
+            
+            if (planElements[1] && plans.gold) {
+                // Gold Plan (popular/middle plan)
+                planElements[1].querySelector('.plan-name').textContent = plans.gold.name;
+                planElements[1].querySelector('.plan-price').innerHTML = `£${plans.gold.price}<span>/month</span>`;
+                const goldFeatures = planElements[1].querySelector('.plan-features');
+                if (goldFeatures && plans.gold.features) {
+                    goldFeatures.innerHTML = plans.gold.features.map(f => 
+                        `<li><span class="check">✓</span> ${f}</li>`
+                    ).join('');
+                }
+            }
+            
+            if (planElements[2] && plans.platinum) {
+                // Platinum Plan (third plan)
+                planElements[2].querySelector('.plan-name').textContent = plans.platinum.name;
+                planElements[2].querySelector('.plan-price').innerHTML = `£${plans.platinum.price}<span>/month</span>`;
+                const platinumFeatures = planElements[2].querySelector('.plan-features');
+                if (platinumFeatures && plans.platinum.features) {
+                    platinumFeatures.innerHTML = plans.platinum.features.map(f => 
+                        `<li><span class="check">✓</span> ${f}</li>`
+                    ).join('');
+                }
+            }
+        }
+        
+        // Load settings on page load
+        loadPriorityPlansSettings();
+        
         // Store user answers
         let userAnswers = {};
         

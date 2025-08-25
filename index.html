@@ -1108,8 +1108,9 @@
             <nav class="nav">
                 <a href="#services">Services</a>
                 <a href="priority-plans.html">Priority Plans</a>
+                <a href="docs.html">Documentation</a>
                 <a href="#sectors">Sectors</a>
-                <a href="portal.html">Client Portal</a>
+                <a href="portal-api.html">Client Portal</a>
                 <a href="#quote">Get Quote</a>
             </nav>
             <a href="tel:02476992244" class="header-phone">Call Now</a>
@@ -1129,12 +1130,12 @@
                         </div>
                         
                         <h1>
-                            Fix Your <span class="highlight">Entire Car Park</span>
-                            <br>One Zone. One Price.
+                            <span id="headline-main">Fix Your</span> <span class="highlight" id="headline-highlight">Entire Car Park</span>
+                            <br><span id="headline-sub">One Zone. One Price.</span>
                         </h1>
                         
                         <p class="hero-subtitle">
-                            From £2,000. All potholes included.
+                            From £<span id="price-minimum">2,000</span>. All potholes included.
                         </p>
                         
                         <div class="trust-indicators">
@@ -1534,7 +1535,64 @@
         </div>
     </footer>
     
+    <script src="js/portal-api.js"></script>
+    <script src="js/feedback-widget.js"></script>
     <script>
+        // Load dynamic settings
+        async function loadSiteSettings() {
+            try {
+                // Check for preview settings first
+                const previewSettings = sessionStorage.getItem('previewSettings');
+                if (previewSettings) {
+                    const settings = JSON.parse(previewSettings);
+                    applyHeadlineSettings(settings.headline);
+                    sessionStorage.removeItem('previewSettings');
+                    return;
+                }
+                
+                // Try to fetch from API
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    applySettings(data.settings);
+                    return;
+                }
+            } catch (error) {
+                console.log('Using local or default settings');
+            }
+            
+            // Check localStorage
+            const localSettings = localStorage.getItem('siteSettings');
+            if (localSettings) {
+                applySettings(JSON.parse(localSettings));
+            }
+        }
+        
+        function applySettings(settings) {
+            if (!settings) return;
+            
+            // Apply headlines
+            if (settings.headline) {
+                applyHeadlineSettings(settings.headline);
+            }
+            
+            // Apply pricing
+            if (settings.pricing && document.getElementById('price-minimum')) {
+                document.getElementById('price-minimum').textContent = settings.pricing.minimum.toLocaleString();
+            }
+        }
+        
+        function applyHeadlineSettings(headline) {
+            if (document.getElementById('headline-main')) {
+                document.getElementById('headline-main').textContent = headline.main;
+                document.getElementById('headline-highlight').textContent = headline.highlight;
+                document.getElementById('headline-sub').textContent = headline.sub;
+            }
+        }
+        
+        // Load settings on page load
+        loadSiteSettings();
+        
         // Show header on scroll with smooth transition
         let lastScroll = 0;
         window.addEventListener('scroll', function() {

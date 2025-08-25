@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Suite - CRS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .test-section h2 {
+            color: #FFD700;
+            margin-bottom: 1rem;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .test-card {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .test-card h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .test-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .status-pending { background: #E0E0E0; color: #666; }
+        .status-testing { background: #FFE082; color: #F57C00; }
+        .status-success { background: #C8E6C9; color: #2E7D32; }
+        .status-error { background: #FFCDD2; color: #C62828; }
+        
+        .test-result {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #666;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        .btn:hover {
+            background: #FFC700;
+        }
+        
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 API Test Suite</h1>
+        
+        <div class="test-section">
+            <h2>Test Controls</h2>
+            <button class="btn" onclick="runAllTests()">Run All Tests</button>
+            <button class="btn-secondary btn" onclick="clearResults()">Clear Results</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Authentication APIs</h2>
+            <div class="test-grid">
+                <div class="test-card" id="test-login">
+                    <h3>Login API</h3>
+                    <p>POST /api/auth/login</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+                
+                <div class="test-card" id="test-register">
+                    <h3>Register API</h3>
+                    <p>POST /api/auth/register</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Client Portal APIs</h2>
+            <div class="test-grid">
+                <div class="test-card" id="test-sites">
+                    <h3>Sites API</h3>
+                    <p>GET /api/sites</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+                
+                <div class="test-card" id="test-damage-reports">
+                    <h3>Damage Reports API</h3>
+                    <p>GET /api/damage-reports</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+                
+                <div class="test-card" id="test-feedback">
+                    <h3>Feedback API</h3>
+                    <p>POST /api/feedback</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Admin APIs</h2>
+            <div class="test-grid">
+                <div class="test-card" id="test-admin-stats">
+                    <h3>Admin Stats API</h3>
+                    <p>GET /api/admin/stats</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+                
+                <div class="test-card" id="test-admin-clients">
+                    <h3>Admin Clients API</h3>
+                    <p>GET /api/admin/clients</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+                
+                <div class="test-card" id="test-onboarding">
+                    <h3>Onboarding API</h3>
+                    <p>POST /api/onboarding</p>
+                    <div class="test-status status-pending">Pending</div>
+                    <div class="test-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/portal-api.js"></script>
+    <script>
+        const api = new PortalAPI();
+        let testToken = null;
+        
+        async function runAllTests() {
+            // Run auth tests first to get token
+            await testLogin();
+            await testRegister();
+            
+            // Run client portal tests
+            await testSites();
+            await testDamageReports();
+            await testFeedback();
+            
+            // Run admin tests
+            await testAdminStats();
+            await testAdminClients();
+            await testOnboarding();
+        }
+        
+        function updateTestStatus(testId, status, result = '') {
+            const card = document.getElementById(testId);
+            const statusEl = card.querySelector('.test-status');
+            const resultEl = card.querySelector('.test-result');
+            
+            statusEl.className = `test-status status-${status}`;
+            statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            
+            if (result) {
+                resultEl.textContent = typeof result === 'object' ? JSON.stringify(result, null, 2) : result;
+            }
+        }
+        
+        async function testLogin() {
+            const testId = 'test-login';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.login('admin@crs.com', 'admin123');
+                testToken = result.token;
+                updateTestStatus(testId, 'success', 'Login successful. Token received.');
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testRegister() {
+            const testId = 'test-register';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const testUser = {
+                    email: `test${Date.now()}@example.com`,
+                    password: 'test123',
+                    name: 'Test User',
+                    company: 'Test Company'
+                };
+                const result = await api.register(testUser);
+                updateTestStatus(testId, 'success', 'Registration successful');
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testSites() {
+            const testId = 'test-sites';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.getSites();
+                updateTestStatus(testId, 'success', `Found ${result.sites?.length || 0} sites`);
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testDamageReports() {
+            const testId = 'test-damage-reports';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.getDamageReports();
+                updateTestStatus(testId, 'success', `Found ${result.reports?.length || 0} reports`);
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testFeedback() {
+            const testId = 'test-feedback';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.request('/feedback', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        type: 'test',
+                        text: 'Test feedback',
+                        priority: 'low'
+                    })
+                });
+                updateTestStatus(testId, 'success', 'Feedback submitted');
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testAdminStats() {
+            const testId = 'test-admin-stats';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.getAdminStats();
+                updateTestStatus(testId, 'success', 'Stats retrieved');
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testAdminClients() {
+            const testId = 'test-admin-clients';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.getClients();
+                updateTestStatus(testId, 'success', `Found ${result.clients?.length || 0} clients`);
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        async function testOnboarding() {
+            const testId = 'test-onboarding';
+            updateTestStatus(testId, 'testing');
+            
+            try {
+                const result = await api.submitOnboarding({
+                    email: 'test@example.com',
+                    company: 'Test Company',
+                    sites_data: [{ name: 'Test Site', address: 'Test Address' }]
+                });
+                updateTestStatus(testId, 'success', 'Onboarding submitted');
+            } catch (error) {
+                updateTestStatus(testId, 'error', error.message);
+            }
+        }
+        
+        function clearResults() {
+            document.querySelectorAll('.test-card').forEach(card => {
+                const statusEl = card.querySelector('.test-status');
+                const resultEl = card.querySelector('.test-result');
+                statusEl.className = 'test-status status-pending';
+                statusEl.textContent = 'Pending';
+                resultEl.textContent = '';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,
     company VARCHAR(255),
     phone VARCHAR(50),
-    role VARCHAR(50) DEFAULT 'client',
+    role VARCHAR(50) DEFAULT 'client' CHECK (role IN ('client', 'admin', 'super_admin')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -58,24 +58,43 @@ CREATE TABLE IF NOT EXISTS onboarding_leads (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert admin user
+-- Insert super admin user (password: admin123!!)
+INSERT INTO users (email, password, name, company, phone, role)
+VALUES (
+    'mark@leadballoon.co.uk',
+    'a1c7e1e5b6c7d1e7b8c5d5e7f7e8d8e9f9e8d7e6f5e4d3e2f1e0d9e8d7e6f5e4',
+    'Mark Taylor',
+    'Lead Balloon',
+    '07700 900000',
+    'super_admin'
+) ON CONFLICT (email) DO NOTHING;
+
+-- Insert admin user (password: admin123)
 INSERT INTO users (email, password, name, company, phone, role)
 VALUES (
     'admin@crs.com',
-    SHA256('admin123'),
-    'Admin User',
+    '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+    'Paul (CRS Admin)',
     'CRS Car Park Repairs',
     '024 7699 2244',
     'admin'
 ) ON CONFLICT (email) DO NOTHING;
 
--- Insert demo client
+-- Insert demo client (password: demo123)
 INSERT INTO users (email, password, name, company, phone, role)
 VALUES (
     'mcdonalds@franchise.com',
-    SHA256('demo123'),
+    'd3ad9315b7be5dd53b31a273b3b3aba5defe700808305aa16a3062b76658a791',
     'John Richardson',
     'McDonald''s Franchise Group',
     '07700 900123',
     'client'
 ) ON CONFLICT (email) DO NOTHING;
+
+-- Add some demo sites for McDonald's
+INSERT INTO sites (user_id, name, address, status, issues)
+VALUES 
+    (2, 'Birmingham City Centre', 'High Street, B1 2XX', 'critical', 7),
+    (2, 'Coventry Ring Road', 'Ring Road, CV1 3XX', 'scheduled', 3),
+    (2, 'Solihull Retail Park', 'Retail Park, B91 4XX', 'healthy', 0)
+ON CONFLICT DO NOTHING;

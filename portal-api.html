@@ -1108,5 +1108,69 @@
             }
         });
     </script>
+    
+    <!-- Portal API Integration -->
+    <script src="/js/portal-api.js"></script>
+    <script src="/js/feedback-widget.js"></script>
+    <script>
+        // Initialize API and update dashboard with real data
+        const api = new PortalAPI();
+        
+        async function loadDashboardData() {
+            if (!api.isLoggedIn()) return;
+            
+            try {
+                // Load sites
+                const sitesData = await api.getSites();
+                if (sitesData.sites) {
+                    updateSitesDisplay(sitesData.sites);
+                }
+                
+                // Load damage reports if admin
+                if (api.isAdmin()) {
+                    const reportsData = await api.getDamageReports();
+                    if (reportsData.reports) {
+                        updateReportsDisplay(reportsData.reports);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+            }
+        }
+        
+        function updateSitesDisplay(sites) {
+            const container = document.querySelector('.sites-grid');
+            if (!container) return;
+            
+            container.innerHTML = sites.map(site => `
+                <div class="site-card">
+                    <div class="site-header">
+                        <h3>${site.name}</h3>
+                        <span class="site-status ${site.status}">${site.status}</span>
+                    </div>
+                    <p class="site-address">${site.address}</p>
+                    <div class="site-meta">
+                        <span>Issues: ${site.issues || 0}</span>
+                        <span>Next Service: ${site.next_service ? new Date(site.next_service).toLocaleDateString() : 'TBD'}</span>
+                    </div>
+                    <div class="site-actions">
+                        <button onclick="reportDamage('${site.name}', '${site.address}')" class="action-btn">
+                            Report Damage
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateReportsDisplay(reports) {
+            // Update admin view with reports
+            console.log('Reports loaded:', reports);
+        }
+        
+        // Load data when page loads
+        if (api.isLoggedIn()) {
+            loadDashboardData();
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - CRS Car Park Repairs</title>
+    <link rel="icon" type="image/png" href="images/logo-3.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --yellow: #FFD700;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--white);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--black);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--yellow);
+        }
+        
+        .portal-btn {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .portal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Docs Layout */
+        .docs-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 3rem;
+            padding: 3rem 2rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .doc-categories {
+            list-style: none;
+        }
+        
+        .category {
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-title {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .category-items {
+            list-style: none;
+        }
+        
+        .category-items a {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: #333;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            margin-bottom: 0.25rem;
+        }
+        
+        .category-items a:hover {
+            background: var(--gray);
+            color: var(--black);
+            padding-left: 1rem;
+        }
+        
+        .category-items a.active {
+            background: var(--yellow);
+            color: var(--black);
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .doc-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-height: 600px;
+        }
+        
+        .doc-header {
+            border-bottom: 2px solid var(--gray);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .doc-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .doc-meta {
+            display: flex;
+            gap: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .doc-body {
+            max-width: 800px;
+        }
+        
+        .doc-body h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            color: var(--black);
+        }
+        
+        .doc-body h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.75rem;
+            color: #333;
+        }
+        
+        .doc-body p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .doc-body ul, .doc-body ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .doc-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .highlight-box {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--yellow);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .highlight-box.info {
+            background: rgba(30, 144, 255, 0.1);
+            border-left-color: #1E90FF;
+        }
+        
+        .highlight-box.warning {
+            background: rgba(255, 140, 0, 0.1);
+            border-left-color: #FF8C00;
+        }
+        
+        .highlight-box.success {
+            background: rgba(0, 166, 82, 0.1);
+            border-left-color: #00A652;
+        }
+        
+        /* Navigation */
+        .doc-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--gray);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: translateX(5px);
+        }
+        
+        .nav-btn.prev:hover {
+            transform: translateX(-5px);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .action-card {
+            background: var(--gray);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Video Embed */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .docs-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: relative;
+                top: 0;
+                border-bottom: 2px solid var(--gray);
+                padding-bottom: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .doc-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .doc-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <img src="images/yellow-logo.png" alt="CRS" class="logo">
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/priority-plans.html">Priority Plans</a>
+                <a href="/damage-mapper.html">Damage Tool</a>
+                <a href="/docs.html" style="color: var(--yellow);">Documentation</a>
+                <a href="/portal-api.html" class="portal-btn">Client Portal</a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Documentation Container -->
+    <div class="docs-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="search-box">
+                <input type="text" id="docSearch" placeholder="Search docs..." onkeyup="searchDocs(event)">
+            </div>
+            
+            <ul class="doc-categories">
+                <li class="category">
+                    <div class="category-title">🚀 Getting Started</div>
+                    <ul class="category-items">
+                        <li><a href="#welcome" class="active" onclick="loadDoc('welcome')">Welcome</a></li>
+                        <li><a href="#quick-start" onclick="loadDoc('quick-start')">Quick Start Guide</a></li>
+                        <li><a href="#first-report" onclick="loadDoc('first-report')">Your First Report</a></li>
+                    </ul>
+                </li>
+                
+                <li class="category">
+                    <div class="category-title">📱 Client Portal</div>
+                    <ul class="category-items">
+                        <li><a href="#portal-overview" onclick="loadDoc('portal-overview')">Portal Overview</a></li>
+                        <li><a href="#managing-sites" onclick="loadDoc('managing-sites')">Managing Sites</a></li>
+                        <li><a href="#viewing-reports" onclick="loadDoc('viewing-reports')">Viewing Reports</a></li>
+                        <li><a href="#account-settings" onclick="loadDoc('account-settings')">Account Settings</a></li>
+                    </ul>
+                </li>
+                
+                <li class="category">
+                    <div class="category-title">📸 Damage Reporting</div>
+                    <ul class="category-items">
+                        <li><a href="#damage-tool" onclick="loadDoc('damage-tool')">Using the Damage Tool</a></li>
+                        <li><a href="#photo-guidelines" onclick="loadDoc('photo-guidelines')">Photo Guidelines</a></li>
+                        <li><a href="#severity-levels" onclick="loadDoc('severity-levels')">Severity Levels</a></li>
+                        <li><a href="#zone-mapping" onclick="loadDoc('zone-mapping')">Zone Mapping</a></li>
+                    </ul>
+                </li>
+                
+                <li class="category">
+                    <div class="category-title">⭐ Priority Plans</div>
+                    <ul class="category-items">
+                        <li><a href="#plan-comparison" onclick="loadDoc('plan-comparison')">Plan Comparison</a></li>
+                        <li><a href="#plan-benefits" onclick="loadDoc('plan-benefits')">Benefits Explained</a></li>
+                        <li><a href="#upgrading" onclick="loadDoc('upgrading')">Upgrading Your Plan</a></li>
+                        <li><a href="#sla" onclick="loadDoc('sla')">Service Agreements</a></li>
+                    </ul>
+                </li>
+                
+                <li class="category">
+                    <div class="category-title">🔧 Services</div>
+                    <ul class="category-items">
+                        <li><a href="#pothole-repair" onclick="loadDoc('pothole-repair')">Pothole Repair</a></li>
+                        <li><a href="#line-marking" onclick="loadDoc('line-marking')">Line Marking</a></li>
+                        <li><a href="#drainage" onclick="loadDoc('drainage')">Drainage Solutions</a></li>
+                        <li><a href="#resurfacing" onclick="loadDoc('resurfacing')">Full Resurfacing</a></li>
+                    </ul>
+                </li>
+                
+                <li class="category">
+                    <div class="category-title">💡 FAQs</div>
+                    <ul class="category-items">
+                        <li><a href="#general-faq" onclick="loadDoc('general-faq')">General Questions</a></li>
+                        <li><a href="#pricing-faq" onclick="loadDoc('pricing-faq')">Pricing & Billing</a></li>
+                        <li><a href="#technical-faq" onclick="loadDoc('technical-faq')">Technical Support</a></li>
+                    </ul>
+                </li>
+                
+                <li class="category">
+                    <div class="category-title">🔌 API & Integration</div>
+                    <ul class="category-items">
+                        <li><a href="#api-overview" onclick="loadDoc('api-overview')">API Overview</a></li>
+                        <li><a href="#authentication" onclick="loadDoc('authentication')">Authentication</a></li>
+                        <li><a href="#endpoints" onclick="loadDoc('endpoints')">Endpoints</a></li>
+                        <li><a href="#webhooks" onclick="loadDoc('webhooks')">Webhooks</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="doc-content" id="docContent">
+            <div class="doc-header">
+                <h1>Welcome to CRS Documentation</h1>
+                <div class="doc-meta">
+                    <span>📅 Updated: August 2025</span>
+                    <span>⏱️ 5 min read</span>
+                    <span>📚 Getting Started</span>
+                </div>
+            </div>
+            
+            <div class="doc-body">
+                <p>Welcome to the comprehensive documentation for CRS Car Park Repairs. Whether you're a new client getting started with our services or an existing customer looking to make the most of our platform, you'll find everything you need here.</p>
+                
+                <h2>Quick Navigation</h2>
+                <div class="quick-actions">
+                    <a href="#" onclick="loadDoc('quick-start')" class="action-card">
+                        <div class="action-icon">🚀</div>
+                        <div class="action-title">Quick Start</div>
+                        <div class="action-desc">Get up and running in 5 minutes</div>
+                    </a>
+                    
+                    <a href="#" onclick="loadDoc('damage-tool')" class="action-card">
+                        <div class="action-icon">📸</div>
+                        <div class="action-title">Report Damage</div>
+                        <div class="action-desc">Learn how to submit reports</div>
+                    </a>
+                    
+                    <a href="#" onclick="loadDoc('portal-overview')" class="action-card">
+                        <div class="action-icon">📱</div>
+                        <div class="action-title">Client Portal</div>
+                        <div class="action-desc">Manage your sites and reports</div>
+                    </a>
+                    
+                    <a href="#" onclick="loadDoc('plan-comparison')" class="action-card">
+                        <div class="action-icon">⭐</div>
+                        <div class="action-title">Priority Plans</div>
+                        <div class="action-desc">Explore our service plans</div>
+                    </a>
+                </div>
+                
+                <h2>What is CRS Car Park Repairs?</h2>
+                <p>CRS Car Park Repairs is the UK's leading specialist in comprehensive car park maintenance and repair services. We provide zone-based pricing that covers all repairs within a defined area, making budgeting simple and predictable.</p>
+                
+                <div class="highlight-box">
+                    <strong>🎯 Our Mission:</strong> To provide transparent, efficient, and comprehensive car park repair services that keep your facilities safe and professional-looking, while simplifying the maintenance process for property managers.
+                </div>
+                
+                <h2>Key Features</h2>
+                <ul>
+                    <li><strong>Zone-Based Pricing:</strong> One price covers all repairs in a zone - no hidden costs</li>
+                    <li><strong>Digital Damage Reporting:</strong> Submit reports instantly with photos and GPS location</li>
+                    <li><strong>Client Portal:</strong> Track all your sites, reports, and repairs in one place</li>
+                    <li><strong>Priority Plans:</strong> Get faster response times and regular maintenance</li>
+                    <li><strong>5-Year Guarantee:</strong> All our work is backed by our comprehensive warranty</li>
+                </ul>
+                
+                <h2>Getting Help</h2>
+                <p>If you need assistance at any point:</p>
+                
+                <div class="highlight-box info">
+                    <strong>📞 Phone:</strong> 024 7699 2244<br>
+                    <strong>📧 Email:</strong> support@crscarpark.co.uk<br>
+                    <strong>💬 Live Chat:</strong> Available Mon-Fri 8am-6pm<br>
+                    <strong>🆘 Emergency:</strong> Priority Plan holders have 24/7 support
+                </div>
+                
+                <h2>Video Tutorial</h2>
+                <p>Watch this quick overview to get familiar with our platform:</p>
+                
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                </div>
+                
+                <div class="doc-nav">
+                    <div></div>
+                    <a href="#" onclick="loadDoc('quick-start')" class="nav-btn">
+                        Next: Quick Start Guide
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/portal-api.js"></script>
+    <script src="js/feedback-widget.js"></script>
+    <script>
+        // Documentation content database
+        const docs = {
+            'welcome': {
+                title: 'Welcome to CRS Documentation',
+                content: 'Current content...'
+            },
+            'quick-start': {
+                title: 'Quick Start Guide',
+                content: `
+                    <p>Get started with CRS Car Park Repairs in just a few simple steps. This guide will walk you through account creation, adding your first site, and submitting your first damage report.</p>
+                    
+                    <h2>Step 1: Create Your Account</h2>
+                    <ol>
+                        <li>Visit <a href="/portal-api.html">portal.crscarpark.co.uk</a></li>
+                        <li>Click "Register" and enter your details</li>
+                        <li>Verify your email address</li>
+                        <li>Complete your company profile</li>
+                    </ol>
+                    
+                    <h2>Step 2: Add Your First Site</h2>
+                    <p>Once logged in, you can add your car park sites:</p>
+                    <div class="code-block">
+                    Dashboard → Sites → Add New Site → Enter Details → Save
+                    </div>
+                    
+                    <h2>Step 3: Submit a Damage Report</h2>
+                    <p>Report damage in seconds using our tool:</p>
+                    <ol>
+                        <li>Click "Report Damage" from your dashboard</li>
+                        <li>Select the affected site</li>
+                        <li>Upload photos of the damage</li>
+                        <li>Mark damage locations on the photo</li>
+                        <li>Select severity level</li>
+                        <li>Submit for instant quote</li>
+                    </ol>
+                    
+                    <div class="highlight-box success">
+                        <strong>✅ Pro Tip:</strong> Use the mobile app for even faster reporting directly from site!
+                    </div>
+                `
+            },
+            'damage-tool': {
+                title: 'Using the Damage Mapping Tool',
+                content: `
+                    <p>Our innovative damage mapping tool allows you to document and report car park damage quickly and accurately.</p>
+                    
+                    <h2>How It Works</h2>
+                    <p>The damage mapper uses advanced image recognition to help you:</p>
+                    <ul>
+                        <li>Upload photos directly from your device</li>
+                        <li>Mark specific damage locations</li>
+                        <li>Categorize damage severity</li>
+                        <li>Get instant repair estimates</li>
+                    </ul>
+                    
+                    <h2>Best Practices for Photos</h2>
+                    <div class="highlight-box info">
+                        <strong>📸 Photo Tips:</strong>
+                        <ul>
+                            <li>Take photos in good lighting conditions</li>
+                            <li>Include a reference object for scale (cone, pen, etc.)</li>
+                            <li>Capture multiple angles of the damage</li>
+                            <li>Include wide shots for context</li>
+                        </ul>
+                    </div>
+                    
+                    <h2>Marking Damage</h2>
+                    <p>Click directly on the photo to place damage markers. Each marker should represent:</p>
+                    <ul>
+                        <li>Individual potholes</li>
+                        <li>Crack starting/ending points</li>
+                        <li>Drainage issues</li>
+                        <li>Line marking problems</li>
+                    </ul>
+                `
+            },
+            'plan-comparison': {
+                title: 'Priority Plans Comparison',
+                content: `
+                    <p>Choose the perfect Priority Plan for your needs. All plans include our core services with enhanced response times and additional benefits.</p>
+                    
+                    <h2>Available Plans</h2>
+                    
+                    <h3>🥈 Silver Plan - £199/month</h3>
+                    <ul>
+                        <li>Priority scheduling</li>
+                        <li>48-hour response time</li>
+                        <li>Quarterly inspections</li>
+                        <li>10% repair discount</li>
+                    </ul>
+                    
+                    <h3>🥇 Gold Plan - £399/month (Most Popular)</h3>
+                    <ul>
+                        <li>Next-day response</li>
+                        <li>Monthly inspections</li>
+                        <li>20% repair discount</li>
+                        <li>Emergency hotline</li>
+                        <li>Detailed reporting</li>
+                    </ul>
+                    
+                    <h3>💎 Platinum Plan - £799/month</h3>
+                    <ul>
+                        <li>Same-day response</li>
+                        <li>Bi-weekly inspections</li>
+                        <li>30% repair discount</li>
+                        <li>24/7 emergency support</li>
+                        <li>Dedicated account manager</li>
+                        <li>Custom reporting dashboard</li>
+                    </ul>
+                    
+                    <div class="highlight-box warning">
+                        <strong>💡 Note:</strong> All plans require a 12-month commitment. Contact us for custom enterprise solutions.
+                    </div>
+                `
+            }
+        };
+        
+        // Load documentation content
+        async function loadDoc(docId) {
+            // Try to load from API first
+            try {
+                const response = await fetch(`/api/docs?slug=${docId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.doc) {
+                        displayDocument(data.doc);
+                        updateActiveLink(docId);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.log('Loading from local content');
+            }
+            
+            // Fallback to local content
+            loadLocalDoc(docId);
+        }
+        
+        function displayDocument(doc) {
+            // Convert markdown to HTML
+            let html = doc.content || '';
+            html = html
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/`(.+?)`/g, '<code>$1</code>')
+                .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+                .replace(/^> (.+)/gim, '<div class="highlight-box info">$1</div>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            
+            document.getElementById('docContent').innerHTML = `
+                <div class="doc-header">
+                    <h1>${doc.title}</h1>
+                    <div class="doc-meta">
+                        <span>📅 Updated: ${new Date(doc.updated_at || doc.created_at).toLocaleDateString()}</span>
+                        <span>📚 ${formatCategory(doc.category)}</span>
+                    </div>
+                </div>
+                <div class="doc-body">
+                    <p>${html}</p>
+                </div>
+            `;
+        }
+        
+        function formatCategory(category) {
+            if (!category) return 'Documentation';
+            return category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+        
+        // Original loadDoc function renamed
+        function loadLocalDoc(docId) {
+            const content = docs[docId];
+            if (!content) {
+                // If content doesn't exist in JS, show placeholder
+                document.getElementById('docContent').innerHTML = `
+                    <div class="doc-header">
+                        <h1>${docId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h1>
+                        <div class="doc-meta">
+                            <span>📅 Updated: August 2025</span>
+                        </div>
+                    </div>
+                    <div class="doc-body">
+                        <div class="highlight-box info">
+                            <strong>📝 Coming Soon</strong><br>
+                            This documentation section is being prepared. Check back soon or contact support for immediate assistance.
+                        </div>
+                    </div>
+                `;
+                updateActiveLink(docId);
+                return;
+            }
+            
+            document.getElementById('docContent').innerHTML = `
+                <div class="doc-header">
+                    <h1>${content.title}</h1>
+                    <div class="doc-meta">
+                        <span>📅 Updated: August 2025</span>
+                    </div>
+                </div>
+                <div class="doc-body">
+                    ${content.content}
+                </div>
+            `;
+            
+            updateActiveLink(docId);
+        }
+        
+        // Update active link
+        function updateActiveLink(docId) {
+            document.querySelectorAll('.category-items a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick')?.includes(docId)) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Search functionality
+        function searchDocs(event) {
+            const query = event.target.value.toLowerCase();
+            const links = document.querySelectorAll('.category-items a');
+            
+            links.forEach(link => {
+                const text = link.textContent.toLowerCase();
+                const category = link.closest('.category');
+                
+                if (text.includes(query)) {
+                    link.style.display = 'block';
+                    category.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                    // Check if category has any visible items
+                    const visibleItems = category.querySelectorAll('.category-items a[style="display: block;"]');
+                    if (visibleItems.length === 0 && query !== '') {
+                        category.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        // Handle navigation from URL hash
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                loadDoc(hash);
+            }
+        });
+        
+        // Load initial content from URL
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1);
+            loadDoc(hash);
+        }
+    </script>
+</body>
+</html>
