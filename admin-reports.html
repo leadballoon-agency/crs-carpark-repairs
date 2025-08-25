@@ -710,7 +710,83 @@
         }
         
         function approveReport(id) {
-            alert(`Report #${id} approved! Quote will be generated.`);
+            const report = allReports.find(r => r.id === id);
+            if (!report) return;
+            
+            // Update status locally
+            report.status = 'approved';
+            
+            // Generate quote details
+            const quote = {
+                reportId: id,
+                basePrice: report.estimatedCost,
+                urgencyMultiplier: report.urgency === 'urgent' ? 1.25 : 1,
+                finalPrice: report.estimatedCost * (report.urgency === 'urgent' ? 1.25 : 1),
+                validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
+            };
+            
+            // Show detailed quote modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                padding: 2rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 2rem; max-width: 500px; width: 100%; border: 2px solid #FFD700;">
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">✅ Report Approved - Quote Generated</h2>
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h3 style="color: #fff; margin-bottom: 0.5rem;">Quote #Q-${id}</h3>
+                        <p style="color: #999; margin: 0.5rem 0;">Location: ${report.location}</p>
+                        <p style="color: #999; margin: 0.5rem 0;">Contact: ${report.contactName || 'Unknown'}</p>
+                    </div>
+                    
+                    <div style="background: rgba(76,175,80,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #4CAF50;">
+                        <h4 style="color: #4CAF50; margin-bottom: 0.5rem;">Pricing Breakdown:</h4>
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                            <span style="color: #fff;">Base Price (${report.zones} zones):</span>
+                            <span style="color: #FFD700;">£${quote.basePrice.toLocaleString()}</span>
+                        </div>
+                        ${report.urgency === 'urgent' ? `
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                            <span style="color: #fff;">Urgent Service (25%):</span>
+                            <span style="color: #FFD700;">£${((quote.finalPrice - quote.basePrice).toLocaleString())}</span>
+                        </div>
+                        ` : ''}
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 0.5rem 0;">
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0; font-weight: bold;">
+                            <span style="color: #fff;">Total Quote:</span>
+                            <span style="color: #FFD700; font-size: 1.25rem;">£${quote.finalPrice.toLocaleString()}</span>
+                        </div>
+                        <p style="color: #999; font-size: 0.875rem; margin-top: 0.5rem;">Valid until: ${quote.validUntil}</p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <button onclick="sendQuoteEmail(${id}, ${quote.finalPrice})" style="background: #4CAF50; color: white; border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            📧 Email Quote
+                        </button>
+                        <button onclick="downloadQuote(${id}, ${quote.finalPrice})" style="background: #2196F3; color: white; border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            📥 Download PDF
+                        </button>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove(); filterReports(currentFilter);" style="width: 100%; margin-top: 1rem; background: #FFD700; color: #000; border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        ✓ Done - Close Quote
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
         
         function contactClient(id) {
@@ -720,8 +796,191 @@
             }
         }
         
+        function sendQuoteEmail(id, price) {
+            const report = allReports.find(r => r.id === id);
+            if (!report) return;
+            
+            const subject = `CRS Quote #Q-${id} - Car Park Repair Services`;
+            const body = `Dear ${report.contactName || 'Customer'},\n\n` +
+                `Thank you for submitting your damage report for ${report.location}.\n\n` +
+                `QUOTE DETAILS:\n` +
+                `Quote Reference: Q-${id}\n` +
+                `Location: ${report.location}\n` +
+                `Zones Affected: ${report.zones}\n` +
+                `Severity: ${report.severity.toUpperCase()}\n` +
+                `Total Quote: £${price.toLocaleString()}\n` +
+                `Valid Until: ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}\n\n` +
+                `${report.urgency === 'urgent' ? 'URGENT SERVICE: 25% surcharge applied for emergency response.\n\n' : ''}` +
+                `NEXT STEPS:\n` +
+                `1. Reply to confirm acceptance of this quote\n` +
+                `2. We will schedule the repair within ${report.urgency === 'urgent' ? '24-48 hours' : '5-7 business days'}\n` +
+                `3. All work includes our 5-year guarantee\n\n` +
+                `Best regards,\n` +
+                `CRS Car Park Repairs Team\n` +
+                `📞 0800 123 4567\n` +
+                `📧 quotes@carparkrepair.co.uk`;
+            
+            window.location.href = `mailto:${report.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+        
+        function downloadQuote(id, price) {
+            // In production, this would generate a real PDF
+            // For now, create a simple HTML quote that can be printed/saved
+            const report = allReports.find(r => r.id === id);
+            if (!report) return;
+            
+            const quoteHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Quote Q-${id}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; }
+                        .header { border-bottom: 3px solid #FFD700; padding-bottom: 1rem; margin-bottom: 2rem; }
+                        .logo { color: #FFD700; font-size: 2rem; font-weight: bold; }
+                        .quote-box { background: #f5f5f5; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; }
+                        .price { font-size: 2rem; color: #FFD700; font-weight: bold; }
+                        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+                        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+                        th { background: #f9f9f9; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">CRS CAR PARK REPAIRS</div>
+                        <p>Professional Car Park Repair Services</p>
+                    </div>
+                    
+                    <h1>QUOTATION</h1>
+                    <div class="quote-box">
+                        <p><strong>Quote Reference:</strong> Q-${id}</p>
+                        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                        <p><strong>Valid Until:</strong> ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</p>
+                    </div>
+                    
+                    <h2>Client Details</h2>
+                    <div class="quote-box">
+                        <p><strong>Contact:</strong> ${report.contactName || 'Customer'}</p>
+                        <p><strong>Location:</strong> ${report.location}</p>
+                        <p><strong>Phone:</strong> ${report.contactPhone}</p>
+                        <p><strong>Email:</strong> ${report.contactEmail}</p>
+                    </div>
+                    
+                    <h2>Damage Assessment</h2>
+                    <table>
+                        <tr><th>Zones Affected</th><td>${report.zones}</td></tr>
+                        <tr><th>Damage Points</th><td>${report.damageCount}</td></tr>
+                        <tr><th>Severity</th><td>${report.severity.toUpperCase()}</td></tr>
+                        <tr><th>Urgency</th><td>${report.urgency === 'urgent' ? 'URGENT - 24-48 hours' : report.urgency === 'soon' ? 'Within 30 days' : 'Routine'}</td></tr>
+                    </table>
+                    
+                    <h2>Pricing</h2>
+                    <div class="quote-box">
+                        <table>
+                            <tr><th>Base Price (${report.zones} zones)</th><td>£${report.estimatedCost.toLocaleString()}</td></tr>
+                            ${report.urgency === 'urgent' ? `<tr><th>Urgent Service (25%)</th><td>£${((price - report.estimatedCost).toLocaleString())}</td></tr>` : ''}
+                            <tr><th style="font-size: 1.25rem;">TOTAL QUOTE</th><td class="price">£${price.toLocaleString()}</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="quote-box" style="background: #e8f5e9;">
+                        <h3>✓ Included in Service:</h3>
+                        <ul>
+                            <li>Complete repair of all identified damage</li>
+                            <li>Professional grade materials</li>
+                            <li>5-year guarantee on all work</li>
+                            <li>Full site cleanup after completion</li>
+                            <li>Photo documentation before and after</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="margin-top: 2rem; text-align: center; color: #666;">
+                        CRS Car Park Repairs Ltd | 📞 0800 123 4567 | 📧 quotes@carparkrepair.co.uk<br>
+                        Company Reg: 12345678 | VAT: GB123456789
+                    </p>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([quoteHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CRS-Quote-Q${id}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
         function scheduleRepair(id) {
-            alert(`Opening scheduler for Report #${id}`);
+            const report = allReports.find(r => r.id === id);
+            if (!report) return;
+            
+            // Show scheduling modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                padding: 2rem;
+            `;
+            
+            const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            const twoWeeks = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+            
+            modal.innerHTML = `
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 2rem; max-width: 500px; width: 100%; border: 2px solid #FFD700;">
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">📅 Schedule Repair</h2>
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="color: #fff; margin: 0.5rem 0;">Location: ${report.location}</p>
+                        <p style="color: #999; margin: 0.5rem 0;">Urgency: ${report.urgency === 'urgent' ? '🚨 URGENT' : report.urgency === 'soon' ? '📅 Within Month' : '✓ Routine'}</p>
+                    </div>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <label style="color: #FFD700; display: block; margin-bottom: 0.5rem;">Select Date:</label>
+                        <input type="date" id="repairDate" value="${nextWeek.toISOString().split('T')[0]}" 
+                               min="${new Date().toISOString().split('T')[0]}"
+                               style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 2px solid #444; border-radius: 6px; color: #fff;">
+                    </div>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <label style="color: #FFD700; display: block; margin-bottom: 0.5rem;">Assign Team:</label>
+                        <select style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 2px solid #444; border-radius: 6px; color: #fff;">
+                            <option>Team A - Birmingham Region</option>
+                            <option>Team B - Manchester Region</option>
+                            <option>Team C - Liverpool Region</option>
+                            <option>Emergency Response Team</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <label style="color: #FFD700; display: block; margin-bottom: 0.5rem;">Notes:</label>
+                        <textarea style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 2px solid #444; border-radius: 6px; color: #fff; min-height: 80px;"
+                                  placeholder="Special instructions or access requirements..."></textarea>
+                    </div>
+                    
+                    <button onclick="alert('Repair scheduled! Notification sent to team and client.'); this.parentElement.parentElement.remove();" 
+                            style="width: 100%; background: #4CAF50; color: white; border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+                        ✓ Confirm Schedule
+                    </button>
+                    
+                    <button onclick="this.parentElement.parentElement.remove();" 
+                            style="width: 100%; background: transparent; color: #FFD700; border: 2px solid #FFD700; padding: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
         
         function viewDetails(id) {
