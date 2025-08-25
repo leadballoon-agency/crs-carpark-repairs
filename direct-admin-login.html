@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Admin Access - CRS</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            background: #2a2a2a;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #FFD700;
+            max-width: 400px;
+            width: 100%;
+            margin: 1rem;
+        }
+        
+        h1 {
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        button {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+        
+        .secondary {
+            background: transparent;
+            color: #FFD700;
+            border: 2px solid #FFD700;
+        }
+        
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .success {
+            background: #4CAF50;
+        }
+        
+        .info {
+            background: #2196F3;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #444;
+            margin: 2rem 0;
+        }
+        
+        p {
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Direct Admin Access</h1>
+        
+        <div class="message info">
+            Bypass login issues - Direct access to admin panel
+        </div>
+        
+        <button onclick="loginAsSuperAdmin()">
+            👑 Login as Mark (Super Admin)
+        </button>
+        
+        <button onclick="loginAsAdmin()">
+            🔧 Login as CRS Admin
+        </button>
+        
+        <button onclick="loginAsClient()">
+            👤 Login as Demo Client
+        </button>
+        
+        <hr>
+        
+        <button class="secondary" onclick="goToAdminHub()">
+            → Go Directly to Admin Hub
+        </button>
+        
+        <button class="secondary" onclick="goToSettings()">
+            ⚙️ Go Directly to Settings
+        </button>
+        
+        <button class="secondary" onclick="goToReports()">
+            📊 Go Directly to Reports
+        </button>
+        
+        <hr>
+        
+        <p>
+            This page bypasses API authentication.<br>
+            Use for emergency admin access.
+        </p>
+    </div>
+    
+    <script>
+        function setUser(userData) {
+            localStorage.setItem('authToken', 'bypass-token-' + Date.now());
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            localStorage.setItem('crs_logged_in', 'true');
+        }
+        
+        function loginAsSuperAdmin() {
+            setUser({
+                id: 0,
+                email: 'mark@leadballoon.co.uk',
+                name: 'Mark Taylor',
+                company: 'Lead Balloon',
+                role: 'super_admin'
+            });
+            
+            alert('Logged in as Super Admin!');
+            window.location.href = '/admin-hub.html';
+        }
+        
+        function loginAsAdmin() {
+            setUser({
+                id: 1,
+                email: 'admin@crs.com',
+                name: 'CRS Admin',
+                company: 'CRS Car Park Repairs',
+                role: 'admin'
+            });
+            
+            alert('Logged in as Admin!');
+            window.location.href = '/admin-hub.html';
+        }
+        
+        function loginAsClient() {
+            setUser({
+                id: 2,
+                email: 'demo@mcdonalds.com',
+                name: 'John Richardson',
+                company: 'McDonalds Franchise Group',
+                role: 'client'
+            });
+            
+            alert('Logged in as Client!');
+            window.location.href = '/client-portal.html';
+        }
+        
+        function goToAdminHub() {
+            loginAsSuperAdmin();
+        }
+        
+        function goToSettings() {
+            setUser({
+                id: 0,
+                email: 'mark@leadballoon.co.uk',
+                name: 'Mark Taylor',
+                company: 'Lead Balloon',
+                role: 'super_admin'
+            });
+            window.location.href = '/admin-settings.html';
+        }
+        
+        function goToReports() {
+            setUser({
+                id: 0,
+                email: 'mark@leadballoon.co.uk',
+                name: 'Mark Taylor',
+                company: 'Lead Balloon',
+                role: 'super_admin'
+            });
+            window.location.href = '/admin-reports.html';
+        }
+    </script>
+</body>
+</html>
