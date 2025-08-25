@@ -17,8 +17,8 @@
             --black: #1a1a1a;
             --dark-gray: #2a2a2a;
             --medium-gray: #3a3a3a;
-            --silver: #718096;
-            --platinum: #6B46C1;
+            --essential: #718096;
+            --enterprise: #6B46C1;
             --green: #4CAF50;
             --red: #f44336;
         }
@@ -128,16 +128,16 @@
             transition: all 0.3s;
         }
         
-        .tier-card.silver {
-            border-color: var(--silver);
+        .tier-card.essential {
+            border-color: var(--essential);
         }
         
-        .tier-card.gold {
+        .tier-card.professional {
             border-color: var(--yellow);
         }
         
-        .tier-card.platinum {
-            border-color: var(--platinum);
+        .tier-card.enterprise {
+            border-color: var(--enterprise);
             background: linear-gradient(135deg, rgba(107, 70, 193, 0.05), rgba(103, 126, 234, 0.05));
         }
         
@@ -159,15 +159,15 @@
             text-transform: uppercase;
         }
         
-        .tier-card.silver .tier-name {
-            color: var(--silver);
+        .tier-card.essential .tier-name {
+            color: var(--essential);
         }
         
-        .tier-card.gold .tier-name {
+        .tier-card.professional .tier-name {
             color: var(--yellow);
         }
         
-        .tier-card.platinum .tier-name {
+        .tier-card.enterprise .tier-name {
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -303,17 +303,17 @@
             text-align: center;
         }
         
-        .plan-badge.silver {
-            background: var(--silver);
+        .plan-badge.essential {
+            background: var(--essential);
             color: white;
         }
         
-        .plan-badge.gold {
+        .plan-badge.professional {
             background: var(--yellow);
             color: var(--black);
         }
         
-        .plan-badge.platinum {
+        .plan-badge.enterprise {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
@@ -492,9 +492,9 @@
                 <h2 class="section-title">Priority Clients</h2>
                 <div class="filter-tabs">
                     <button class="filter-tab active" onclick="filterClients('all')">All</button>
-                    <button class="filter-tab" onclick="filterClients('platinum')">Platinum</button>
-                    <button class="filter-tab" onclick="filterClients('gold')">Gold</button>
-                    <button class="filter-tab" onclick="filterClients('silver')">Silver</button>
+                    <button class="filter-tab" onclick="filterClients('enterprise')">Enterprise</button>
+                    <button class="filter-tab" onclick="filterClients('professional')">Professional</button>
+                    <button class="filter-tab" onclick="filterClients('essential')">Essential</button>
                 </div>
             </div>
             
@@ -522,20 +522,20 @@
             // Default settings if none stored
             return {
                 priorityPlans: {
-                    silver: {
-                        name: "Silver",
+                    essential: {
+                        name: "Essential",
                         price: 199,
-                        features: ["48-hour response", "Annual inspection", "10% repair discount", "Priority scheduling"]
+                        features: ["48-hour response", "Quarterly inspection", "20% repair discount", "Priority scheduling"]
                     },
-                    gold: {
-                        name: "Gold", 
-                        price: 399,
-                        features: ["24-hour response", "Bi-annual inspection", "20% repair discount", "Emergency hotline", "Detailed reporting"]
+                    professional: {
+                        name: "Professional", 
+                        price: 499,
+                        features: ["24-hour response", "Monthly inspection", "30% repair discount", "Emergency hotline", "Detailed reporting"]
                     },
-                    platinum: {
-                        name: "Platinum",
-                        price: 799,
-                        features: ["Same-day response", "Quarterly inspection", "30% repair discount", "24/7 emergency support", "Dedicated account manager", "Custom reporting dashboard"]
+                    enterprise: {
+                        name: "Enterprise",
+                        price: "Custom",
+                        features: ["Same-day response", "Bi-weekly inspection", "Unlimited minor repairs", "24/7 emergency support", "Dedicated account manager", "Custom reporting dashboard"]
                     }
                 }
             };
@@ -548,85 +548,87 @@
             
             // Calculate client counts and MRR for each tier
             const tierStats = {
-                silver: { count: 23, mrr: 0 },
-                gold: { count: 19, mrr: 0 },
-                platinum: { count: 5, mrr: 0 }
+                essential: { count: 23, mrr: 0 },
+                professional: { count: 19, mrr: 0 },
+                enterprise: { count: 5, mrr: 0 }
             };
             
             // Calculate MRR based on settings prices
-            tierStats.silver.mrr = tierStats.silver.count * settings.priorityPlans.silver.price;
-            tierStats.gold.mrr = tierStats.gold.count * settings.priorityPlans.gold.price;
-            tierStats.platinum.mrr = tierStats.platinum.count * settings.priorityPlans.platinum.price;
+            tierStats.essential.mrr = tierStats.essential.count * settings.priorityPlans.essential.price;
+            tierStats.professional.mrr = tierStats.professional.count * settings.priorityPlans.professional.price;
+            // For enterprise, use a default estimate if Custom
+            const enterprisePrice = settings.priorityPlans.enterprise.price === 'Custom' ? 1500 : settings.priorityPlans.enterprise.price;
+            tierStats.enterprise.mrr = tierStats.enterprise.count * enterprisePrice;
             
-            const totalMRR = tierStats.silver.mrr + tierStats.gold.mrr + tierStats.platinum.mrr;
+            const totalMRR = tierStats.essential.mrr + tierStats.professional.mrr + tierStats.enterprise.mrr;
             
             // Calculate revenue percentages and profit margins
             // Assuming higher tiers have better margins due to efficiency
             const margins = {
-                silver: 0.35,    // 35% profit margin
-                gold: 0.45,      // 45% profit margin
-                platinum: 0.60   // 60% profit margin (economies of scale)
+                essential: 0.35,    // 35% profit margin
+                professional: 0.45,      // 45% profit margin
+                enterprise: 0.60   // 60% profit margin (economies of scale)
             };
             
             tiersContainer.innerHTML = `
-                <div class="tier-card silver">
+                <div class="tier-card essential">
                     <div class="tier-header">
-                        <div class="tier-name">SILVER</div>
-                        <div class="tier-price">£${settings.priorityPlans.silver.price}/mo</div>
+                        <div class="tier-name">ESSENTIAL</div>
+                        <div class="tier-price">£${settings.priorityPlans.essential.price}/mo</div>
                     </div>
                     <div class="tier-stats">
                         <div class="tier-stat">
-                            <span class="tier-stat-value">${tierStats.silver.count}</span>
+                            <span class="tier-stat-value">${tierStats.essential.count}</span>
                             <span class="tier-stat-label">Clients</span>
                         </div>
                         <div class="tier-stat">
-                            <span class="tier-stat-value">${Math.round((tierStats.silver.mrr / totalMRR) * 100)}%</span>
+                            <span class="tier-stat-value">${Math.round((tierStats.essential.mrr / totalMRR) * 100)}%</span>
                             <span class="tier-stat-label">of Revenue</span>
                         </div>
                         <div class="tier-stat">
-                            <span class="tier-stat-value" style="color: ${margins.silver >= 0.4 ? 'var(--green)' : 'var(--yellow)'};">${Math.round(margins.silver * 100)}%</span>
+                            <span class="tier-stat-value" style="color: ${margins.essential >= 0.4 ? 'var(--green)' : 'var(--yellow)'};">${Math.round(margins.essential * 100)}%</span>
                             <span class="tier-stat-label">Margin</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="tier-card gold">
+                <div class="tier-card professional">
                     <div class="tier-header">
-                        <div class="tier-name">GOLD</div>
-                        <div class="tier-price">£${settings.priorityPlans.gold.price}/mo</div>
+                        <div class="tier-name">PROFESSIONAL</div>
+                        <div class="tier-price">£${settings.priorityPlans.professional.price}/mo</div>
                     </div>
                     <div class="tier-stats">
                         <div class="tier-stat">
-                            <span class="tier-stat-value">${tierStats.gold.count}</span>
+                            <span class="tier-stat-value">${tierStats.professional.count}</span>
                             <span class="tier-stat-label">Clients</span>
                         </div>
                         <div class="tier-stat">
-                            <span class="tier-stat-value">${Math.round((tierStats.gold.mrr / totalMRR) * 100)}%</span>
+                            <span class="tier-stat-value">${Math.round((tierStats.professional.mrr / totalMRR) * 100)}%</span>
                             <span class="tier-stat-label">of Revenue</span>
                         </div>
                         <div class="tier-stat">
-                            <span class="tier-stat-value" style="color: ${margins.gold >= 0.4 ? 'var(--green)' : 'var(--yellow)'};">${Math.round(margins.gold * 100)}%</span>
+                            <span class="tier-stat-value" style="color: ${margins.professional >= 0.4 ? 'var(--green)' : 'var(--yellow)'};">${Math.round(margins.professional * 100)}%</span>
                             <span class="tier-stat-label">Margin</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="tier-card platinum">
+                <div class="tier-card enterprise">
                     <div class="tier-header">
-                        <div class="tier-name">PLATINUM</div>
-                        <div class="tier-price">£${settings.priorityPlans.platinum.price}/mo</div>
+                        <div class="tier-name">ENTERPRISE</div>
+                        <div class="tier-price">${settings.priorityPlans.enterprise.price === 'Custom' ? 'Custom' : `£${settings.priorityPlans.enterprise.price}/mo`}</div>
                     </div>
                     <div class="tier-stats">
                         <div class="tier-stat">
-                            <span class="tier-stat-value">${tierStats.platinum.count}</span>
+                            <span class="tier-stat-value">${tierStats.enterprise.count}</span>
                             <span class="tier-stat-label">Clients</span>
                         </div>
                         <div class="tier-stat">
-                            <span class="tier-stat-value">${Math.round((tierStats.platinum.mrr / totalMRR) * 100)}%</span>
+                            <span class="tier-stat-value">${Math.round((tierStats.enterprise.mrr / totalMRR) * 100)}%</span>
                             <span class="tier-stat-label">of Revenue</span>
                         </div>
                         <div class="tier-stat">
-                            <span class="tier-stat-value" style="color: var(--green);">${Math.round(margins.platinum * 100)}%</span>
+                            <span class="tier-stat-value" style="color: var(--green);">${Math.round(margins.enterprise * 100)}%</span>
                             <span class="tier-stat-label">Margin</span>
                         </div>
                     </div>
@@ -644,8 +646,8 @@
                 id: 1,
                 name: "McDonald's Birmingham",
                 contact: "John Richardson",
-                plan: "platinum",
-                revenue: 799,
+                plan: "enterprise",
+                revenue: 1500, // Custom pricing estimate
                 responseTime: "Same day",
                 sites: 8,
                 joinDate: "2024-01-15",
@@ -656,8 +658,8 @@
                 id: 2,
                 name: "Tesco Express Network",
                 contact: "Sarah Mitchell",
-                plan: "platinum",
-                revenue: 799,
+                plan: "enterprise",
+                revenue: 1500, // Custom pricing estimate
                 responseTime: "Same day",
                 sites: 12,
                 joinDate: "2024-02-20"
@@ -666,8 +668,8 @@
                 id: 3,
                 name: "Sainsbury's Local",
                 contact: "Michael Brown",
-                plan: "gold",
-                revenue: 399,
+                plan: "professional",
+                revenue: 499,
                 responseTime: "24 hours",
                 sites: 6,
                 joinDate: "2024-03-10"
@@ -676,8 +678,8 @@
                 id: 4,
                 name: "Costa Coffee Franchise",
                 contact: "Emma Wilson",
-                plan: "gold",
-                revenue: 399,
+                plan: "professional",
+                revenue: 499,
                 responseTime: "24 hours",
                 sites: 4,
                 joinDate: "2024-04-05"
@@ -686,7 +688,7 @@
                 id: 5,
                 name: "Premier Inn Liverpool",
                 contact: "David Jones",
-                plan: "silver",
+                plan: "essential",
                 revenue: 199,
                 responseTime: "48 hours",
                 sites: 2,
@@ -696,7 +698,7 @@
                 id: 6,
                 name: "Holiday Inn Manchester",
                 contact: "Lisa Taylor",
-                plan: "silver",
+                plan: "essential",
                 revenue: 199,
                 responseTime: "48 hours",
                 sites: 1,

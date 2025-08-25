@@ -1161,8 +1161,8 @@
             <div class="plan-card">
                 <div class="plan-header">
                     <h3 class="plan-name">Enterprise</h3>
-                    <div class="plan-price">Custom<span>/month</span></div>
-                    <p class="plan-tagline">Multi-site portfolios</p>
+                    <div class="plan-price">Custom<span> pricing</span></div>
+                    <p class="plan-tagline">Multi-site portfolios (10-400+ sites)</p>
                 </div>
                 <div class="plan-features">
                     <div class="feature-item">
@@ -1436,37 +1436,37 @@
             // Update plan names and prices dynamically
             const planElements = document.querySelectorAll('.plan');
             
-            if (planElements[0] && plans.silver) {
-                // Silver Plan (first plan)
-                planElements[0].querySelector('.plan-name').textContent = plans.silver.name;
-                planElements[0].querySelector('.plan-price').innerHTML = `£${plans.silver.price}<span>/month</span>`;
-                const silverFeatures = planElements[0].querySelector('.plan-features');
-                if (silverFeatures && plans.silver.features) {
-                    silverFeatures.innerHTML = plans.silver.features.map(f => 
+            if (planElements[0] && plans.essential) {
+                // Essential Plan (first plan)
+                planElements[0].querySelector('.plan-name').textContent = plans.essential.name;
+                planElements[0].querySelector('.plan-price').innerHTML = `£${plans.essential.price}<span>/month</span>`;
+                const essentialFeatures = planElements[0].querySelector('.plan-features');
+                if (essentialFeatures && plans.essential.features) {
+                    essentialFeatures.innerHTML = plans.essential.features.map(f => 
                         `<li><span class="check">✓</span> ${f}</li>`
                     ).join('');
                 }
             }
             
-            if (planElements[1] && plans.gold) {
-                // Gold Plan (popular/middle plan)
-                planElements[1].querySelector('.plan-name').textContent = plans.gold.name;
-                planElements[1].querySelector('.plan-price').innerHTML = `£${plans.gold.price}<span>/month</span>`;
-                const goldFeatures = planElements[1].querySelector('.plan-features');
-                if (goldFeatures && plans.gold.features) {
-                    goldFeatures.innerHTML = plans.gold.features.map(f => 
+            if (planElements[1] && plans.professional) {
+                // Professional Plan (popular/middle plan)
+                planElements[1].querySelector('.plan-name').textContent = plans.professional.name;
+                planElements[1].querySelector('.plan-price').innerHTML = `£${plans.professional.price}<span>/month</span>`;
+                const professionalFeatures = planElements[1].querySelector('.plan-features');
+                if (professionalFeatures && plans.professional.features) {
+                    professionalFeatures.innerHTML = plans.professional.features.map(f => 
                         `<li><span class="check">✓</span> ${f}</li>`
                     ).join('');
                 }
             }
             
-            if (planElements[2] && plans.platinum) {
-                // Platinum Plan (third plan)
-                planElements[2].querySelector('.plan-name').textContent = plans.platinum.name;
-                planElements[2].querySelector('.plan-price').innerHTML = `£${plans.platinum.price}<span>/month</span>`;
-                const platinumFeatures = planElements[2].querySelector('.plan-features');
-                if (platinumFeatures && plans.platinum.features) {
-                    platinumFeatures.innerHTML = plans.platinum.features.map(f => 
+            if (planElements[2] && plans.enterprise) {
+                // Enterprise Plan (third plan)
+                planElements[2].querySelector('.plan-name').textContent = plans.enterprise.name;
+                planElements[2].querySelector('.plan-price').innerHTML = `£${plans.enterprise.price}<span>/month</span>`;
+                const enterpriseFeatures = planElements[2].querySelector('.plan-features');
+                if (enterpriseFeatures && plans.enterprise.features) {
+                    enterpriseFeatures.innerHTML = plans.enterprise.features.map(f => 
                         `<li><span class="check">✓</span> ${f}</li>`
                     ).join('');
                 }

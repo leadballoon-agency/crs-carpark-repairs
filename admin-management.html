@@ -192,9 +192,9 @@
             box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
         }
         
-        .gradient-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .btn-both {
+            background: linear-gradient(135deg, var(--yellow), #FFA500);
+            color: var(--black);
             width: 100%;
             padding: 1rem 2rem;
             border: none;
@@ -205,9 +205,9 @@
             transition: all 0.3s;
         }
         
-        .gradient-btn:hover {
+        .btn-both:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
         }
         
         .client-list {
@@ -300,15 +300,15 @@
             margin-left: 0.5rem;
         }
         
-        .priority-silver { 
+        .priority-essential { 
             background: #718096;
             color: white;
         }
-        .priority-gold { 
+        .priority-professional { 
             background: var(--yellow);
             color: var(--black);
         }
-        .priority-platinum { 
+        .priority-enterprise { 
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
@@ -354,9 +354,10 @@
         </div>
         
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('quick-add')">Quick Add Admins</button>
-            <button class="tab" onclick="switchTab('add-client')">Add User</button>
-            <button class="tab" onclick="switchTab('manage-clients')">Manage Users</button>
+            <button class="tab active" onclick="switchTab('add-client')">Add New User</button>
+            <button class="tab" onclick="switchTab('priority-clients')">Priority Clients</button>
+            <button class="tab" onclick="switchTab('manage-clients')">Manage All Users</button>
+            <button class="tab" onclick="switchTab('quick-add')">Quick Add Admins</button>
             <button class="tab" onclick="switchTab('bulk-import')">Bulk Import</button>
         </div>
         
@@ -364,14 +365,14 @@
             ✅ <span id="success-text">Client added successfully!</span>
         </div>
         
-        <!-- Quick Add Admins Section -->
-        <div id="quick-add" class="section active">
+        <!-- Add Client Section -->
+        <div id="add-client" class="section active">
             <h2>Quick Add Team Members</h2>
             <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
                 <div style="background: rgba(255,215,0,0.1); padding: 1.5rem; border-radius: 8px; border: 2px solid #FFD700;">
                     <h3 style="color: #FFD700; margin-bottom: 1rem;">Paul Richardson - CRS Owner</h3>
                     <div style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
-                        <div>📧 Email: <strong>paul@crscarparks.co.uk</strong></div>
+                        <div>📧 Email: <strong>paul@carparkrepair.co.uk</strong></div>
                         <div>🔑 Default Password: <strong>CRS2024!</strong></div>
                         <div>👤 Role: <strong>Admin</strong></div>
                     </div>
@@ -381,7 +382,7 @@
                 <div style="background: rgba(255,215,0,0.1); padding: 1.5rem; border-radius: 8px; border: 2px solid #FFD700;">
                     <h3 style="color: #FFD700; margin-bottom: 1rem;">Kelsey Richardson - Operations</h3>
                     <div style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
-                        <div>📧 Email: <strong>kelsey@crscarparks.co.uk</strong></div>
+                        <div>📧 Email: <strong>kelsey@carparkrepair.co.uk</strong></div>
                         <div>🔑 Default Password: <strong>Kelsey2024!</strong></div>
                         <div>👤 Role: <strong>Admin</strong></div>
                     </div>
@@ -389,11 +390,36 @@
                 </div>
             </div>
             
-            <button class="btn-primary" style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100%;" onclick="addBothAdmins()">⚡ Add Both Paul & Kelsey</button>
+            <button class="btn-both" onclick="addBothAdmins()">⚡ Add Both Paul & Kelsey</button>
         </div>
         
-        <!-- Add Client Section -->
-        <div id="add-client" class="section">
+        <!-- Priority Clients Section -->
+        <div id="priority-clients" class="section">
+            <h2>Priority Client Management</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                <div class="tier-summary" style="background: #718096; padding: 1rem; border-radius: 8px; color: white;">
+                    <h3>Essential Tier</h3>
+                    <div style="font-size: 2rem; font-weight: bold;"><span id="essential-count">0</span></div>
+                    <div style="opacity: 0.9;">£<span id="essential-revenue">0</span>/mo</div>
+                </div>
+                <div class="tier-summary" style="background: var(--yellow); padding: 1rem; border-radius: 8px; color: var(--black);">
+                    <h3>Professional Tier</h3>
+                    <div style="font-size: 2rem; font-weight: bold;"><span id="professional-count">0</span></div>
+                    <div style="opacity: 0.9;">£<span id="professional-revenue">0</span>/mo</div>
+                </div>
+                <div class="tier-summary" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 1rem; border-radius: 8px; color: white;">
+                    <h3>Enterprise Tier</h3>
+                    <div style="font-size: 2rem; font-weight: bold;"><span id="enterprise-count">0</span></div>
+                    <div style="opacity: 0.9;">£<span id="enterprise-revenue">0</span>/mo</div>
+                </div>
+            </div>
+            <div id="priority-client-list">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Quick Add Admins Section -->
+        <div id="quick-add" class="section">
             <h2>Add New User</h2>
             <form id="add-client-form">
                 <div class="form-row">
@@ -421,24 +447,37 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>User Role</label>
-                        <select id="user-role">
+                        <select id="user-role" onchange="updateAccountTypeVisibility()">
                             <option value="client">Client</option>
                             <option value="admin">Admin</option>
                             <option value="super_admin">Super Admin</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Account Type</label>
-                        <select id="account-type">
-                            <option value="standard">Standard</option>
-                            <option value="priority-silver">Priority Silver</option>
-                            <option value="priority-gold">Priority Gold</option>
-                            <option value="priority-platinum">Priority Platinum</option>
+                    <div class="form-group" id="account-type-group">
+                        <label>Priority Tier</label>
+                        <select id="account-type" onchange="updatePriorityInfo()">
+                            <option value="standard">Standard (No Priority)</option>
+                            <option value="priority-essential">🟦 Essential - £199/month</option>
+                            <option value="priority-professional">🥇 Professional - £499/month</option>
+                            <option value="priority-enterprise">💎 Enterprise - Custom pricing</option>
                         </select>
                     </div>
+                </div>
+                
+                <div id="priority-benefits" style="display: none; background: rgba(255,215,0,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h4 style="color: var(--yellow); margin-bottom: 0.5rem;">Tier Benefits:</h4>
+                    <ul id="benefits-list" style="margin: 0; padding-left: 1.5rem; color: #ccc;">
+                    </ul>
+                </div>
+                
+                <div class="form-row">
                     <div class="form-group">
                         <label>Initial Password</label>
                         <input type="text" id="password" placeholder="Auto-generated if blank">
+                    </div>
+                    <div class="form-group">
+                        <label>Site Address</label>
+                        <input type="text" id="site-address" placeholder="Main car park location">
                     </div>
                 </div>
                 
@@ -473,7 +512,7 @@
                 <label>CSV File Format:</label>
                 <p style="color: #666; margin: 1rem 0;">
                     Company Name, Contact Name, Email, Phone, Account Type<br>
-                    Example: McDonald's Birmingham, John Smith, john@mcdonalds.com, 07700900123, priority-gold
+                    Example: McDonald's Birmingham, John Smith, john@mcdonalds.com, 07700900123, priority-professional
                 </p>
             </div>
             
@@ -507,7 +546,7 @@
             const userData = {
                 company: 'CRS Car Park Repairs',
                 name: 'Paul Richardson',
-                email: 'paul@crscarparks.co.uk',
+                email: 'paul@carparkrepair.co.uk',
                 phone: '07700 900000',
                 role: 'admin',
                 password: 'CRS2024!',
@@ -522,7 +561,7 @@
             const userData = {
                 company: 'CRS Car Park Repairs',
                 name: 'Kelsey Richardson',
-                email: 'kelsey@crscarparks.co.uk',
+                email: 'kelsey@carparkrepair.co.uk',
                 phone: '07700 900001',
                 role: 'admin',
                 password: 'Kelsey2024!',
@@ -573,7 +612,149 @@
             
             if (tab === 'manage-clients') {
                 loadClients();
+            } else if (tab === 'priority-clients') {
+                loadPriorityClients();
             }
+        }
+        
+        // Update account type visibility based on role
+        function updateAccountTypeVisibility() {
+            const role = document.getElementById('user-role').value;
+            const accountTypeGroup = document.getElementById('account-type-group');
+            
+            if (role === 'client') {
+                accountTypeGroup.style.display = 'block';
+                updatePriorityInfo();
+            } else {
+                accountTypeGroup.style.display = 'none';
+                document.getElementById('priority-benefits').style.display = 'none';
+            }
+        }
+        
+        // Update priority info display
+        function updatePriorityInfo() {
+            const accountType = document.getElementById('account-type').value;
+            const benefitsDiv = document.getElementById('priority-benefits');
+            const benefitsList = document.getElementById('benefits-list');
+            
+            if (accountType === 'standard') {
+                benefitsDiv.style.display = 'none';
+                return;
+            }
+            
+            const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+            const plans = settings.priorityPlans || {
+                silver: {
+                    features: ['48-hour response time', 'Annual inspection', '10% repair discount', 'Priority scheduling']
+                },
+                gold: {
+                    features: ['Next-day response', 'Bi-annual inspection', '20% repair discount', 'Dedicated account manager']
+                },
+                platinum: {
+                    features: ['Same-day response', 'Quarterly inspection', '30% repair discount', 'VIP support line']
+                }
+            };
+            
+            const tier = accountType.replace('priority-', '');
+            const features = plans[tier]?.features || [];
+            
+            benefitsList.innerHTML = features.map(f => `<li>${f}</li>`).join('');
+            benefitsDiv.style.display = 'block';
+        }
+        
+        // Load priority clients
+        function loadPriorityClients() {
+            const clients = JSON.parse(localStorage.getItem('localClients') || '[]');
+            const priorityClients = clients.filter(c => c.accountType && c.accountType.includes('priority'));
+            
+            // Get pricing from settings
+            const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+            const prices = {
+                'priority-essential': settings.priorityPlans?.essential?.price || 199,
+                'priority-professional': settings.priorityPlans?.professional?.price || 499,
+                'priority-enterprise': settings.priorityPlans?.enterprise?.price === 'Custom' ? 'Custom' : (settings.priorityPlans?.enterprise?.price || 'Custom')
+            };
+            
+            // Calculate tier counts and revenue
+            let counts = { essential: 0, professional: 0, enterprise: 0 };
+            let revenue = { essential: 0, professional: 0, enterprise: 0 };
+            
+            priorityClients.forEach(client => {
+                const tier = client.accountType.replace('priority-', '');
+                counts[tier]++;
+                revenue[tier] += prices[client.accountType];
+            });
+            
+            // Update summary cards
+            document.getElementById('essential-count').textContent = counts.essential;
+            document.getElementById('essential-revenue').textContent = revenue.essential.toLocaleString();
+            document.getElementById('professional-count').textContent = counts.professional;
+            document.getElementById('professional-revenue').textContent = revenue.professional.toLocaleString();
+            document.getElementById('enterprise-count').textContent = counts.enterprise;
+            document.getElementById('enterprise-revenue').textContent = revenue.enterprise.toLocaleString();
+            
+            // Display priority clients
+            const container = document.getElementById('priority-client-list');
+            if (priorityClients.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; margin-top: 2rem;">No priority clients yet. Add priority clients using the "Add New User" tab.</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <h3 style="color: var(--yellow); margin-bottom: 1rem;">All Priority Clients</h3>
+                ${priorityClients.map(client => `
+                    <div class="client-card">
+                        <div class="client-info">
+                            <h3>${client.company}
+                                <span class="priority-badge priority-${client.accountType.replace('priority-', '')}">
+                                    ${client.accountType.replace('priority-', '').toUpperCase()}
+                                </span>
+                            </h3>
+                            <div class="client-meta">
+                                ${client.name} • ${client.email} • ${client.phone || 'No phone'}
+                                <br>Monthly: £${prices[client.accountType]} • Since: ${new Date(client.createdAt || Date.now()).toLocaleDateString()}
+                            </div>
+                        </div>
+                        <div class="client-actions">
+                            <button class="btn-small" onclick="upgradeTier('${client.id}')">⬆️ Upgrade</button>
+                            <button class="btn-small btn-edit" onclick="editClient('${client.id}')">Edit</button>
+                            <button class="btn-small" style="border-color: #FFA500; color: #FFA500;" onclick="viewUsage('${client.id}')">Usage</button>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        // Upgrade tier function
+        function upgradeTier(clientId) {
+            const clients = JSON.parse(localStorage.getItem('localClients') || '[]');
+            const client = clients.find(c => c.id === clientId);
+            
+            if (client) {
+                const currentTier = client.accountType;
+                let newTier;
+                
+                if (currentTier === 'priority-essential') {
+                    newTier = 'priority-professional';
+                } else if (currentTier === 'priority-professional') {
+                    newTier = 'priority-enterprise';
+                } else {
+                    alert('Client is already on the highest tier!');
+                    return;
+                }
+                
+                if (confirm(`Upgrade ${client.company} from ${currentTier.replace('priority-', '')} to ${newTier.replace('priority-', '')}?`)) {
+                    client.accountType = newTier;
+                    localStorage.setItem('localClients', JSON.stringify(clients));
+                    showSuccess(`Upgraded to ${newTier.replace('priority-', '').toUpperCase()} tier!`);
+                    loadPriorityClients();
+                }
+            }
+        }
+        
+        // View usage function
+        function viewUsage(clientId) {
+            alert('Usage tracking coming soon! This will show:\n• Number of damage reports\n• Response times\n• Discount usage\n• Inspection history');
         }
         
         // Add client form
@@ -586,9 +767,10 @@
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 role: document.getElementById('user-role').value,
-                accountType: document.getElementById('account-type').value,
+                accountType: document.getElementById('user-role').value === 'client' ? document.getElementById('account-type').value : 'standard',
                 password: document.getElementById('password').value || generatePassword(),
                 notes: document.getElementById('notes').value,
+                siteAddress: document.getElementById('site-address').value,
                 sendWelcome: document.getElementById('send-welcome').checked
             };
             
@@ -639,22 +821,26 @@
                 <div class="client-card">
                     <div class="client-info">
                         <h3>${client.company}
-                            ${client.accountType !== 'standard' ? 
+                            ${client.accountType && client.accountType !== 'standard' ? 
                                 `<span class="priority-badge priority-${client.accountType.replace('priority-', '')}">${client.accountType.replace('priority-', '').toUpperCase()}</span>` 
+                                : ''}
+                            ${client.role && client.role !== 'client' ? 
+                                `<span class="role-badge">${client.role.replace('_', ' ').toUpperCase()}</span>` 
                                 : ''}
                         </h3>
                         <div class="client-meta">
                             ${client.name} • ${client.email} • ${client.phone || 'No phone'}
-                            <br>Sites: ${client.sites || 0} • Added: ${new Date(client.createdAt).toLocaleDateString()}
+                            <br>${client.siteAddress ? `📍 ${client.siteAddress} • ` : ''}Added: ${new Date(client.createdAt || Date.now()).toLocaleDateString()}
                         </div>
                     </div>
                     <div class="client-actions">
-                        <button class="btn-small btn-sites" onclick="manageSites('${client.id}')">Sites</button>
+                        ${client.accountType && client.accountType !== 'standard' ? 
+                            `<button class="btn-small" style="border-color: var(--yellow); color: var(--yellow);" onclick="viewPriorityDetails('${client.id}')">Priority</button>` 
+                            : ''}
                         <button class="btn-small btn-edit" onclick="editClient('${client.id}')">Edit</button>
                         <button class="btn-small btn-delete" onclick="deleteClient('${client.id}')">Delete</button>
                     </div>
                 </div>
-                <div id="sites-${client.id}" class="sites-section"></div>
             `).join('');
         }
         
@@ -751,9 +937,32 @@
             const clients = JSON.parse(localStorage.getItem('localClients') || '[]');
             // Merge with database clients
             const db = JSON.parse(localStorage.getItem('database') || '{"users": []}');
-            const allClients = [...clients, ...db.users.filter(u => u.role === 'client')];
+            const allClients = [...clients, ...db.users];
             displayClients(allClients);
         }
+        
+        // View priority details
+        function viewPriorityDetails(clientId) {
+            const clients = JSON.parse(localStorage.getItem('localClients') || '[]');
+            const client = clients.find(c => c.id === clientId);
+            
+            if (client) {
+                const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+                const tier = client.accountType.replace('priority-', '');
+                const plan = settings.priorityPlans?.[tier];
+                
+                alert(`Priority Client Details:\n\n` +
+                    `Company: ${client.company}\n` +
+                    `Tier: ${tier.toUpperCase()}\n` +
+                    `Monthly: £${plan?.price || 'N/A'}\n` +
+                    `\nBenefits:\n${plan?.features?.join('\n• ') || 'No features defined'}`);
+            }
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAccountTypeVisibility();
+        });
     </script>
 </body>
 </html>

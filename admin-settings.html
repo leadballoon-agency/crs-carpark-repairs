@@ -433,63 +433,63 @@
                 </div>
                 
                 <div class="price-grid">
-                    <!-- Silver Plan -->
+                    <!-- Essential Plan -->
                     <div class="price-card">
-                        <h3 style="color: #718096;">Silver Plan</h3>
+                        <h3 style="color: #718096;">Essential Plan</h3>
                         <div class="form-group">
                             <label>Plan Name</label>
-                            <input type="text" id="silver-name" placeholder="e.g., Silver">
+                            <input type="text" id="essential-name" placeholder="e.g., Essential">
                         </div>
                         <div class="form-group">
                             <label>Monthly Price (£)</label>
-                            <input type="number" id="silver-price" min="0" step="10">
+                            <input type="number" id="essential-price" min="0" step="10">
                         </div>
                         <div class="form-group">
                             <label>Features (one per line)</label>
-                            <textarea id="silver-features" rows="5" placeholder="Priority scheduling
+                            <textarea id="essential-features" rows="5" placeholder="Priority scheduling
 48-hour response time
 Quarterly inspections
-10% repair discount"></textarea>
+20% repair discount"></textarea>
                         </div>
                     </div>
                     
-                    <!-- Gold Plan -->
+                    <!-- Professional Plan -->
                     <div class="price-card">
-                        <h3 style="color: #FFD700;">Gold Plan (Popular)</h3>
+                        <h3 style="color: #FFD700;">Professional Plan (Popular)</h3>
                         <div class="form-group">
                             <label>Plan Name</label>
-                            <input type="text" id="gold-name" placeholder="e.g., Gold">
+                            <input type="text" id="professional-name" placeholder="e.g., Professional">
                         </div>
                         <div class="form-group">
                             <label>Monthly Price (£)</label>
-                            <input type="number" id="gold-price" min="0" step="10">
+                            <input type="number" id="professional-price" min="0" step="10">
                         </div>
                         <div class="form-group">
                             <label>Features (one per line)</label>
-                            <textarea id="gold-features" rows="5" placeholder="Next-day response
+                            <textarea id="professional-features" rows="5" placeholder="Next-day response
 Monthly inspections
-20% repair discount
+30% repair discount
 Emergency hotline
 Detailed reporting"></textarea>
                         </div>
                     </div>
                     
-                    <!-- Platinum Plan -->
+                    <!-- Enterprise Plan -->
                     <div class="price-card">
-                        <h3 style="color: #6B46C1;">Platinum Plan</h3>
+                        <h3 style="color: #6B46C1;">Enterprise Plan</h3>
                         <div class="form-group">
                             <label>Plan Name</label>
-                            <input type="text" id="platinum-name" placeholder="e.g., Platinum">
+                            <input type="text" id="enterprise-name" placeholder="e.g., Enterprise">
                         </div>
                         <div class="form-group">
-                            <label>Monthly Price (£)</label>
-                            <input type="number" id="platinum-price" min="0" step="10">
+                            <label>Pricing Display</label>
+                            <input type="text" id="enterprise-price" placeholder="Custom" value="Custom">
                         </div>
                         <div class="form-group">
                             <label>Features (one per line)</label>
-                            <textarea id="platinum-features" rows="6" placeholder="Same-day response
+                            <textarea id="enterprise-features" rows="6" placeholder="Same-day response
 Bi-weekly inspections
-30% repair discount
+Unlimited minor repairs
 24/7 emergency support
 Dedicated account manager
 Custom reporting dashboard"></textarea>
@@ -557,34 +557,34 @@ Custom reporting dashboard"></textarea>
                 warranty: "Full Warranty Coverage"
             },
             priorityPlans: {
-                silver: {
-                    name: "Silver",
+                essential: {
+                    name: "Essential",
                     price: 199,
                     features: [
                         "Priority scheduling",
                         "48-hour response time",
-                        "Annual inspection",
-                        "10% repair discount"
+                        "Quarterly inspection",
+                        "20% repair discount"
                     ]
                 },
-                gold: {
-                    name: "Gold",
-                    price: 399,
+                professional: {
+                    name: "Professional",
+                    price: 499,
                     features: [
                         "Next-day response",
-                        "Bi-annual inspection",
-                        "20% repair discount",
+                        "Monthly inspection",
+                        "30% repair discount",
                         "Emergency hotline",
                         "Detailed reporting"
                     ]
                 },
-                platinum: {
-                    name: "Platinum",
-                    price: 799,
+                enterprise: {
+                    name: "Enterprise",
+                    price: "Custom",
                     features: [
                         "Same-day response",
-                        "Quarterly inspection",
-                        "30% repair discount",
+                        "Bi-weekly inspection",
+                        "Unlimited minor repairs",
                         "24/7 emergency support",
                         "Dedicated account manager",
                         "Custom reporting dashboard"
@@ -632,20 +632,26 @@ Custom reporting dashboard"></textarea>
                 
                 // Priority Plans
                 if (settings.priorityPlans) {
-                    // Silver
-                    document.getElementById('silver-name').value = settings.priorityPlans.silver.name;
-                    document.getElementById('silver-price').value = settings.priorityPlans.silver.price;
-                    document.getElementById('silver-features').value = settings.priorityPlans.silver.features.join('\n');
+                    // Essential
+                    if (settings.priorityPlans.essential) {
+                        document.getElementById('essential-name').value = settings.priorityPlans.essential.name;
+                        document.getElementById('essential-price').value = settings.priorityPlans.essential.price;
+                        document.getElementById('essential-features').value = settings.priorityPlans.essential.features.join('\n');
+                    }
                     
-                    // Gold
-                    document.getElementById('gold-name').value = settings.priorityPlans.gold.name;
-                    document.getElementById('gold-price').value = settings.priorityPlans.gold.price;
-                    document.getElementById('gold-features').value = settings.priorityPlans.gold.features.join('\n');
+                    // Professional
+                    if (settings.priorityPlans.professional) {
+                        document.getElementById('professional-name').value = settings.priorityPlans.professional.name;
+                        document.getElementById('professional-price').value = settings.priorityPlans.professional.price;
+                        document.getElementById('professional-features').value = settings.priorityPlans.professional.features.join('\n');
+                    }
                     
-                    // Platinum
-                    document.getElementById('platinum-name').value = settings.priorityPlans.platinum.name;
-                    document.getElementById('platinum-price').value = settings.priorityPlans.platinum.price;
-                    document.getElementById('platinum-features').value = settings.priorityPlans.platinum.features.join('\n');
+                    // Enterprise
+                    if (settings.priorityPlans.enterprise) {
+                        document.getElementById('enterprise-name').value = settings.priorityPlans.enterprise.name;
+                        document.getElementById('enterprise-price').value = settings.priorityPlans.enterprise.price || 'Custom';
+                        document.getElementById('enterprise-features').value = settings.priorityPlans.enterprise.features.join('\n');
+                    }
                 }
                 
                 updatePreview();
@@ -687,17 +693,17 @@ Custom reporting dashboard"></textarea>
             document.getElementById('feature-warranty').value = settings.features.warranty;
             
             // Priority Plans defaults with realistic features
-            document.getElementById('silver-name').value = settings.priorityPlans.silver.name;
-            document.getElementById('silver-price').value = settings.priorityPlans.silver.price;
-            document.getElementById('silver-features').value = settings.priorityPlans.silver.features.join('\n');
+            document.getElementById('essential-name').value = settings.priorityPlans.essential.name;
+            document.getElementById('essential-price').value = settings.priorityPlans.essential.price;
+            document.getElementById('essential-features').value = settings.priorityPlans.essential.features.join('\n');
             
-            document.getElementById('gold-name').value = settings.priorityPlans.gold.name;
-            document.getElementById('gold-price').value = settings.priorityPlans.gold.price;
-            document.getElementById('gold-features').value = settings.priorityPlans.gold.features.join('\n');
+            document.getElementById('professional-name').value = settings.priorityPlans.professional.name;
+            document.getElementById('professional-price').value = settings.priorityPlans.professional.price;
+            document.getElementById('professional-features').value = settings.priorityPlans.professional.features.join('\n');
             
-            document.getElementById('platinum-name').value = settings.priorityPlans.platinum.name;
-            document.getElementById('platinum-price').value = settings.priorityPlans.platinum.price;
-            document.getElementById('platinum-features').value = settings.priorityPlans.platinum.features.join('\n');
+            document.getElementById('enterprise-name').value = settings.priorityPlans.enterprise.name;
+            document.getElementById('enterprise-price').value = settings.priorityPlans.enterprise.price || 'Custom';
+            document.getElementById('enterprise-features').value = settings.priorityPlans.enterprise.features.join('\n');
             
             updatePreview();
         }
@@ -737,20 +743,20 @@ Custom reporting dashboard"></textarea>
                     warranty: document.getElementById('feature-warranty').value
                 },
                 priorityPlans: {
-                    silver: {
-                        name: document.getElementById('silver-name').value,
-                        price: parseInt(document.getElementById('silver-price').value),
-                        features: document.getElementById('silver-features').value.split('\n').filter(f => f.trim())
+                    essential: {
+                        name: document.getElementById('essential-name').value,
+                        price: parseInt(document.getElementById('essential-price').value),
+                        features: document.getElementById('essential-features').value.split('\n').filter(f => f.trim())
                     },
-                    gold: {
-                        name: document.getElementById('gold-name').value,
-                        price: parseInt(document.getElementById('gold-price').value),
-                        features: document.getElementById('gold-features').value.split('\n').filter(f => f.trim())
+                    professional: {
+                        name: document.getElementById('professional-name').value,
+                        price: parseInt(document.getElementById('professional-price').value),
+                        features: document.getElementById('professional-features').value.split('\n').filter(f => f.trim())
                     },
-                    platinum: {
-                        name: document.getElementById('platinum-name').value,
-                        price: parseInt(document.getElementById('platinum-price').value),
-                        features: document.getElementById('platinum-features').value.split('\n').filter(f => f.trim())
+                    enterprise: {
+                        name: document.getElementById('enterprise-name').value,
+                        price: document.getElementById('enterprise-price').value || 'Custom',
+                        features: document.getElementById('enterprise-features').value.split('\n').filter(f => f.trim())
                     }
                 }
             };

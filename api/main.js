@@ -365,7 +365,7 @@ module.exports = async function handler(req, res) {
                         email: 'john@mcdonalds.com',
                         company: "McDonald's Franchise Group",
                         sites: 4,
-                        plan: 'Gold',
+                        plan: 'Professional',
                         status: 'active'
                     }
                 ];

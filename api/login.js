@@ -55,6 +55,22 @@ const fallbackUsers = [
         name: 'John Richardson',
         company: 'McDonalds Franchise Group',
         role: 'client'
+    },
+    {
+        id: 3,
+        email: 'paul@carparkrepair.co.uk',
+        password: hashPassword('CRS2024!'),
+        name: 'Paul Richardson',
+        company: 'CRS Car Park Repairs',
+        role: 'admin'
+    },
+    {
+        id: 4,
+        email: 'kelsey@carparkrepair.co.uk',
+        password: hashPassword('Kelsey2024!'),
+        name: 'Kelsey Richardson',
+        company: 'CRS Car Park Repairs',
+        role: 'admin'
     }
 ];
 
