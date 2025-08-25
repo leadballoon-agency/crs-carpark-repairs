@@ -112,58 +112,51 @@
             color: var(--red);
         }
         
-        /* Priority Tiers */
+        /* Compact Priority Tiers */
         .priority-tiers {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
             margin-bottom: 2rem;
         }
         
         .tier-card {
             background: var(--dark-gray);
-            border-radius: 16px;
-            padding: 2rem;
-            position: relative;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px solid transparent;
             transition: all 0.3s;
         }
         
         .tier-card.silver {
-            border: 2px solid var(--silver);
+            border-color: var(--silver);
         }
         
         .tier-card.gold {
-            border: 2px solid var(--yellow);
-        }
-        
-        .tier-card.gold::before {
-            content: 'MOST POPULAR';
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--yellow);
-            color: var(--black);
-            padding: 0.25rem 1rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            border-color: var(--yellow);
         }
         
         .tier-card.platinum {
-            border: 2px solid var(--platinum);
-            background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(103, 126, 234, 0.1));
+            border-color: var(--platinum);
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.05), rgba(103, 126, 234, 0.05));
+        }
+        
+        .tier-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
         .tier-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
         }
         
         .tier-name {
-            font-size: 1.5rem;
+            font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
         
         .tier-card.silver .tier-name {
@@ -181,45 +174,33 @@
         }
         
         .tier-price {
-            font-size: 2.5rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #fff;
         }
         
-        .tier-price span {
-            font-size: 1rem;
-            color: #999;
+        .tier-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .tier-clients {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
+        .tier-stat {
+            text-align: center;
         }
         
-        .tier-clients-count {
+        .tier-stat-value {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--yellow);
+            display: block;
         }
         
-        .tier-features {
-            list-style: none;
-            margin: 1.5rem 0;
-        }
-        
-        .tier-features li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .tier-features li::before {
-            content: '✓';
-            color: var(--green);
-            font-weight: 700;
+        .tier-stat-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
         }
         
         /* Priority Clients List */
@@ -434,6 +415,16 @@
                 gap: 1rem;
             }
         }
+        
+        @media (max-width: 768px) {
+            .priority-tiers {
+                grid-template-columns: 1fr;
+            }
+            
+            .revenue-stats {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -490,67 +481,9 @@
             </div>
         </div>
         
-        <!-- Priority Tiers -->
-        <div class="priority-tiers">
-            <div class="tier-card silver">
-                <div class="tier-header">
-                    <div class="tier-name">SILVER</div>
-                    <div class="tier-price">£199<span>/month</span></div>
-                </div>
-                <div class="tier-clients">
-                    <div>Active Clients</div>
-                    <div class="tier-clients-count">23</div>
-                    <div style="color: #999; font-size: 0.9rem;">£4,577 MRR</div>
-                </div>
-                <ul class="tier-features">
-                    <li>48-hour response time</li>
-                    <li>Quarterly inspections</li>
-                    <li>10% repair discount</li>
-                    <li>Priority scheduling</li>
-                    <li>Email support</li>
-                </ul>
-            </div>
-            
-            <div class="tier-card gold">
-                <div class="tier-header">
-                    <div class="tier-name">GOLD</div>
-                    <div class="tier-price">£399<span>/month</span></div>
-                </div>
-                <div class="tier-clients">
-                    <div>Active Clients</div>
-                    <div class="tier-clients-count">19</div>
-                    <div style="color: #999; font-size: 0.9rem;">£7,581 MRR</div>
-                </div>
-                <ul class="tier-features">
-                    <li>24-hour response time</li>
-                    <li>Monthly inspections</li>
-                    <li>20% repair discount</li>
-                    <li>Emergency hotline</li>
-                    <li>Detailed reporting</li>
-                    <li>Phone & email support</li>
-                </ul>
-            </div>
-            
-            <div class="tier-card platinum">
-                <div class="tier-header">
-                    <div class="tier-name">PLATINUM</div>
-                    <div class="tier-price">£799<span>/month</span></div>
-                </div>
-                <div class="tier-clients">
-                    <div>Active Clients</div>
-                    <div class="tier-clients-count">5</div>
-                    <div style="color: #999; font-size: 0.9rem;">£3,995 MRR</div>
-                </div>
-                <ul class="tier-features">
-                    <li>Same-day response</li>
-                    <li>Bi-weekly inspections</li>
-                    <li>30% repair discount</li>
-                    <li>24/7 emergency support</li>
-                    <li>Dedicated account manager</li>
-                    <li>Custom reporting dashboard</li>
-                    <li>Priority over all other clients</li>
-                </ul>
-            </div>
+        <!-- Compact Priority Tiers Summary -->
+        <div class="priority-tiers" id="priority-tiers">
+            <!-- Populated by JavaScript from settings -->
         </div>
         
         <!-- Priority Clients List -->
@@ -579,6 +512,132 @@
     </div>
     
     <script>
+        // Load settings from localStorage
+        function loadPrioritySettings() {
+            const storedSettings = localStorage.getItem('siteSettings');
+            if (storedSettings) {
+                return JSON.parse(storedSettings);
+            }
+            
+            // Default settings if none stored
+            return {
+                priorityPlans: {
+                    silver: {
+                        name: "Silver",
+                        price: 199,
+                        features: ["48-hour response", "Quarterly inspections", "10% repair discount", "Priority scheduling"]
+                    },
+                    gold: {
+                        name: "Gold", 
+                        price: 399,
+                        features: ["24-hour response", "Monthly inspections", "20% repair discount", "Emergency hotline", "Detailed reporting"]
+                    },
+                    platinum: {
+                        name: "Platinum",
+                        price: 799,
+                        features: ["Same-day response", "Bi-weekly inspections", "30% repair discount", "24/7 emergency support", "Dedicated account manager", "Custom reporting dashboard"]
+                    }
+                }
+            };
+        }
+        
+        // Render compact tier cards
+        function renderTierCards() {
+            const settings = loadPrioritySettings();
+            const tiersContainer = document.getElementById('priority-tiers');
+            
+            // Calculate client counts and MRR for each tier
+            const tierStats = {
+                silver: { count: 23, mrr: 0 },
+                gold: { count: 19, mrr: 0 },
+                platinum: { count: 5, mrr: 0 }
+            };
+            
+            // Calculate MRR based on settings prices
+            tierStats.silver.mrr = tierStats.silver.count * settings.priorityPlans.silver.price;
+            tierStats.gold.mrr = tierStats.gold.count * settings.priorityPlans.gold.price;
+            tierStats.platinum.mrr = tierStats.platinum.count * settings.priorityPlans.platinum.price;
+            
+            const totalMRR = tierStats.silver.mrr + tierStats.gold.mrr + tierStats.platinum.mrr;
+            
+            // Calculate revenue percentages and profit margins
+            // Assuming higher tiers have better margins due to efficiency
+            const margins = {
+                silver: 0.35,    // 35% profit margin
+                gold: 0.45,      // 45% profit margin
+                platinum: 0.60   // 60% profit margin (economies of scale)
+            };
+            
+            tiersContainer.innerHTML = `
+                <div class="tier-card silver">
+                    <div class="tier-header">
+                        <div class="tier-name">SILVER</div>
+                        <div class="tier-price">£${settings.priorityPlans.silver.price}/mo</div>
+                    </div>
+                    <div class="tier-stats">
+                        <div class="tier-stat">
+                            <span class="tier-stat-value">${tierStats.silver.count}</span>
+                            <span class="tier-stat-label">Clients</span>
+                        </div>
+                        <div class="tier-stat">
+                            <span class="tier-stat-value">${Math.round((tierStats.silver.mrr / totalMRR) * 100)}%</span>
+                            <span class="tier-stat-label">of Revenue</span>
+                        </div>
+                        <div class="tier-stat">
+                            <span class="tier-stat-value" style="color: ${margins.silver >= 0.4 ? 'var(--green)' : 'var(--yellow)'};">${Math.round(margins.silver * 100)}%</span>
+                            <span class="tier-stat-label">Margin</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tier-card gold">
+                    <div class="tier-header">
+                        <div class="tier-name">GOLD</div>
+                        <div class="tier-price">£${settings.priorityPlans.gold.price}/mo</div>
+                    </div>
+                    <div class="tier-stats">
+                        <div class="tier-stat">
+                            <span class="tier-stat-value">${tierStats.gold.count}</span>
+                            <span class="tier-stat-label">Clients</span>
+                        </div>
+                        <div class="tier-stat">
+                            <span class="tier-stat-value">${Math.round((tierStats.gold.mrr / totalMRR) * 100)}%</span>
+                            <span class="tier-stat-label">of Revenue</span>
+                        </div>
+                        <div class="tier-stat">
+                            <span class="tier-stat-value" style="color: ${margins.gold >= 0.4 ? 'var(--green)' : 'var(--yellow)'};">${Math.round(margins.gold * 100)}%</span>
+                            <span class="tier-stat-label">Margin</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tier-card platinum">
+                    <div class="tier-header">
+                        <div class="tier-name">PLATINUM</div>
+                        <div class="tier-price">£${settings.priorityPlans.platinum.price}/mo</div>
+                    </div>
+                    <div class="tier-stats">
+                        <div class="tier-stat">
+                            <span class="tier-stat-value">${tierStats.platinum.count}</span>
+                            <span class="tier-stat-label">Clients</span>
+                        </div>
+                        <div class="tier-stat">
+                            <span class="tier-stat-value">${Math.round((tierStats.platinum.mrr / totalMRR) * 100)}%</span>
+                            <span class="tier-stat-label">of Revenue</span>
+                        </div>
+                        <div class="tier-stat">
+                            <span class="tier-stat-value" style="color: var(--green);">${Math.round(margins.platinum * 100)}%</span>
+                            <span class="tier-stat-label">Margin</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const mrrElement = document.querySelector('.stat-value');
+            if (mrrElement) {
+                mrrElement.textContent = `£${totalMRR.toLocaleString()}`;
+            }
+        }
+        
         // Sample priority clients data
         const priorityClients = [
             {
@@ -762,6 +821,7 @@
         
         // Initialize
         loadAlerts();
+        renderTierCards();
         renderClients();
         
         // Simulate real-time updates
