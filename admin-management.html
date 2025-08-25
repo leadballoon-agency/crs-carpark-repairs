@@ -269,13 +269,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Client Management</h1>
+            <h1>User & Admin Management</h1>
             <a href="admin-hub.html" class="back-btn">← Back to Admin Hub</a>
         </div>
         
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('add-client')">Add Client</button>
-            <button class="tab" onclick="switchTab('manage-clients')">Manage Clients</button>
+            <button class="tab active" onclick="switchTab('quick-add')">Quick Add Admins</button>
+            <button class="tab" onclick="switchTab('add-client')">Add User</button>
+            <button class="tab" onclick="switchTab('manage-clients')">Manage Users</button>
             <button class="tab" onclick="switchTab('bulk-import')">Bulk Import</button>
         </div>
         
@@ -283,9 +284,37 @@
             ✅ <span id="success-text">Client added successfully!</span>
         </div>
         
+        <!-- Quick Add Admins Section -->
+        <div id="quick-add" class="section active">
+            <h2>Quick Add Team Members</h2>
+            <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: rgba(255,215,0,0.1); padding: 1.5rem; border-radius: 8px; border: 2px solid #FFD700;">
+                    <h3 style="color: #FFD700; margin-bottom: 1rem;">Paul Richardson - CRS Owner</h3>
+                    <div style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
+                        <div>📧 Email: <strong>paul@crscarparks.co.uk</strong></div>
+                        <div>🔑 Default Password: <strong>CRS2024!</strong></div>
+                        <div>👤 Role: <strong>Admin</strong></div>
+                    </div>
+                    <button class="btn-primary" onclick="addPaul()">Add Paul as Admin</button>
+                </div>
+                
+                <div style="background: rgba(255,215,0,0.1); padding: 1.5rem; border-radius: 8px; border: 2px solid #FFD700;">
+                    <h3 style="color: #FFD700; margin-bottom: 1rem;">Kelsey Richardson - Operations</h3>
+                    <div style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
+                        <div>📧 Email: <strong>kelsey@crscarparks.co.uk</strong></div>
+                        <div>🔑 Default Password: <strong>Kelsey2024!</strong></div>
+                        <div>👤 Role: <strong>Admin</strong></div>
+                    </div>
+                    <button class="btn-primary" onclick="addKelsey()">Add Kelsey as Admin</button>
+                </div>
+            </div>
+            
+            <button class="btn-primary" style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100%;" onclick="addBothAdmins()">⚡ Add Both Paul & Kelsey</button>
+        </div>
+        
         <!-- Add Client Section -->
-        <div id="add-client" class="section active">
-            <h2>Add New Client</h2>
+        <div id="add-client" class="section">
+            <h2>Add New User</h2>
             <form id="add-client-form">
                 <div class="form-row">
                     <div class="form-group">
@@ -310,6 +339,14 @@
                 </div>
                 
                 <div class="form-row">
+                    <div class="form-group">
+                        <label>User Role</label>
+                        <select id="user-role">
+                            <option value="client">Client</option>
+                            <option value="admin">Admin</option>
+                            <option value="super_admin">Super Admin</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Account Type</label>
                         <select id="account-type">
@@ -337,13 +374,13 @@
                     </label>
                 </div>
                 
-                <button type="submit" class="btn-primary">Add Client</button>
+                <button type="submit" class="btn-primary">Add User</button>
             </form>
         </div>
         
         <!-- Manage Clients Section -->
         <div id="manage-clients" class="section">
-            <h2>Existing Clients</h2>
+            <h2>All Users & Admins</h2>
             <div class="client-list" id="client-list">
                 <!-- Populated by JavaScript -->
             </div>
@@ -385,6 +422,67 @@
             window.location.href = 'portal-api.html';
         }
         
+        // Quick add functions for Paul and Kelsey
+        async function addPaul() {
+            const userData = {
+                company: 'CRS Car Park Repairs',
+                name: 'Paul Richardson',
+                email: 'paul@crscarparks.co.uk',
+                phone: '07700 900000',
+                role: 'admin',
+                password: 'CRS2024!',
+                accountType: 'standard'
+            };
+            
+            await addUser(userData);
+            showSuccess('Paul added as Admin successfully!');
+        }
+        
+        async function addKelsey() {
+            const userData = {
+                company: 'CRS Car Park Repairs',
+                name: 'Kelsey Richardson',
+                email: 'kelsey@crscarparks.co.uk',
+                phone: '07700 900001',
+                role: 'admin',
+                password: 'Kelsey2024!',
+                accountType: 'standard'
+            };
+            
+            await addUser(userData);
+            showSuccess('Kelsey added as Admin successfully!');
+        }
+        
+        async function addBothAdmins() {
+            await addPaul();
+            setTimeout(async () => {
+                await addKelsey();
+                showSuccess('Both Paul and Kelsey added as Admins!');
+            }, 1000);
+        }
+        
+        async function addUser(userData) {
+            // Save to localStorage
+            let users = JSON.parse(localStorage.getItem('crs_users') || '[]');
+            const existingIndex = users.findIndex(u => u.email === userData.email);
+            
+            if (existingIndex >= 0) {
+                users[existingIndex] = userData;
+            } else {
+                userData.id = users.length;
+                users.push(userData);
+            }
+            
+            localStorage.setItem('crs_users', JSON.stringify(users));
+            
+            // Try API save too
+            try {
+                await api.createClient(userData);
+            } catch (err) {
+                console.log('API save failed, but saved locally');
+            }
+        }
+        
         // Tab switching
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -407,6 +505,7 @@
                 name: document.getElementById('contact-name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
+                role: document.getElementById('user-role').value,
                 accountType: document.getElementById('account-type').value,
                 password: document.getElementById('password').value || generatePassword(),
                 notes: document.getElementById('notes').value,
