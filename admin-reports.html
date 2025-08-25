@@ -328,6 +328,28 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
+        .action-btn.btn-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        
+        .action-btn.btn-success:hover {
+            background: #4CAF50;
+            color: var(--white);
+        }
+        
+        .action-btn.btn-delete {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--red);
+            border-color: var(--red);
+        }
+        
+        .action-btn.btn-delete:hover {
+            background: var(--red);
+            color: var(--white);
+        }
+        
         /* Image Modal */
         .image-modal {
             display: none;
@@ -533,7 +555,7 @@
                     damageCount: 4,
                     zones: 2,
                     estimatedCost: 4000,
-                    status: 'reviewing',
+                    status: 'surveying',
                     contactName: 'Sarah Jones',
                     contactEmail: 'sarah@retailpark.com',
                     contactPhone: '07700 900111',
@@ -549,7 +571,7 @@
                     damageCount: 2,
                     zones: 1,
                     estimatedCost: 2000,
-                    status: 'approved',
+                    status: 'quoted',
                     contactName: 'Mike Wilson',
                     contactEmail: 'mike@shoppingcentre.com',
                     contactPhone: '07700 900222',
@@ -581,7 +603,7 @@
                             <div class="report-meta">
                                 <span>📍 ${report.location}</span>
                                 <span>📅 ${new Date(report.date).toLocaleDateString()}</span>
-                                <span>☎️ ${report.contactPhone || 'No phone'}</span>
+                                <span>${report.contactPhone ? `<a href="tel:${report.contactPhone}" style="color: inherit; text-decoration: none;">☎️ ${report.contactPhone}</a>` : '☎️ No phone'}</span>
                             </div>
                         </div>
                         <span class="status-badge status-${report.status}">
@@ -633,7 +655,11 @@
                             <div class="detail-item" style="grid-column: span 2;">
                                 <div class="detail-label">Contact</div>
                                 <div class="detail-value">
-                                    ${report.contactName || 'Unknown'} - ${report.contactEmail || 'No email'}
+                                    ${report.contactName || 'Unknown'} - 
+                                    ${report.contactEmail ? 
+                                        `<a href="mailto:${report.contactEmail}" style="color: var(--yellow); text-decoration: none;">${report.contactEmail}</a>` : 
+                                        'No email'
+                                    }
                                 </div>
                             </div>
                             
@@ -647,18 +673,7 @@
                     </div>
                     
                     <div class="report-actions">
-                        <button class="action-btn btn-primary" onclick="approveReport(${report.id})">
-                            ✅ Approve & Quote
-                        </button>
-                        <button class="action-btn btn-secondary" onclick="contactClient(${report.id})">
-                            📞 Contact Client
-                        </button>
-                        <button class="action-btn btn-secondary" onclick="scheduleRepair(${report.id})">
-                            📅 Schedule Repair
-                        </button>
-                        <button class="action-btn btn-secondary" onclick="viewDetails(${report.id})">
-                            📋 Full Details
-                        </button>
+                        ${getActionButtons(report)}
                     </div>
                 </div>
             `).join('');
@@ -713,8 +728,16 @@
             const report = allReports.find(r => r.id === id);
             if (!report) return;
             
-            // Update status locally
-            report.status = 'approved';
+            // Move to next status based on current status
+            if (report.status === 'pending') {
+                report.status = 'surveying';
+                showSuccess('Report moved to Surveying status');
+                renderReports();
+                return;
+            } else if (report.status === 'surveying') {
+                report.status = 'quoted';
+            } else if (report.status === 'quoted') {
+                report.status = 'approved';
             
             // Generate quote details
             const quote = {
@@ -789,11 +812,236 @@
             document.body.appendChild(modal);
         }
         
-        function contactClient(id) {
+        // Get appropriate action buttons based on status
+        function getActionButtons(report) {
+            let buttons = '';
+            
+            switch(report.status) {
+                case 'pending':
+                    buttons = `
+                        <button class="action-btn btn-primary" onclick="moveToSurveying(${report.id})">
+                            🔍 Start Survey
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="contactClient(${report.id})">
+                            📞 Contact Client
+                        </button>
+                    `;
+                    break;
+                    
+                case 'surveying':
+                    buttons = `
+                        <button class="action-btn btn-primary" onclick="createQuote(${report.id})">
+                            💰 Create Quote
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="contactClient(${report.id})">
+                            📞 Update Client
+                        </button>
+                    `;
+                    break;
+                    
+                case 'quoted':
+                    buttons = `
+                        <button class="action-btn btn-primary" onclick="approveQuote(${report.id})">
+                            ✅ Client Approved
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="sendQuote(${report.id})">
+                            📧 Resend Quote
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="contactClient(${report.id})">
+                            📞 Follow Up
+                        </button>
+                    `;
+                    break;
+                    
+                case 'approved':
+                    buttons = `
+                        <button class="action-btn btn-primary" onclick="startWork(${report.id})">
+                            🚧 Start Work
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="scheduleRepair(${report.id})">
+                            📅 Schedule
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="contactClient(${report.id})">
+                            📞 Contact
+                        </button>
+                    `;
+                    break;
+                    
+                case 'in-progress':
+                    buttons = `
+                        <button class="action-btn btn-primary" onclick="completeWork(${report.id})">
+                            ✔️ Mark Complete
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="updateProgress(${report.id})">
+                            📝 Update Progress
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="contactClient(${report.id})">
+                            📞 Update Client
+                        </button>
+                    `;
+                    break;
+                    
+                case 'completed':
+                    buttons = `
+                        <button class="action-btn btn-success" onclick="viewInvoice(${report.id})">
+                            📄 View Invoice
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="requestReview(${report.id})">
+                            ⭐ Request Review
+                        </button>
+                    `;
+                    break;
+                    
+                default:
+                    buttons = `
+                        <button class="action-btn btn-primary" onclick="viewDetails(${report.id})">
+                            📋 View Details
+                        </button>
+                    `;
+            }
+            
+            // Always include delete for non-completed reports
+            if (report.status !== 'completed') {
+                buttons += `
+                    <button class="action-btn btn-delete" onclick="deleteReport(${report.id})">
+                        🗑️ Delete
+                    </button>
+                `;
+            }
+            
+            return buttons;
+        }
+        
+        // Status transition functions
+        function moveToSurveying(id) {
             const report = allReports.find(r => r.id === id);
             if (report) {
-                window.location.href = `mailto:${report.contactEmail}?subject=Re: Car Park Damage Report #${id}`;
+                report.status = 'surveying';
+                showSuccess('Report moved to Surveying status - Survey team notified');
+                renderReports();
             }
+        }
+        
+        function createQuote(id) {
+            const report = allReports.find(r => r.id === id);
+            if (report) {
+                report.status = 'quoted';
+                approveReport(id); // Show quote modal
+            }
+        }
+        
+        function approveQuote(id) {
+            const report = allReports.find(r => r.id === id);
+            if (report) {
+                report.status = 'approved';
+                showSuccess('Quote approved by client - Ready to schedule work');
+                renderReports();
+            }
+        }
+        
+        function startWork(id) {
+            const report = allReports.find(r => r.id === id);
+            if (report) {
+                report.status = 'in-progress';
+                showSuccess('Work started - Team dispatched to site');
+                renderReports();
+            }
+        }
+        
+        function completeWork(id) {
+            const report = allReports.find(r => r.id === id);
+            if (report) {
+                report.status = 'completed';
+                showSuccess('Work completed successfully - Invoice generated');
+                renderReports();
+            }
+        }
+        
+        function updateProgress(id) {
+            const progress = prompt('Enter progress update:');
+            if (progress) {
+                showSuccess('Progress updated and client notified');
+            }
+        }
+        
+        function sendQuote(id) {
+            const report = allReports.find(r => r.id === id);
+            if (report && report.contactEmail) {
+                window.location.href = `mailto:${report.contactEmail}?subject=Quote for Car Park Repairs - ${report.location}`;
+            }
+        }
+        
+        function requestReview(id) {
+            const report = allReports.find(r => r.id === id);
+            if (report && report.contactEmail) {
+                window.location.href = `mailto:${report.contactEmail}?subject=Please review our service - ${report.location}`;
+            }
+        }
+        
+        function viewInvoice(id) {
+            alert(`Invoice #INV-${id} - Total: £${allReports.find(r => r.id === id).estimatedCost}`);
+        }
+
+        function contactClient(id) {
+            const report = allReports.find(r => r.id === id);
+            if (!report) return;
+            
+            // Create contact modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: var(--dark-gray); padding: 2rem; border-radius: 16px; border: 2px solid var(--yellow); max-width: 500px; width: 90%;">
+                    <h2 style="color: var(--yellow); margin-bottom: 1.5rem;">Contact ${report.contactName}</h2>
+                    
+                    <div style="display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px;">
+                            <div style="color: #999; font-size: 0.9rem; margin-bottom: 0.5rem;">Location</div>
+                            <div style="color: white; font-weight: 600;">${report.location}</div>
+                            ${report.location.match(/([A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2})/g) ? 
+                                `<div style="color: var(--yellow); margin-top: 0.5rem;">📍 Postcode: ${report.location.match(/([A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2})/g)[0]}</div>` : 
+                                ''
+                            }
+                        </div>
+                        
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px;">
+                            <div style="color: #999; font-size: 0.9rem; margin-bottom: 0.5rem;">Status</div>
+                            <div style="color: white; font-weight: 600; text-transform: uppercase;">${report.status}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; gap: 1rem;">
+                        ${report.contactPhone ? `
+                            <a href="tel:${report.contactPhone}" style="display: block; padding: 1rem; background: var(--yellow); color: var(--black); text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                                📱 Call ${report.contactPhone}
+                            </a>
+                        ` : ''}
+                        
+                        ${report.contactEmail ? `
+                            <a href="mailto:${report.contactEmail}?subject=Re: Car Park Damage Report - ${report.location}" style="display: block; padding: 1rem; background: transparent; color: var(--yellow); border: 2px solid var(--yellow); text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                                ✉️ Email ${report.contactEmail}
+                            </a>
+                        ` : ''}
+                        
+                        <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 1rem; background: transparent; color: #999; border: 1px solid #999; border-radius: 8px; cursor: pointer;">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
         
         function sendQuoteEmail(id, price) {
@@ -862,8 +1110,8 @@
                     <div class="quote-box">
                         <p><strong>Contact:</strong> ${report.contactName || 'Customer'}</p>
                         <p><strong>Location:</strong> ${report.location}</p>
-                        <p><strong>Phone:</strong> ${report.contactPhone}</p>
-                        <p><strong>Email:</strong> ${report.contactEmail}</p>
+                        <p><strong>Phone:</strong> <a href="tel:${report.contactPhone}" style="color: var(--yellow);">${report.contactPhone}</a></p>
+                        <p><strong>Email:</strong> <a href="mailto:${report.contactEmail}" style="color: var(--yellow);">${report.contactEmail}</a></p>
                     </div>
                     
                     <h2>Damage Assessment</h2>
