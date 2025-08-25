@@ -845,13 +845,25 @@
                     showMessage(result.error || 'Invalid credentials', 'error');
                 }
             } catch (error) {
-                showMessage('Cannot connect to server. Using demo mode.', 'error');
-                // Fallback to demo mode
-                if (email === 'admin@crs.com' && password === 'admin123') {
-                    currentUser = { name: 'Demo User', company: 'CRS Demo', email };
+                // Fallback authentication when API is unavailable
+                const fallbackUsers = [
+                    { email: 'mark@leadballoon.co.uk', password: 'admin123!!', name: 'Mark Taylor', company: 'Lead Balloon', role: 'super_admin' },
+                    { email: 'admin@crs.com', password: 'admin123', name: 'Admin User', company: 'CRS Car Park Repairs', role: 'admin' },
+                    { email: 'paul@carparkrepair.co.uk', password: 'CRS2024!', name: 'Paul Richardson', company: 'CRS Car Park Repairs', role: 'admin' },
+                    { email: 'kelsey@carparkrepair.co.uk', password: 'Kelsey2024!', name: 'Kelsey Richardson', company: 'CRS Car Park Repairs', role: 'admin' },
+                    { email: 'demo@mcdonalds.com', password: 'demo123', name: 'John Richardson', company: 'McDonalds Franchise Group', role: 'client' }
+                ];
+                
+                const user = fallbackUsers.find(u => u.email === email && u.password === password);
+                if (user) {
+                    currentUser = { ...user };
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('portalContainer').classList.add('active');
                     loadDemoData();
+                    showMessage(`Welcome ${user.name}!`, 'success');
+                } else {
+                    showMessage('Invalid credentials', 'error');
                 }
             }
         }
@@ -886,8 +898,8 @@
             document.getElementById('clientName').textContent = currentUser.name;
             document.getElementById('clientCompany').textContent = currentUser.company;
             
-            // Show admin button if user is admin
-            if (currentUser.role === 'admin') {
+            // Show admin button if user is admin or super_admin
+            if (currentUser.role === 'admin' || currentUser.role === 'super_admin') {
                 document.getElementById('adminBtn').style.display = 'block';
             }
             
