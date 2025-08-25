@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "outputDirectory": ".",
   "functions": {
-    "api/*.js": {
+    "api/**/*.js": {
       "maxDuration": 10
     }
-  },
-  "rewrites": [
-    { "source": "/api/health", "destination": "/api/health.js" },
-    { "source": "/api/auth", "destination": "/api/auth.js" }
-  ]
+  }
 }
