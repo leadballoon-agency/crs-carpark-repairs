@@ -685,7 +685,10 @@
     <header class="header">
         <div class="header-content">
             <div class="welcome-text">
-                Welcome back, <span class="client-name">John Richardson</span>
+                Welcome back, <span class="client-name" id="userName">User</span>
+                <span id="adminLink" style="display: none; margin-left: 20px;">
+                    <a href="/admin-dashboard.html" style="color: #FFD700; font-weight: bold;">→ Go to Admin Dashboard</a>
+                </span>
             </div>
             <a href="index.html" class="logout-btn">Logout</a>
         </div>
@@ -984,18 +987,29 @@
             const token = localStorage.getItem('authToken');
             const user = localStorage.getItem('currentUser');
             const loginOverlay = document.getElementById('loginOverlay');
+            const userNameElement = document.getElementById('userName');
+            const adminLink = document.getElementById('adminLink');
             
             if (token && user) {
                 // User is already logged in
                 const userData = JSON.parse(user);
                 
-                // If admin/super_admin, redirect to admin dashboard
-                if (userData.role === 'admin' || userData.role === 'super_admin') {
-                    window.location.href = '/admin-dashboard.html';
-                } else {
-                    // Hide login overlay for regular clients
-                    loginOverlay.classList.add('hidden');
+                // Update username display
+                if (userNameElement) {
+                    userNameElement.textContent = userData.name || userData.email;
                 }
+                
+                // If admin/super_admin, show admin dashboard link
+                if (userData.role === 'admin' || userData.role === 'super_admin') {
+                    if (adminLink) {
+                        adminLink.style.display = 'inline';
+                    }
+                    // Optional: Auto-redirect to admin dashboard
+                    // window.location.href = '/admin-dashboard.html';
+                }
+                
+                // Hide login overlay for all logged-in users
+                loginOverlay.classList.add('hidden');
             }
             // Login overlay is shown by default via CSS if not logged in
         });
@@ -1003,7 +1017,10 @@
         // Handle logout
         document.querySelector('.logout-btn').addEventListener('click', (e) => {
             e.preventDefault();
+            // Clear all auth data
             localStorage.removeItem('crs_logged_in');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
         
