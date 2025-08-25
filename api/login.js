@@ -72,10 +72,36 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
     
-    const { email, password } = req.body;
+    // Get the raw body and parse it
+    let body = req.body;
+    
+    // If body is undefined, try to read it from the request
+    if (!body && req.readable) {
+        const chunks = [];
+        for await (const chunk of req) {
+            chunks.push(chunk);
+        }
+        const rawBody = Buffer.concat(chunks).toString();
+        try {
+            body = JSON.parse(rawBody);
+        } catch (e) {
+            return res.status(400).json({ error: 'Invalid JSON in request body' });
+        }
+    } else if (typeof body === 'string') {
+        try {
+            body = JSON.parse(body);
+        } catch (e) {
+            return res.status(400).json({ error: 'Invalid JSON in request body' });
+        }
+    }
+    
+    const { email, password } = body || {};
     
     if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
+        return res.status(400).json({ 
+            error: 'Email and password are required',
+            received: { hasBody: !!body, bodyType: typeof body, keys: body ? Object.keys(body) : [] }
+        });
     }
     
     try {
