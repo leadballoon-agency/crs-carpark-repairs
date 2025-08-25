@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoHighLevel Integration - CRS Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid #FFD700;
+        }
+        
+        h1 {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        h2 {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            color: #FFD700;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .benefit {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #FFD700;
+        }
+        
+        .benefit-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #FFD700;
+            color: #000;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        code {
+            background: #000;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: #FFD700;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-block {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border: 1px solid #444;
+        }
+        
+        .code-block code {
+            background: none;
+            padding: 0;
+            color: #4CAF50;
+            line-height: 1.5;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        button {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+        
+        .success {
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .error {
+            background: #f44336;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        
+        .workflow-example {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+        }
+        
+        .webhook-url-display {
+            background: #000;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            word-break: break-all;
+            border: 1px solid #444;
+        }
+        
+        .copy-btn {
+            background: #444;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .copy-btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="admin-hub.html" class="back-link">← Back to Admin Hub</a>
+        
+        <div class="card">
+            <h1>🚀 GoHighLevel Integration</h1>
+            <p style="font-size: 1.125rem; margin-top: 0.5rem;">
+                Connect CRS damage reports directly to your GHL CRM for complete automation
+            </p>
+        </div>
+        
+        <div class="card">
+            <h2>Why GHL is Perfect for CRS</h2>
+            
+            <div class="benefit-grid">
+                <div class="benefit">
+                    <div class="benefit-icon">📧</div>
+                    <strong>Email Attachments</strong>
+                    <p>Automatically captures damage photos from emails</p>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">💬</div>
+                    <strong>WhatsApp Media</strong>
+                    <p>Receives images directly from WhatsApp Business</p>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">🤖</div>
+                    <strong>Workflow Automation</strong>
+                    <p>Auto-assign, quote, and follow-up</p>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">📱</div>
+                    <strong>SMS Integration</strong>
+                    <p>Two-way SMS with customers</p>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">📊</div>
+                    <strong>Full CRM</strong>
+                    <p>Track leads, customers, and jobs</p>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">💰</div>
+                    <strong>Pipeline Management</strong>
+                    <p>Visual sales pipeline for repairs</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🔧 Setup Instructions</h2>
+            
+            <h3>Step 1: Configure Webhook URL</h3>
+            <form id="ghlForm">
+                <label>Your GHL Webhook URL:</label>
+                <input type="url" id="webhookUrl" placeholder="https://services.leadconnectorhq.com/hooks/xxxxx/webhook/xxxxx" required>
+                
+                <label>API Key (optional for advanced features):</label>
+                <input type="text" id="apiKey" placeholder="Your GHL API key">
+                
+                <button type="submit">Save Configuration</button>
+            </form>
+            
+            <div class="success" id="successMsg">
+                ✅ GHL configuration saved! Damage reports will now be sent to your webhook.
+            </div>
+            
+            <div class="error" id="errorMsg">
+                ❌ Please enter a valid webhook URL.
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Step 2: Create GHL Workflow</h3>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>In GHL, go to Automation → Workflows</strong>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Create new workflow: "CRS Damage Report Handler"</strong>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Set trigger: Webhook → Incoming Webhook</strong>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Copy the webhook URL and paste above</strong>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Step 3: Workflow Actions</h3>
+            
+            <div class="workflow-example">
+                <h4 style="color: #4CAF50; margin-bottom: 1rem;">Recommended Workflow Setup</h4>
+                
+                <div class="step">
+                    <strong>1️⃣ Create/Update Contact</strong>
+                    <ul class="feature-list">
+                        <li>Map phone number</li>
+                        <li>Map email (if provided)</li>
+                        <li>Map location as custom field</li>
+                        <li>Add tag: "Damage Report"</li>
+                    </ul>
+                </div>
+                
+                <div class="step">
+                    <strong>2️⃣ Create Opportunity</strong>
+                    <ul class="feature-list">
+                        <li>Pipeline: "Car Park Repairs"</li>
+                        <li>Stage: "New Damage Report"</li>
+                        <li>Value: Estimated cost from zones</li>
+                        <li>Add urgency as custom field</li>
+                    </ul>
+                </div>
+                
+                <div class="step">
+                    <strong>3️⃣ Send Notifications</strong>
+                    <ul class="feature-list">
+                        <li>SMS to customer: "Report received"</li>
+                        <li>Email to team with details</li>
+                        <li>Slack/Teams notification if urgent</li>
+                    </ul>
+                </div>
+                
+                <div class="step">
+                    <strong>4️⃣ Conditional Actions</strong>
+                    <ul class="feature-list">
+                        <li>If URGENT → Assign to on-call team</li>
+                        <li>If >£5000 → Require manager approval</li>
+                        <li>If existing customer → Fast-track</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📤 Data Sent to GHL</h2>
+            
+            <p>When a damage report is submitted, this data is sent to your webhook:</p>
+            
+            <div class="code-block">
+                <code>{
+  "source": "CRS Damage Mapper",
+  "timestamp": "2024-03-15T10:30:00Z",
+  "contact": {
+    "phone": "+447700900000",
+    "email": "customer@example.com",
+    "location": "Birmingham B1 2XX"
+  },
+  "damage": {
+    "urgency": "urgent|soon|routine",
+    "severity": "high|medium|low",
+    "zones": 3,
+    "markers": 7,
+    "estimatedCost": 6000,
+    "notes": "Multiple potholes near entrance"
+  },
+  "metadata": {
+    "imageUrl": "https://...",  // If using Cloudinary
+    "reportId": "RPT-2024-001",
+    "source": "website|whatsapp|email"
+  }
+}</code>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Advanced Features</h2>
+            
+            <h3>WhatsApp Business Integration</h3>
+            <p>Connect your WhatsApp Business account in GHL to:</p>
+            <ul class="feature-list">
+                <li>Receive damage photos directly via WhatsApp</li>
+                <li>Auto-reply with report confirmation</li>
+                <li>Send quote PDFs via WhatsApp</li>
+                <li>Schedule repairs through chat</li>
+            </ul>
+            
+            <h3>Email Parser</h3>
+            <p>Set up GHL email parser to:</p>
+            <ul class="feature-list">
+                <li>Extract damage details from email body</li>
+                <li>Save attached photos to opportunities</li>
+                <li>Auto-categorize by urgency keywords</li>
+                <li>Route to correct team based on location</li>
+            </ul>
+            
+            <h3>Custom Fields to Create</h3>
+            <div style="margin: 1rem 0;">
+                <span class="tag">Damage Severity</span>
+                <span class="tag">Zone Count</span>
+                <span class="tag">Urgency Level</span>
+                <span class="tag">Estimated Cost</span>
+                <span class="tag">Damage Markers</span>
+                <span class="tag">Report Source</span>
+                <span class="tag">Site Postcode</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🔄 Test Integration</h2>
+            
+            <button onclick="sendTestWebhook()">Send Test Report to GHL</button>
+            
+            <div id="testResult" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Load saved configuration
+        window.addEventListener('DOMContentLoaded', () => {
+            const config = localStorage.getItem('ghlConfig');
+            if (config) {
+                const { webhookUrl, apiKey } = JSON.parse(config);
+                document.getElementById('webhookUrl').value = webhookUrl || '';
+                document.getElementById('apiKey').value = apiKey || '';
+            }
+        });
+        
+        // Save configuration
+        document.getElementById('ghlForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            
+            if (!webhookUrl || !webhookUrl.startsWith('http')) {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('successMsg').style.display = 'none';
+                return;
+            }
+            
+            const config = {
+                webhookUrl,
+                apiKey
+            };
+            
+            localStorage.setItem('ghlConfig', JSON.stringify(config));
+            
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('errorMsg').style.display = 'none';
+        });
+        
+        // Send test webhook
+        async function sendTestWebhook() {
+            const resultDiv = document.getElementById('testResult');
+            const config = localStorage.getItem('ghlConfig');
+            
+            if (!config) {
+                resultDiv.innerHTML = '<span style="color: #f44336;">Please configure webhook URL first</span>';
+                return;
+            }
+            
+            const { webhookUrl } = JSON.parse(config);
+            
+            resultDiv.innerHTML = '<span style="color: #FFD700;">Sending test report...</span>';
+            
+            const testData = {
+                source: "CRS Damage Mapper - TEST",
+                timestamp: new Date().toISOString(),
+                contact: {
+                    phone: "+447700900TEST",
+                    email: "test@example.com",
+                    location: "Test Location B1 2XX"
+                },
+                damage: {
+                    urgency: "urgent",
+                    severity: "high",
+                    zones: 3,
+                    markers: 7,
+                    estimatedCost: 6000,
+                    notes: "TEST REPORT - Multiple potholes near entrance"
+                },
+                metadata: {
+                    reportId: `TEST-${Date.now()}`,
+                    source: "website-test"
+                }
+            };
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div style="color: #4CAF50;">
+                            ✅ Test report sent successfully!<br>
+                            Check your GHL workflow to confirm receipt.<br>
+                            <small>Report ID: ${testData.metadata.reportId}</small>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<span style="color: #f44336;">Failed: ${response.status} ${response.statusText}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span style="color: #f44336;">Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
