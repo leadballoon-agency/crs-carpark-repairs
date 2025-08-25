@@ -1,7 +1,8 @@
 // Portal API Integration
 class PortalAPI {
     constructor() {
-        this.baseURL = '/api';
+        // Use consolidated main API endpoint to stay under Vercel's function limit
+        this.baseURL = '/api/main';
         this.token = localStorage.getItem('authToken');
         this.user = JSON.parse(localStorage.getItem('currentUser') || '{}');
     }
