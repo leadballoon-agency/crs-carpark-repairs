@@ -1,6 +1,6 @@
 // Main API Router - Consolidates multiple endpoints to stay under Vercel's 12 function limit
-import { neon } from '@neondatabase/serverless';
-import crypto from 'crypto';
+const { neon } = require('@neondatabase/serverless');
+const crypto = require('crypto');
 
 const sql = neon(process.env.DATABASE_URL || '');
 
@@ -32,7 +32,7 @@ const fallbackUsers = [
     }
 ];
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

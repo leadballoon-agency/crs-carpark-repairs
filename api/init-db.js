@@ -1,7 +1,8 @@
 // Database initialization endpoint - run this once to set up all tables
-import { neon } from '@neondatabase/serverless';
+const { neon } = require('@neondatabase/serverless');
+const crypto = require('crypto');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -159,7 +160,6 @@ export default async function handler(req, res) {
         await sql`CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status)`;
         
         // Insert super admin user (Mark)
-        const crypto = require('crypto');
         const hashPassword = (pwd) => crypto.createHash('sha256').update(pwd).digest('hex');
         
         await sql`
